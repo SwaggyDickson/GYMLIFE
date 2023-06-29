@@ -165,4 +165,8 @@ import tw.gymlife.member.service.MemberService;
 			  return "frontgymlife/member/loginProblem";
 		  }
 		  
+		  public String testGit() {
+			  return "請接收數據";
+		  }
+		  
 }

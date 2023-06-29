@@ -305,4 +305,8 @@ public class ComBackController {
 
 			return "backgymlife/com/itemList";
 		}
+		
+		public int aaaaaaaaaaaaaaaa() {
+			return  0 ;
+		}
 }

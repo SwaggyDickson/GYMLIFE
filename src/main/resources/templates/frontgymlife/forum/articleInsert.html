@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>articleInsert</title>
+<style>
+.test {
+        display: flex; 
+        flex-direction: column;
+        min-height: 100vh;
+        background-color: black;
+        color:white
+    }
+</style>
+</head>
+<body class="test">
+
+<div th:replace="~{layout/front_nav}"></div>
+
+  <div class="container" style="padding-top: 100px;" >
+			<div class="row">
+				<div class="col-6">  
+
+					<!--<div th:text="${article}?${article.articleId}">文章編號:</div>
+					<div th:text="${article}?${article.articleTitle}">文章標題:</div>
+					<div th:text="${article}?${article.articleType}">文章種類</div>
+					<div th:text="${article}?${article.articleContent}">文章內容</div>
+					<div th:text="${article}?${#dates.format(article.articleTime,'yyyy-MM-dd, HH:mm:ss')}">發文時間</div>   -->
+
+
+					<h1 style="color: white">新增文章</h1>
+					<form th:action="@{/front/insert}" method="post"
+						enctype="multipart/form-data">
+						<select name="articleType" required>
+							<option value="0">請選擇主題分類</option>
+							<option value="健身">健身</option>
+							<option value="購物">購物</option>
+							<option value="課程">課程</option>
+							<option value="活動">活動</option>
+							<option value="會員">會員</option>
+						</select> <br> <br> <label for="articleTitle">標題：</label> <input
+							type="text" id="title" name="articleTitle"
+							th:text="${article}?${article.articleTitle}" autofocus required
+							placeholder="請輸入文章標題" autocomplete="off" size="42"><br>
+						<br>
+
+						<!--    <div class="st1">
+                               <label for="articleTiime" class="t1">發文時間</label>
+                               <input type="file" name="articleTiime" id="articleTiime" th:text="${article}?${#dates.format(article.articleTime,'yyyy-MM-dd, HH:mm:ss')}" multiple> 
+                             </div><br>    -->
+
+						 <div class="st1">
+                               <label for="articleImg" class="t1">照片</label>
+                               <input type="file" name="articleImg" id="articleImg"> 
+                             </div><br>  
+
+						<label for="content">文章內容：</label><br>
+						<textarea id="content" name="articleContent"
+							th:text="${article}?${article.articleContent}" rows="10"
+							cols="50" required></textarea>
+						<br> <br>
+						<button type="submit" class="btn btn-dark">確定</button>
+						<button type="submit" class="btn btn-secondary" th:onclick="history.back()">取消</button>
+						<button id="autoFillBtn" class="btn btn-secondary">一鍵輸入</button>
+
+
+					</form>
+		 	</div>  
+				<div class="col-6">  
+					</div>
+			</div>
+</div>
+
+    
+<div th:replace="~{layout/front_footer}"></div>
+
+<script>
+document.getElementById('autoFillBtn').addEventListener('click', function(e) {
+    e.preventDefault(); // 阻止按鈕的預設提交行為
+    
+    // 為文章種類選擇框設定值
+    var articleTypeSelect = document.querySelector('select[name="articleType"]');
+    articleTypeSelect.value = '健身'; // 您可以替換為您想要設定的值
+
+    // 為文章標題輸入框設定值
+    var articleTitleInput = document.getElementById('title');
+    articleTitleInput.value = '我愛健身，肌肉愛我'; // 您可以替換為您想要設定的值
+
+    // 為文章內容輸入框設定值
+    var articleContentTextarea = document.getElementById('content');
+    articleContentTextarea.value = '健身是一個美好的習慣，我認為大家每天至少要健身30分鐘'; // 您可以替換為您想要設定的值
+
+});
+</script>
+</body>
+</html>

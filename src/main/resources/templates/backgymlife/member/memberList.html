@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>insertPage</title>
+<style>
+	
+	.test {
+ 	  max-width: 100%;  /* 最大寬度為視窗寬度 */
+    overflow-x: auto; /* 如果內容超出容器寬度，則可以橫向滾動 */
+	}
+	 .equal-cell-table {
+        table-layout: fixed;
+        width: 100%; /* Optional, you can adjust the table width as needed */
+    }
+    .table th, .table td {
+        width: 100px;
+        word-wrap: break-word; /* 舊版瀏覽器支援 */
+        overflow-wrap: break-word; /* 新版瀏覽器支援 */
+        overflow: hidden; /* 防止內容超出單元格 */
+    }
+	
+	</style>
+	<link rel="stylesheet"
+	href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.css" />
+</head>
+<body class="adminbody">
+<div id="main">
+<div th:replace="~{layout/navbar}"></div>
+<div class="content-page">
+			<!-- Start content -->
+			<div class="content">
+				<div class="container-fluid">
+					<div class="row">
+						<div class="col-xl-12">
+							<div class="breadcrumb-holder">
+								<h1 class="main-title float-left">BackGYMLIFE firstPage</h1>
+								<ol class="breadcrumb float-right">
+									<li class="breadcrumb-item">會員</li>
+									<li class="breadcrumb-item active">會員列表</li>
+								</ol>
+								<div class="clearfix"></div>
+							</div>
+						</div>
+					</div>
+<!---------------------------內文---------------------------------------------------------------->
+					<div class="test">
+					 <input class="form-control" id="searchInput" type="text" placeholder="搜尋會員...">
+            <table id="myTable" class="table equal-cell-table">	
+                <thead>
+                    <tr>
+                        <th scope="col">會員編號</th>
+                        <th scope="col">會員帳號</th>
+                        <th scope="col">會員姓名</th>
+                        <th scope="col">會員性別</th>
+                        <th scope="col">會員生日</th>
+                        <th scope="col">會員地址</th>
+                        <th scope="col">會員電話</th>
+                        <th scope="col">會員信箱</th>
+                        <th scope="col">會員暱稱</th>
+                        <th scope="col">註冊日期</th>
+                        <th scope="col">會員總花費</th>
+                        <th scope="col">紅利點數</th>
+                        <th scope="col">會員權限</th>
+                        <th>更新</th>
+                        <th>刪除</th>
+                    </tr>
+                </thead>
+
+			<tbody>
+			  <tr th:each="member, status : ${members}">
+			    <td th:text="${member.userId}"></td>
+			    <td th:text="${member.userAccount}"></td>
+			    <td th:text="${member.userName}"></td>
+			    <td th:text="${member.userGender}"></td>
+			    <td th:text="${member.userBirthDay}"></td>
+			    <td th:text="${member.userAddress}"></td>
+			    <td th:text="${member.userTel}"></td>
+			    <td th:text="${member.userEmail}"></td>
+			    <td th:text="${member.userNickName}"></td>
+			    <td th:text="${member.userRegisterDate}"></td>
+			    <td th:text="${member.userTotalSpend}"></td>
+			    <td th:text="${member.userRewardPoint}"></td>
+			    <td th:text="${member.userPermission}"></td>
+			    <td>
+			      <button data-bs-toggle="modal" data-bs-target="#updateModal" 
+			              th:onclick="'storeData(' + ${status.index} + ')'" class="btn btn-primary">更新</button>
+			    </td>
+			 <td>
+			    <button data-bs-toggle="modal" data-bs-target="#deleteModal" 
+			            th:attr="onclick='storeDataForDelete(' + ${status.index} + ')' " class="btn btn-danger">刪除</button>
+			</td>
+
+
+			  </tr>
+			</tbody>
+
+
+            </table>
+        </div>
+   
+   <!-- 更新視窗 -->
+		   <div class="modal fade" id="updateModal" tabindex="-1" aria-labelledby="updateModalLabel" aria-hidden="true">
+		  <div class="modal-dialog">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <h5 class="modal-title" id="updateModalLabel">更新資訊</h5>
+		        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+		      </div>
+		      <div class="modal-body">
+		        <!-- 在這裡放置更新表單 -->
+		         <form id="updateForm">
+        <input type="hidden" id="userIdInput" value="">
+        <div class="mb-3">
+            <label for="accountInput" class="form-label">User Account</label>
+            <input type="text" class="form-control" id="accountInput">
+        </div>
+       
+        <div class="mb-3">
+            <label for="nameInput" class="form-label">User Name</label>
+            <input type="text" class="form-control" id="nameInput">
+        </div>
+        <div class="mb-3">
+            <label for="emailInput" class="form-label">User Email</label>
+            <input type="email" class="form-control" id="emailInput">
+        </div>
+        <div class="mb-3">
+            <label for="genderInput" class="form-label">User Gender</label>
+            <input type="text" class="form-control" id="genderInput">
+        </div>
+        <div class="mb-3">
+            <label for="birthDayInput" class="form-label">User Birthday</label>
+            <input type="text" class="form-control" id="birthDayInput" disabled>
+        </div>
+        <div class="mb-3">
+            <label for="addressInput" class="form-label">User Address</label>
+            <input type="text" class="form-control" id="addressInput">
+        </div>
+        <div class="mb-3">
+            <label for="telInput" class="form-label">User Telephone</label>
+            <input type="tel" class="form-control" id="telInput">
+        </div>
+        <!-- 更多的欄位可以在這裡添加 -->
+    </form>
+		      </div>
+		      <div class="modal-footer">
+		        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+		        <button type="button" class="btn btn-primary" onclick="updateData()">保存更新</button>
+		      </div>
+		    </div>
+		  </div>
+		</div>
+
+<!-- 刪除視窗 -->
+			<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+			  <div class="modal-dialog">
+			    <div class="modal-content">
+			      <div class="modal-header">
+			        <h5 class="modal-title" id="deleteModalLabel">確認刪除</h5>
+			        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			      </div>
+			      <div class="modal-body">
+			        確定要刪除此會員嗎？
+			      </div>
+			      <div class="modal-footer">
+			        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+			        <button type="button" class="btn btn-danger" onclick="deleteData()">確認刪除</button>
+			      </div>
+			    </div>
+			  </div>
+			</div>
+		</div>
+
+				</div>
+				<!-- END container-fluid -->
+
+			</div>
+			<!-- END content -->
+
+		</div>
+		<!-- END content-page -->
+<div th:replace="~{layout/footer}"></div>
+
+<script>
+   $(document).ready(function() {
+    function refreshMemberData() {
+        $.ajax({
+            url: "gymlife/api/MemberQuery",
+            type: "GET",
+            success: function(data) {
+                $("tbody").empty();
+                data.forEach(function(member, index) {
+                    let row = $("<tr>");
+                        //append 在選定元素的內部結尾處插入內容
+                    row.append($("<td>").text(member.userId));
+                    row.append($("<td>").text(member.userAccount));
+                    row.append($("<td>").text(member.userName));
+                    row.append($("<td>").text(member.userGender));
+                    row.append($("<td>").text(member.userBirthDay));
+                    row.append($("<td>").text(member.userAddress));
+                    row.append($("<td>").text(member.userTel));
+                    row.append($("<td>").text(member.userEmail));
+                    row.append($("<td>").text(member.userNickName));
+                    row.append($("<td>").text(member.userRegisterDate));
+                    row.append($("<td>").text(member.userTotalSpend));
+                    row.append($("<td>").text(member.userRewardPoint));
+                    row.append($("<td>").text(member.userPermission));
+						let updateButton = $("<button>")
+                        .addClass("btn btn-primary")
+                        .attr("data-bs-toggle", "modal")
+                        .attr("data-bs-target", "#updateModal")
+                        .text("更新")
+                        .click(function() {
+                            storeData(index); // 當更新按鈕被點擊時，呼叫 storeData 函數並傳入當前行的索引
+                        });
+                    row.append($("<td>").append(updateButton));
+
+                    let deleteButton = $("<button>")
+                        .addClass("btn btn-danger")
+                        .attr("data-bs-toggle", "modal")
+                        .attr("data-bs-target", "#deleteModal")
+                        .text("刪除")
+                        .click(function() {
+                            userIdToDelete = member.userId;
+                            console.log("Stored User ID: ", userIdToDelete);
+                        });
+                    row.append($("<td>").append(deleteButton));
+
+                    $("tbody").append(row);
+                });
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.error(textStatus, errorThrown);
+            }
+        });
+    }
+
+    setInterval(refreshMemberData, 1000);
+});
+            document.getElementById("searchInput").addEventListener("keyup", function () {
+                let searchInput = document.getElementById("searchInput");
+                let filter = searchInput.value.toUpperCase();
+                let table = document.querySelector(".table");
+                let tr = table.getElementsByTagName("tr");
+
+                for (let i = 0; i < tr.length; i++) {
+                    let td = tr[i].getElementsByTagName("td")[1]; // 使用第二列（用戶名）進行搜索
+                    if (td) {
+                        let txtValue = td.textContent || td.innerText;
+                        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                            tr[i].style.display = "";
+                        } else {
+                            tr[i].style.display = "none";
+                        }
+                    }
+                }
+            });
+            //存取資訊
+            function storeData(rowId) {
+                // 使用 rowId 獲取該行的信息
+                let tr = document.getElementsByTagName("tr")[rowId +1];
+                // 逐個獲取單元格的值
+                let userId = tr.cells[0].innerText;
+                let userAccount = tr.cells[1].innerText;
+                
+                let userName = tr.cells[2].innerText;
+                let userGender = tr.cells[3].innerText;
+                let userBirthDay = tr.cells[4].innerText;
+                let userAddress = tr.cells[5].innerText;
+                let userTel = tr.cells[6].innerText;
+                let userEmail = tr.cells[7].innerText;
+                const rowData = {
+                    id: rowId,
+                    userId: userId,
+                    userAccount: userAccount,
+                   	UserName: userName,
+                   	userEmail: userEmail,
+                    userGender: userGender,
+                    userBirthDay: userBirthDay,
+                    userAddress: userAddress,
+                    userTel: userTel,
+                };
+                // 將 rowData 保存到 localStorage
+                localStorage.setItem("rowData", JSON.stringify(rowData));
+            }
+            document.getElementById("updateModal").addEventListener("shown.bs.modal", function () {
+                const rowData = JSON.parse(localStorage.getItem("rowData"));
+             
+                document.getElementById("userIdInput").value = rowData.userId;
+                document.getElementById("accountInput").value = rowData.userAccount;
+                document.getElementById("nameInput").value = rowData.UserName;
+                document.getElementById("emailInput").value = rowData.userEmail;
+                document.getElementById("genderInput").value = rowData.userGender;
+                document.getElementById("birthDayInput").value = rowData.userBirthDay;
+                document.getElementById("addressInput").value = rowData.userAddress;
+                document.getElementById("telInput").value = rowData.userTel;
+            });
+            function updateData() {
+            	const updatedUserId = document.getElementById("userIdInput").value;
+                const updatedAccount = document.getElementById("accountInput").value;
+                const updatedName = document.getElementById("nameInput").value;
+                const updatedEmail = document.getElementById("emailInput").value;
+                const updatedGender = document.getElementById("genderInput").value;
+                const updatedBirthDay = document.getElementById("birthDayInput").value;
+                const updatedAddress = document.getElementById("addressInput").value;
+                const updatedTel = document.getElementById("telInput").value;
+               
+                // 發送AJAX請求到後端Servlet
+                const xhr = new XMLHttpRequest();
+                xhr.open("POST", "gymlife/api/memberUpdate", true);
+                xhr.setRequestHeader("Content-Type", "application/json");
+                
+                const data = {
+                        userId: updatedUserId,
+                        userAccount: updatedAccount,
+                        
+                        userName: updatedName,
+                        userEmail: updatedEmail,
+                        userGender: updatedGender,
+                        userBirthDay: updatedBirthDay,
+                        userAddress: updatedAddress,
+                        userTel: updatedTel
+                    };
+            
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState === 4 && xhr.status === 200) {
+                        // 根據響應更新前端UI或顯示操作結果
+                        console.log(xhr.responseText);
+                    }
+                };
+                // 將更新後的數據作為請求參數發送
+             
+                //xhr.send(`userAccount=${updatedAccount}&userName=${updatedName}&userEmail=${updatedEmail}&userId=${updatedUserId}&userGender=${updatedGender}&userBirthDay=${updatedBirthDay}&userAddress=${updatedAddress}&userTel=${updatedTel}`);
+                xhr.send(JSON.stringify(data));
+                // 移除 localStorage 中的 rowData
+                localStorage.removeItem("rowData");
+                // 關閉模態框
+                $('#updateModal').modal('hide');
+                Swal.fire(
+                    'Success',
+                    '成功更新',
+                    'success'
+                )
+            }
+            
+            //--------------刪除方法--------------
+        
+let userIdToDelete = null;
+function storeDataForDelete(index) {
+		
+	    const userIdElement = $(`tbody > tr:eq(${index}) > td:first-child`);
+	    const userId = userIdElement.text().trim();
+	    
+    if (userId) {
+        userIdToDelete = parseInt(userId, 10); // Convert the userId to an integer (assuming that the ID is a number)
+        console.log("Stored User ID: ", userIdToDelete);
+    } else {
+        console.error("Could not find User ID in the first cell of the row");
+    }
+}
+
+
+function deleteData() {
+    console.log("In deleteData: Current value of userIdToDelete before AJAX call: ", userIdToDelete);
+
+    const userId = userIdToDelete;
+    const url = `gymlife/api/DeleteMember/${userId}`;
+    
+    $.ajax({
+        url: url,
+        method: "DELETE",
+        success: function(response) {
+            console.log("Delete request successful");
+            $('#deleteModal').modal('hide'); // Close the modal after successful delete operation
+            Swal.fire(
+                    'error',
+                    '成功刪除',
+                    'success'
+                )
+        },
+        error: function(xhr, status, error) {
+       
+        console.log("HTTP status: ", xhr.status);
+        console.log("Status description: ", xhr.statusText);
+
+        alert("Delete operation failed: " + xhr.responseText);
+        $('#deleteModal').modal('hide');
+       
+        }
+    });
+}
+
+        </script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
+            crossorigin="anonymous"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+            <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> 
+            <script
+			src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.js"></script>
+		<script>let table = new DataTable('#myTable');</script>
+            
+</body>
+</html>

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>GYM | 商品列表</title>
+    <!-- My CSS -->
+    <link rel="stylesheet" th:href="@{http://localhost:8080/gymlife/gym/com/css/front_shopList.css}">
+    <!-- SweetAlert2框框 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+
+<body>
+    <div th:replace="~{layout/front_nav}"></div>
+
+    <!-- Breadcrumb Section Begin -->
+    <section class="breadcrumb-section set-bg"
+        th:data-setbg="@{http://localhost:8080/gymlife/gym/com/img/shop_bgShopList.jpg}" style="height: 420px;">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <div class="breadcrumb-text">
+                        <h2>GymLife Shop</h2>
+                        <div class="bt-option">
+                            <a th:href="@{/}">Home</a>
+                            <a th:href="@{/shop}">GymLife Shop</a>
+                            <span>ShopList</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Breadcrumb Section End -->
+
+
+
+    <!-- ItemList Start-->
+    <section class="team-section team-page spad">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="team-title">
+                        <div class="section-title">
+                            <span>Our Clothes</span>
+                            <h2>SELECTED WITH EXPERTS</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+
+                <!--Aside-->
+                <div class="div-aside">
+                    <aside class="aside">
+                        <!-- Aside content here -->
+                        <p class="aside-p">搜尋條件: </p>
+                        <div class="aside-search">
+                            <form th:action="@{http://localhost:8080/gymlife/userCheckByKeyWord.func}" method="GET" id="searchByName">
+                                <input type="search" id="keywords" name="keywords" placeholder="請輸入查詢名稱"
+                                    style="width: 10vw;">
+                                <button class="btn btn-light btn-sm" type="submit">
+                                    <i class="fa fa-search fa-1x"></i>
+                                </button>
+                            </form>
+                        </div>
+                        <div class="aside-search">
+                            <form th:action="@{http://localhost:8080/gymlife/userSortByPrice.func}" method="GET">
+                                <input type="hidden" name="userState" value="sortByPrice">
+                                <select name="sortPrice">
+                                    <option value="0">價格高至低</option>
+                                    <option value="1">價格低至高</option>
+                                </select>
+                                <button class="btn btn-light btn-sm" type="submit">
+                                    <i class="fa fa-search fa-1x"></i>
+                                </button>
+                            </form>
+                        </div>
+
+                        <div class="aside-search">
+                            <form th:action="@{http://localhost:8080/gymlife/userSortByType.func}" method="GET">
+                                <input type="hidden" name="userState" value="searchBType">
+                                <select name="sortType">
+                                    <option value="上衣">上衣</option>
+                                    <option value="褲子">褲子</option>
+                                    <option value="護具">護具</option>
+                                    <option value="配件">配件</option>
+                                </select>
+                                <button class="btn btn-light btn-sm" type="submit">
+                                    <i class="fa fa-search fa-1x"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </aside>
+                </div>
+                <!-- End Aside -->
+
+                <th:block th:each="com : ${comList}">
+                    <div th:id="'returnList-' +${com.comId}" th:data-comId="${com.comId}" class="returnList">
+                        <div class="col-lg-4 col-sm-6" style=" flex: 100%; max-width: 100%;">
+                            <th:block th:each="entry,iteration  : ${com.comPicInfo}">
+                                <div class="ts-item set-bg picControl" th:data-setbg="@{'/download/'+ ${entry.key}}"
+                                    name="imageId" th:data-imgId="${entry.key}" th:data-comId="${com.comId}"
+                                    style="background-repeat: no-repeat; background-size: contain; background-position: 50% 50%;">
+                                    <div class="ts_text">
+                                        <h4 th:text="${com.comName}"></h4>
+                                        <span th:text="'$'+ ${com.comPrice}"></span>
+                                        <div class="tt_social">
+                                            <a href="#" th:id="'cartLink-' + ${com.comId}" class="cart-link "
+                                                th:onclick="'handleCartLinkClick(event,'+ ${com.comId}+')'"><i
+                                                    class="fa fa-shopping-cart fa-3x"></i></a>
+
+                                            <a th:href="@{'/com/'+${com.comId}}"><i class="fa fa-search fa-3x"></i></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </th:block>
+                        </div>
+                    </div>
+                </th:block>
+            </div>
+        </div>
+    </section>
+    <!--  ItemList End -->
+
+    <!--回到上方按鈕-->
+    <button id="back-to-top-btn" title="回到頁面頂端">
+        <i class="fa fa-arrow-up">TOP</i>
+    </button>
+    <div th:replace="~{layout/front_footer}"></div>
+    <!-- My Js 	 -->
+    <script th:src="@{http://localhost:8080/gymlife/gym/com/js/front_shopList.js}"></script>
+</body>
+
+</html>

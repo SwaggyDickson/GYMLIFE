@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>GYM | 選貨店</title>
+    <!-- My CSS -->
+    <link rel="stylesheet" th:href="@{http://localhost:8080/gymlife/gym/com/css/front_oneCom.css}">
+    <!-- SweetAlert2框框 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+
+<body>
+    <div th:replace="~{layout/front_nav}"></div>
+
+    <!-- Breadcrumb Section Begin -->
+    <section class="breadcrumb-section set-bg"
+        th:data-setbg="@{http://localhost:8080/gymlife/gym/com/img/shop_background_oneCom.jpg}" style="height: 420px;">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <div class="breadcrumb-text">
+                        <h2>Gym Shop</h2>
+                        <div class="bt-option">
+                            <a th:href="@{/}">Home</a>
+                            <a th:href="@{/shopList.func}">ShopList</a>
+                            <th:block th:each="com : ${comList}">
+                                <span>[[${com.comName}]]</span>
+                            </th:block>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Breadcrumb Section End -->
+
+    <!-- ItemList Start-->
+    <section class="aboutus-section">
+        <div class="container-fluid">
+            <th:block th:each="com : ${comList}">
+                <div class="row">
+                    <!-- 圖片區開始 -->
+                    <div class="col-lg-6 p-0 imgRoll">
+                        <div th:id="'carouselExampleIndicators'+${com.comId}" class="carousel slide imgFather"
+                            data-ride="carousel">
+                            <ol class="carousel-indicators">
+                                <th:block th:each="entry, iteration : ${com.comPicInfo}">
+                                    <li th:data-target="'#carouselExampleIndicators'+${com.comId}"
+                                        th:data-slide-to="${iteration.index}"
+                                        th:class="${iteration.index == 0} ? 'active' : ''"></li>
+                                </th:block>
+                            </ol>
+                            <div class="carousel-inner imgDiv">
+                                <th:block th:each="entry, iteration : ${com.comPicInfo}">
+                                    <div th:class="${iteration.index == 0 ? 'carousel-item active' : 'carousel-item'}">
+                                        <img th:src="@{'/download/'+ ${entry.key}}" class="d-block w-100" alt="...">
+                                    </div>
+                                </th:block>
+                            </div>
+                            <a class="carousel-control-prev imgL" th:href="'#carouselExampleIndicators'+${com.comId}"
+                                role="button" data-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"
+                                    style="background-color: #f36100;"></span>
+                                <span class="sr-only">Previous</span>
+                            </a>
+                            <a class="carousel-control-next imgR" th:href="'#carouselExampleIndicators'+${com.comId}"
+                                role="button" data-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"
+                                    style="background-color: #f36100;"></span>
+                                <span class="sr-only">Next</span>
+                            </a>
+                        </div>
+                    </div>
+                    <!-- 圖片區結束 -->
+
+                    <!-- 介紹區開始 -->
+                    <div class="col-lg-6 p-0">
+                        <div class="about-text">
+                            <div class="section-title">
+                                <span>[GymLife Shop]</span>
+                                <h2>[[${com.comName}]]</h2>
+                            </div>
+                            <div class="at-desc">
+                                <h5 style="color:#c4c4c4; margin-bottom:5px;">[[${com.comContent}]]</h5>
+                                <form action="#" method="post">
+
+                                    <div class="section-title" style="margin-bottom:0px;">
+                                        <label><span style="color:#f36100;">特價</span></label>
+                                    </div>
+                                    <div class="itemPrice">
+                                        <h3><span style="color:#ffffff; margin-bottom:5px;">$ [[${com.comPrice}]]</span>
+                                        </h3>
+                                    </div>
+                                    <div class="section-title" style="margin-bottom:0px;">
+                                        <label><span style="color:#f36100;">款式</span></label>
+                                    </div>
+                                    <div class="itemType">
+                                        <h3 style="color:#ffffff; margin-bottom:5px;">[[${com.comType}]]</h3>
+                                    </div>
+                                    <div class="section-title">
+                                        <label><span style="color:#f36100;">數量:</span></label>
+                                        <input type="number" name="itemNumber" id="itemNumber" value="1" min="1" max="99">
+                                    </div>
+                                    <input type="hidden" name="comId" th:value="${com.comId}">
+                                    <div class="inputSubmit">
+                                        <button type="submit" id="addCart" class="btn btn-info">
+                                            <i class="fa fa-shopping-cart fa-2x"></i><span>加入購物車</span>
+                                        </button>
+                                    </div>
+
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 介紹區開始 -->
+                </div>
+            </th:block>
+        </div>
+    </section>
+    <!--  ItemList End -->
+
+    <!--回到上方按鈕-->
+    <button id="back-to-top-btn" title="回到頁面頂端">
+        <i class="fa fa-arrow-up">TOP</i>
+    </button>
+
+
+    <div th:replace="~{layout/front_footer}"></div>
+    <!-- Js Plugins -->
+    <script th:src="@{http://localhost:8080/gymlife/front/js/jquery-3.3.1.min.js}"></script>
+    <script th:src="@{http://localhost:8080/gymlife/front/js/bootstrap.min.js}"></script>
+    <script th:src="@{http://localhost:8080/gymlife/front/js/jquery.magnific-popup.min.js}"></script>
+    <script th:src="@{http://localhost:8080/gymlife/front/js/masonry.pkgd.min.js}"></script>
+    <script th:src="@{http://localhost:8080/gymlife/front/js/jquery.barfiller.js}"></script>
+    <script th:src="@{http://localhost:8080/gymlife/front/js/jquery.slicknav.js}"></script>
+    <script th:src="@{http://localhost:8080/gymlife/front/js/owl.carousel.min.js}"></script>
+    <script th:src="@{http://localhost:8080/gymlife/front/js/main.js}"></script>
+    <!-- My Js 	 -->
+    <script th:src="@{http://localhost:8080/gymlife/gym/com/js/front_oneCom.js}"></script>
+</body>
+
+</html>

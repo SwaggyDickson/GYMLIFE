@@ -1,0 +1,31 @@
+/*.number{*/
+/*	width: 100%;*/
+/*	height: 25%;*/
+/*	display: flex;*/
+/*	align-items: center;*/
+/*	justify-content: space-between;*/
+/*	border-bottom: 1px solid #f1f1f1;*/
+/*}*/
+/*.number .plus-minus i,*/
+/*.number .plus-minus input{*/
+/*	display: inline-block;*/
+/*	height: 0.6rem;*/
+/*	line-height: 0.6rem;*/
+/*	font-size: 0.2rem;*/
+/*	text-align: center;*/
+/*	border: 1px solid #515151;*/
+/*	color: #323232;*/
+/*}*/
+/*.number > span{*/
+/*	color: gray;*/
+/*}*/
+/*.number >input{*/
+/*	width: 45px;*/
+/*	box-sizing: content-box;*/
+/*	vertical-align: top;*/
+/*	margin-left: -4px;*/
+/*	border-left-style: none;*/
+/*}*/
+/*.number > fa-plus{*/
+/*	scroll-margin-left: -4px;*/
+/*}*/

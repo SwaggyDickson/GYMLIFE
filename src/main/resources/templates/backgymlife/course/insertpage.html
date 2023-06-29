@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>insertPage</title>
+</head>
+<body class="adminbody">
+	<div id="main">
+		<div th:replace="~{layout/navbar}"></div>
+		<div class="content-page">
+
+			<!-- Start content -->
+			<div class="content">
+
+				<div class="container-fluid">
+					<div class="row">
+						<div class="col-xl-12">
+							<div class="breadcrumb-holder">
+								<h1 class="main-title float-left">Course</h1>
+								<ol class="breadcrumb float-right">
+									<li class="breadcrumb-item">Home</li>
+									<li class="breadcrumb-item active">Google Maps</li>
+								</ol>
+								<div class="clearfix"></div>
+							</div>
+						</div>
+					</div>
+
+<!-- 					-------------------------內文-------------------------------------------------------------- -->
+					<form method="post"
+						th:action="@{/course/insert}"
+						onsubmit="return confirm('確定要新增這筆課程嗎？')"
+						enctype="multipart/form-data">
+						<div class="row">
+							<div class="col"></div>
+							<div class="col-6">
+								<h2 class="m-3" style="text-align: center;">新增課程</h2>
+								<div class="mb-3">
+									<label for="text1" class="form-label">課程名稱 </label> <input
+										type="text" class="form-control" id="text1" name="courseName"
+										autofocus autocomplete="off" aria-describedby="emailHelp">
+									<div id="emailHelp" class="form-text">請輸入課程名稱</div>
+								</div>
+								<hr style="border: 1px solid black;">
+								<div class="mb-3">
+									<label for="text2" class="form-label">教練姓名 </label> <input
+										type="text" class="form-control" id="text2" name="coachName"
+										autofocus autocomplete="off" aria-describedby="emailHelp">
+									<div id="emailHelp" class="form-text">請輸入教練姓名</div>
+								</div>
+								<hr style="border: 1px solid black;">
+								<div>
+									<div class="mb-3">
+										<label for="formFileLg" class="form-label">上傳教練圖片</label> <input
+											class="form-control form-control-lg" id="formFileLg"
+											type="file" name="courseImg" multiple="multiple">
+									</div>
+								</div>
+								<hr style="border: 1px solid black;">
+								<div class="mb-3">
+									<label for="text3" class="form-label">課程價格 </label> <input
+										type="text" class="form-control" id="text3" name="courseCost"
+										autofocus autocomplete="off" aria-describedby="emailHelp"
+										oninput="value=value.replace(/[^\d]/g,'')">
+									<div id="emailHelp" class="form-text">請輸入課程價格</div>
+								</div>
+								<hr style="border: 1px solid black;">
+								<div class="mb-3">
+									<div class="form-group">
+										<label for="text5" class="form-label">課程介紹</label>
+										<textarea class="form-control" rows="5" id="text5"
+											name="courseIntroduce" aria-describedby="emailHelp"></textarea>
+										<div id="emailHelp" class="form-text">請輸入課程介紹</div>
+									</div>
+								</div>
+								<hr>
+								<div>
+									<div class="mb-3">
+										<label for="formFileLg" class="form-label">上傳課程圖片</label> <input
+											class="form-control form-control-lg" id="formFileLg"
+											type="file" name="courseImg" multiple="multiple">
+									</div>
+								</div>
+
+
+							</div>
+							<div class="col"></div>
+						</div>
+						<div class="d-grid gap-1 col-2 mx-auto  d-md-block">
+							<input type="submit" class="btn btn-outline-dark" name="Submit"
+								value="確定" style="text-align: center;"> <input
+								type="button" class="btn btn-outline-dark" name="Submit"
+								value="取消" style="text-align: center;"
+								onclick="location.href='${pageContext.request.contextPath}/selectAllCourse'">
+						</div>
+						<hr>
+					</form>
+
+				</div>
+				<!-- END container-fluid -->
+
+			</div>
+			<!-- END content -->
+
+		</div>
+		<!-- END content-page -->
+		<div th:replace="~{layout/footer}"></div>
+	</div>
+</body>
+</html>

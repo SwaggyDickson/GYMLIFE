@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Insert title here</title>
+    <!-- Com CSS -->
+    <link rel="stylesheet" th:href="@{gym/com/css/addItemPage.css}">
+
+    <!-- SweetAlert2框框 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- JQ -->
+    <script th:src="@{/Js/jquery-3.6.4.min.js}"></script>
+</head>
+
+<body class="adminbody">
+    <div id="main">
+        <div th:replace="~{layout/navbar}"></div>
+        <div class="content-page">
+            <!-- Start content -->
+            <div class="content">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <div class="breadcrumb-holder">
+                                <h1 class="main-title float-left">新增商品</h1>
+                                <ol class="breadcrumb float-right">
+                                    <li class="breadcrumb-item">Home</li>
+                                    <li class="breadcrumb-item active">新增商品</li>
+                                </ol>
+                                <div class="clearfix"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- -------------------------內文-------------------------------------------------------------- -->
+                    <!-- 包起整體頁面的div -->
+                    <div class="wholePageContent">
+                        <main class="main-content">
+                            <font color="red" th:text="${msg}"><br><br></font>
+                            <form th:action="@{/addItem.func}" method="post" enctype="multipart/form-data">
+                                <div class="add-input">
+                                    <label for="comName"><span style="color:red">*</span>商品名稱: </label>
+                                    <input type="text" name="comName" id="comName" required>
+                                </div>
+                                <div class="add-input">
+                                    <label for="comNum"><span style="color:red">*</span>商品數量: </label>
+                                    <input type="text" name="comNumber" id="comNum" pattern="[1-9][0-9]{0,2}" max="999"
+                                        placeholder="ex:99,999" required>
+                                </div>
+                                <div class="add-input">
+                                    <label for="comPrice"><span style="color:red">*</span>商品價格: </label>
+                                    <input type="text" name="comPrice" id="comPrice" pattern="[1-9][0-9]{0,4}"
+                                        placeholder="不能為0" required>
+                                </div>
+                                <div class="add-input">
+                                    <label for="comType"><span style="color:red">*</span>商品類型: </label>
+                                    <select name="comType" id="comType">
+                                        <option value="上衣">上衣</option>
+                                        <option value="褲子">褲子</option>
+                                        <option value="護具">護具</option>
+                                        <option value="配件">配件</option>
+                                    </select>
+                                </div>
+                                <div class="add-input">
+                                    <label for="comStatus"><span style="color:red">*</span>商品狀態: </label>
+                                    <select name="comStatus" id="comStatus">
+                                        <option value="上架">上架</option>
+                                        <option value="下架">下架</option>
+                                    </select>
+                                </div>
+                                <div class="add-input">
+                                    <label for="comContent"><span style="color:red">*</span>商品描述: </label>
+                                    <textarea name="comContent" id="comContent" cols="30" rows="5" autocomplete="off"
+                                        required></textarea>
+                                </div>
+                                <div class="add-input">
+                                    <label for="comPic"><span style="color:red">*</span>商品圖片: </label>
+                                    <input type="file" name="comPic" id="comPic" onchange="previewImages(this)" required
+                                        multiple>
+                                </div>
+                                <div class="preview">
+                                    <img id="previewImg" class="preview-image">
+                                </div>
+                                <div class="submit">
+                                    <input type="hidden" name="userState" value="addNewItem">
+                                    <button type="submit" class="btn btn-primary">確認新增</button>
+                                    <button type="reset" class="btn btn-primary" onclick="clearPreview()">清除</button>
+                                </div>
+                            </form>
+                        </main>
+                    </div>
+                    <!--回到上方按鈕-->
+                    <button id="back-to-top-btn" title="回到頁面頂端">
+                        <i class="fas fa-arrow-up">TOP</i>
+                    </button>
+                </div>
+                <!-- END container-fluid -->
+            </div>
+            <!-- END content -->
+        </div>
+
+        <!-- 提交表單 -->
+        <script th:inline="javascript">
+            /*<![CDATA[*/
+            $(document).ready(function () {
+                $('form').submit(function (event) {
+                    event.preventDefault(); // 取消表单提交事件
+
+                    Swal.fire({
+                        title: '確定新增商品？',
+                        icon: 'question',
+                        showCancelButton: true,
+                        confirmButtonText: '新增',
+                        cancelButtonText: '取消'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            // 最后，如果需要，手动提交表单
+                            $(this).unbind('submit').submit();
+                        }
+                    });
+                });
+            });
+		    /*]]>*/
+        </script>
+        <div th:replace="~{layout/footer}"></div>
+        <script th:src="@{gym/com/js/addItemPage.js}"></script>
+    </div>
+</body>
+
+</html>

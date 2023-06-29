@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>insertPage</title>
+<style>
+	
+	.test {
+ 	  max-width: 100%;  /* 最大寬度為視窗寬度 */
+    overflow-x: auto; /* 如果內容超出容器寬度，則可以橫向滾動 */
+	}
+	
+	</style>
+</head>
+<body class="adminbody">
+<div id="main">
+<div th:replace="~{layout/navbar}"></div>
+<div class="content-page">
+			<!-- Start content -->
+			<div class="content">
+				<div class="container-fluid">
+					<div class="row">
+						<div class="col-xl-12">
+							<div class="breadcrumb-holder">
+								<h1 class="main-title float-left">後台</h1>
+								<ol class="breadcrumb float-right">
+									<li class="breadcrumb-item">會員</li>
+									<li class="breadcrumb-item active">會員列表 </li>
+								</ol>
+								<div class="clearfix"></div>
+							</div>
+						</div>
+					</div>
+<!---------------------------內文---------------------------------------------------------------->
+				
+
+				</div>
+				<!-- END container-fluid -->
+
+			</div>
+			<!-- END content -->
+
+		</div>
+		<!-- END content-page -->
+<div th:replace="~{layout/footer}"></div>
+</div>
+
+</html>

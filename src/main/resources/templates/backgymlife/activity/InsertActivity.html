@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>新增活動</title>
+</head>
+<body>
+	<div th:replace="~{layout/navbar}"></div>
+
+	<div class="content-page">
+
+		<!-- Start content -->
+		<div class="content">
+			<div class="container-fluid"></div>
+			<div class="row">
+				<div class="col-xl-12">
+					<div class="breadcrumb-holder">
+						<h1 class="main-title float-left"><i class="fa fa-file-text-o"></i> 新增活動</h1>
+						<ol class="breadcrumb float-right">
+							<li class="breadcrumb-item">Home</li>
+							<li class="breadcrumb-item active">Insert</li>
+						</ol>
+						<div class="clearfix"></div>
+					</div>
+				</div>
+			</div>
+			<!-- end row -->
+
+			<div class="row">
+
+				<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+
+					<form th:action="@{/activity/add}" method="post"
+						enctype="multipart/form-data">
+
+						<div class="card mb-3">
+
+
+							<div class="card-body">
+								<div class="row">
+									<div class="form-group col-md-6">
+										<label>活動名稱</label> <input class="form-control"
+											name="activityName" type="text" id="activityName">
+									</div>
+									<div class="form-group col-md-6">
+										<label>活動日期</label> <input type="text" class="form-control"
+											id="activityDate" name="activityDate">
+									</div>
+								</div>
+
+								<div class="row">
+
+									<div class="form-group col-md-6">
+										<label>活動地點</label> <input type="text" class="form-control"
+											id="activityLocation" name="activityLocation">
+									</div>
+									<div class="form-group col-md-6">
+										<label>活動狀態</label> <input type="text" class="form-control"
+											id="activityStatus" name="activityStatus">
+									</div>
+								</div>
+
+								<div class="form-group">
+									<label>活動內容</label>
+									<textarea rows="15" class="form-control editor"
+										name="activityContent" id="activityContent"></textarea>
+								</div>
+
+								<div class="form-group">
+									<label >活動封面</label><br /> <input type="file"
+										name="activityCover" id="activityCover" accept="image/gif, image/jpeg, image/png">
+										<img width="300px" height="200px" id="activityCoverImg" th:src="@{/gym/activity/img/placeholder-image.jpg}" />
+										
+								</div>
+
+								<div class="form-group">
+									<button type="submit" class="btn btn-primary" id="insert-btn"
+										onclick="return confirm('您確定要新增這個活動嗎？')">確定</button>
+									<button type="reset" class="btn btn-primary">取消</button>
+									<button type="button" class="btn btn-primary"
+										id="fill-form-btn">一鍵輸入</button>
+								</div>
+
+							</div>
+							<!-- end card-body -->
+
+						</div>
+						<!-- end card -->
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div th:replace="~{layout/footer}"></div>
+	<!-- BEGIN Java Script for this page -->
+	<script th:src="@{/assets/plugins/trumbowyg/trumbowyg.min.js}"></script>
+	<script
+		th:src="@{/assets/plugins/trumbowyg/plugins/upload/trumbowyg.upload.js}"></script>
+	<script>
+	$(document).ready(function() {
+		// 監聽一鍵輸入按鈕點擊事件
+		$('#fill-form-btn').click(function() {
+			// 輸入表單欄位
+			$('#activityName').val('關子嶺鐵馬行');
+			$('#activityDate').val('2023/06/18');
+			$('#activityLocation').val('嘉義市文化公園');
+			$('#activityStatus').val('報名中');
+			// 由於檔案上傳欄位無法預先輸入，這裡留空
+			$('#activityCover').val('');
+			$('#activityContent').val('好山、好湯、好食、好景，可說是體驗關子嶺風景區的最佳描述。俯瞰嘉南平原好景色，本次活動將帶領車友悠遊白河蓮花，看看全省最大賞蓮區，挑戰關子嶺雲萊庭院咖啡（標高540公尺），品嘗道地東山咖啡，探訪古廟名剎大仙寺和百年古廟碧雲寺、天然奇景水火洞等等，回程還可品嘗嘉義文化路美食，還在等什麼！一起來騎單車吧！！！');
+		});
+	});				
+	
+$('#activityCover').on('change', function(e){      
+  const file = this.files[0];//將上傳檔案轉換為base64字串
+      
+  const fr = new FileReader();//建立FileReader物件
+  fr.onload = function (e) {
+    $('#activityCoverImg').attr('src', e.target.result);//读取的结果放入圖片
+  };
+      
+  // 使用 readAsDataURL 將圖片轉成 Base64
+  fr.readAsDataURL(file);
+});
+	</script>
+	<!-- END Java Script for this page -->
+</body>
+</html>

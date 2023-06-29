@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- --------------------------------------------------------------------------------------- -->
+    <!-- SweetAlert2框框 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <!-- JQ -->
+    <script th:src="@{Js/jquery-3.6.4.min.js}"></script>
+
+    <!-- Com CSS -->
+    <link rel="stylesheet" th:href="@{gym/com/css/itemList.css}">
+
+    <title>商品列表</title>
+</head>
+
+<body class="adminbody">
+    <div id="main">
+        <div th:replace="~{layout/navbar}"></div>
+
+        <div class="content-page">
+
+            <!-- Start content -->
+            <div class="content">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <div class="breadcrumb-holder">
+                                <h1 class="main-title float-left">商品列表</h1>
+                                <ol class="breadcrumb float-right">
+                                    <li class="breadcrumb-item">Home</li>
+                                    <li class="breadcrumb-item active">商品列表</li>
+                                </ol>
+                                <div class="clearfix"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="add-new-item">
+                        <a href="addItemPage"><button type="button" class="btn btn-primary">新增商品</button></a>
+                    </div>
+                    <!-- 卡片主體開始 -->
+                    <div class="wholePageContent">
+                        <main class="main-content">
+                            <font color="red" th:text="${msg}"></font>
+                            <th:block th:each="com : ${comList}">
+                                <input type="hidden" name="comId" th:value="${com.comId}">
+                                <div class="card com-list">
+                                    <div class="slider">
+                                        <div class="switch-btn">
+                                            <input type="checkbox" class="hidden-checkbox"
+                                                th:id="'toggleSwitch-'+ ${com.comId}" th:data-comid="${com.comId}"
+                                                th:checked="${com.comStatus == '上架'}">
+                                            <span class="switch-area"></span>
+                                            <span class="switch-toggle"></span>
+                                        </div>
+                                    </div>
+
+                                    <!-- 輪播 -->
+                                    <div class="add-input">
+                                        <div th:id="'carouselExampleControls-' + ${com.comId}" class="carousel slide"
+                                            data-ride="carousel">
+                                            <div class="carousel-inner rollImgDiv">
+                                                <th:block th:each="entry,iteration  : ${com.comPicInfo}">
+                                                    <div
+                                                        th:class="${iteration.index == 0 ? 'carousel-item active' : 'carousel-item'}">
+                                                        <img th:src="@{'/download/'+ ${entry.key}}"
+                                                            class="d-block rollImg"
+                                                            th:alt="'Slide ' + ${entry.key + 1}">
+                                                        <div class="btn btn-light imgBtn" name="imageId"
+                                                            th:data-imgId="${entry.key}" th:data-comId="${com.comId}">
+                                                            更新
+                                                        </div>
+                                                    </div>
+                                                </th:block>
+                                            </div>
+                                            <a class="carousel-control-prev"
+                                                th:href="'#carouselExampleControls-' + ${com.comId}" role="button"
+                                                data-slide="prev">
+                                                <span class="carousel-control-prev-icon" aria-hidden="true" style="background-color: black;"></span>
+                                                <span class="sr-only">Previous</span>
+                                            </a>
+                                            <a class="carousel-control-next"
+                                                th:href="'#carouselExampleControls-' + ${com.comId}" role="button"
+                                                data-slide="next">
+                                                <span class="carousel-control-next-icon" aria-hidden="true" style="background-color: black;"></span>
+                                                <span class="sr-only">Next</span>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <!-- 輪播結束 -->
+
+                                    <div class="card-body cardContent">
+                                        <div>
+                                            商品:<input type="text" name="comName" th:value="${com.comName}" readonly>
+                                        </div>
+                                        <div>
+                                            數量:<input type="text" name="comNumber" th:value="${com.comNumber}" readonly>
+                                        </div>
+                                        <div>
+                                            價格:<input type="text" name="comPrice" th:value="${com.comPrice}" readonly>
+                                        </div>
+                                        <div class="add-input">
+                                            <label for="comType-${com.comId}">商品類型: </label>
+                                            <select name="comType" id="comType-${com.comId}" disabled>
+                                                <option value="上衣" th:selected="${com.comType=='上衣'}">上衣</option>
+                                                <option value="褲子" th:selected="${com.comType=='褲子'}">褲子</option>
+                                                <option value="護具" th:selected="${com.comType=='護具'}">護具</option>
+                                                <option value="配件" th:selected="${com.comType=='配件'}">配件</option>
+                                            </select>
+                                        </div>
+                                        <div class="add-input">
+                                            <label for="comStatus-${com.comId}">商品狀態: </label>
+                                            <select name="comStatus" id="comStatus-${com.comId}" disabled>
+                                                <option value="上架" th:selected="${com.comStatus=='上架'}">上架</option>
+                                                <option value="下架" th:selected="${com.comStatus=='下架'}">下架</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            描述:<textarea name="comContent" cols="20" rows="5"
+                                                placeholder="${com.comContent}" readonly resized="none"
+                                                th:text="${com.comContent}"></textarea>
+                                        </div>
+                                        <!-- Button trigger modal -->
+                                        <button type="button" class="btn btn-primary" data-toggle="modal"
+                                            th:data-target="'#exampleModal-' + ${com.comId}"
+                                            th:data-comId="${com.comId}">修改商品資訊</button>
+
+                                        <!-- Modal -->
+                                        <div class="modal fade" th:id="'exampleModal-' + ${com.comId}" tabindex="-1"
+                                            role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="exampleModalLabel">商品資訊</h5>
+                                                        <button type="button" class="close" data-dismiss="modal"
+                                                            aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <font color="red" th:text="${msg}"></font>
+                                                        <div class="add-input">
+                                                            <label th:for="'comNameAjax-'+ ${com.comId}">商品名稱: </label>
+                                                            <input type="text" name="comName"
+                                                                th:id="'comNameAjax-'+ ${com.comId}" required
+                                                                th:value="${com.comName}">
+                                                        </div>
+                                                        <div class="add-input">
+                                                            <label for="'comNumberAjax-'+ ${com.comId}">商品數量: </label>
+                                                            <input type="text" name="comNumber"
+                                                                th:id="'comNumberAjax-'+ ${com.comId}" required
+                                                                pattern="[1-9][0-9]{0,2}" max="999"
+                                                                th:value="${com.comNumber}">
+                                                        </div>
+                                                        <div class="add-input">
+                                                            <label for="'comPriceAjax-'+ ${com.comId}">商品價格: </label>
+                                                            <input type="text" name="comPrice"
+                                                                th:id="'comPriceAjax-'+ ${com.comId}" required
+                                                                pattern="[1-9][0-9]{0,4}" th:value="${com.comPrice}">
+                                                        </div>
+                                                        <div class="add-input">
+                                                            <label th:for="'comTypeAjax-'+ ${com.comId}">商品類型: </label>
+                                                            <select name="comType" th:id="'comTypeAjax-'+ ${com.comId}">
+                                                                <option value="上衣" th:selected="${com.comType=='上衣'}">上衣
+                                                                </option>
+                                                                <option value="褲子" th:selected="${com.comType=='褲子'}">褲子
+                                                                </option>
+                                                                <option value="護具" th:selected="${com.comType=='護具'}">護具
+                                                                </option>
+                                                                <option value="配件" th:selected="${com.comType=='配件'}">配件
+                                                                </option>
+                                                            </select>
+                                                        </div>
+                                                        <div class="add-input">
+                                                            <label th:for="'comStatusAjax-'+ ${com.comId}">商品狀態:
+                                                            </label>
+                                                            <select name="comStatus"
+                                                                th:id="'comStatusAjax-'+ ${com.comId}">
+                                                                <option value="上架" th:selected="${com.comStatus=='上架'}">
+                                                                    上架</option>
+                                                                <option value="下架" th:selected="${com.comStatus=='下架'}">
+                                                                    下架</option>
+                                                            </select>
+                                                        </div>
+                                                        <div class="add-input">
+                                                            <label th:for="'comContentAjax-'+ ${com.comId}">商品描述:
+                                                            </label>
+                                                            <textarea name="comContent"
+                                                                th:id="'comContentAjax-' + ${com.comId}" cols="30"
+                                                                rows="5" autocomplete="off"
+                                                                th:placeholder="${com.comContent}"
+                                                                th:text="${com.comContent}"></textarea>
+                                                        </div>
+                                                        <div class="preview">
+                                                            <img id="previewImg">
+                                                        </div>
+                                                        <div class="comConfirm">
+                                                            <input type="hidden" name="userState" value="editCom">
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary"
+                                                            data-dismiss="modal" onclick="reset()">Close</button>
+                                                        <button type="button" th:id="'saveChangesBtn-'+ ${com.comId}"
+                                                            class="btn btn-primary" onclick="saveChanges(this)">Save
+                                                            changes</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- End Model -->
+                                    </div>
+                                </div>
+                            </th:block>
+                        </main>
+                    </div>
+                    <!-- 卡片主體結束 -->
+
+                    <!--Aside-->
+                    <div class="div-aside">
+                        <aside class="aside">
+                            <!-- Aside content here -->
+                            <div>
+                                <p>搜尋條件</p>
+                                <div class="aside-search">
+                                    <form th:action="@{/checkByKeyword.func}" method="POST">
+                                        <input type="hidden" name="userState" value="searchByName">
+                                        <input type="search" name="keywords" placeholder="請輸入查詢" style="width: 10vw;">
+                                        <button type="submit" class="btn btn-info btn-sm">查詢</button>
+                                    </form>
+                                </div>
+                                <div class="aside-search">
+                                    <form action="sortByPrice.func" method="post">
+                                        <input type="hidden" name="userState" value="sortByPrice">
+                                        <select name="sortPrice">
+                                            <option value="0">價格高至低</option>
+                                            <option value="1">價格低至高</option>
+                                        </select>
+                                        <button type="submit" class="btn btn-info btn-sm">查詢</button>
+                                    </form>
+                                </div>
+                                <div class="aside-search">
+                                    <form action="sortByType.func" method="post">
+                                        <input type="hidden" name="userState" value="searchByType">
+                                        <select name="sortType">
+                                            <option value="上衣">上衣</option>
+                                            <option value="褲子">褲子</option>
+                                            <option value="護具">護具</option>
+                                            <option value="配件">配件</option>
+                                        </select>
+                                        <button type="submit" class="btn btn-info btn-sm">查詢</button>
+                                    </form>
+                                </div>
+                                <div class="aside-search">
+                                    <form action="sortByStatus.func" method="post">
+                                        <input type="hidden" name="userState" value="searchByStatus">
+                                        <select name="sortSattus">
+                                            <option value="上架">上架</option>
+                                            <option value="下架">下架</option>
+                                        </select>
+                                        <button type="submit" class="btn btn-info btn-sm">查詢</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </aside>
+                    </div>
+
+                    <!--回到上方按鈕-->
+                    <button id="back-to-top-btn" title="回到頁面頂端">
+                        <i class="fas fa-arrow-up">TOP</i>
+                    </button>
+
+                  
+
+                </div>
+                <!-- END container-fluid -->
+            </div>
+            <!-- END content -->
+        </div>
+        <!-- END content-page -->
+        <div th:replace="~{layout/footer}"></div>
+    </div>
+    <!-- My JS -->
+    <script th:src="@{gym/com/js/itemList.js}"></script>
+
+</body>
+
+</html>

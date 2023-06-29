@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+ <link rel="stylesheet" th:href="@{gym/member/css/register.css}">
+
+<style>
+	#checkHere{
+		display : inline;
+	}
+
+</style>
+</head>
+<body class="test" onload="populateAddressOptions()">
+
+<header th:replace="~{layout/front_nav}"></header>
+
+ <main  >
+        <!-- 主要内容 -->
+           
+    <div style="padding-top: 60px;" class="container">
+    <form id="registerForm" th:action="@{/Register}" method="POST" onsubmit="return validatePasswordMatch()">
+        <fieldset>
+            <legend>註冊資訊</legend>
+
+            <label  for="userAccount">帳號：<span id="usernameCheckResult"></span><span class="error" th:text="${errorMsg} ? ${errorMsg} : ''"></span></label >
+            <input class=centered-item type="text" id="userAccount" name="userAccount"  required><br>
+                
+					
+			
+            <label  for="userPassword">密碼： <span id="passwordMatchMessage"></span></label >
+            <input class=centered-item type="password" id="userPassword" name="userPassword" required
+                oninvalid="this.setCustomValidity('請輸入8-20個字元的英文字母或數字');" oninput="this.setCustomValidity('');"><br>
+
+            <label  for="userPasswordCheck">確認密碼：</label >
+            <input class="centered-item" type="password" id="userPasswordCheck" name="userPasswordCheck" pattern="^[a-zA-Z0-9]{1,20}$"
+                required oninvalid="this.setCustomValidity('請輸入1-20個字元的英文字母或數字');"
+                oninput="this.setCustomValidity('');"><br>
+
+            <label  for="userName">姓名：</label >
+            <input class=centered-item type="text" id="userName" name="userName" required><br>
+
+            <label  for="userNickName">暱名：</label >
+            <input class=centered-item type="text" id="userNickName" name="userNickName" required><br>
+
+            <label  for="userGender">性別：</label>
+            <select class=centered-item id="userGender" name="userGender" required>
+                <option value="">選擇性別</option>
+                <option value="male">男</option>
+                <option value="female">女</option>
+            </select><br>
+
+            <label for="userAddressFirst">地址：</label>
+            <select class=centered-item id="userAddressFirst" name="userAddressFirst" required>
+                <option value="">行政區</option>
+            </select>
+            <input class=centered-item type="text" id="userAddressDetail" name="userAddressDetail" placeholder="XX市(區) XX街(路)XX"
+                required><br>
+
+            <label for="userTel">電話：</label>
+            <input class=centered-item type="tel" id="userTel" name="userTel" required><br>
+
+            <label for="userEmail">信箱：</label>
+            <input class=centered-item type="email" id="userEmail" name="userEmail" required><br>
+            
+            <label for="userBirthDay">出生日期：</label>
+            <input class=centered-item type="date" id="userBirthDay" name="userBirthDay" required><br>
+            
+              
+
+            <div class="button-container">
+                <a th:href="@{/}" class="btn btn-primary test2" role="button">取消</a>
+                <button id="autoFill" type="button">一鍵輸入</button>
+                <input id="registerBtn" type="submit" value="註冊">
+            </div>  
+        </fieldset>
+    </form>
+    <div th:text="${errorMsg} ? ${errorMsg}"></div>
+</div>
+
+
+        
+    </main>
+<footer th:replace="~{layout/front_footer}"></footer>
+
+<script>
+    let userAccountListener = document.getElementById('userAccount');
+    let resultSpan = document.getElementById('usernameCheckResult');
+    let registerForm = document.getElementById('registerForm');
+    userAccountListener.addEventListener('keyup',(e)=>{
+        let userAccount = e.target.value;
+        console.log("ok");
+
+        if(userAccount.length < 8 || userAccount.length > 20){
+            resultSpan.textContent = '帳號必須在8到20個英數字之內'
+            return;
+        }
+        const regex = /^[a-zA-Z0-9]*$/;
+        if(!regex.test(userAccount)){
+            resultSpan.textContent ='帳號只能使用英文數字及字母'
+            return;
+        }
+
+        axios({
+            method: 'get',
+            url: `http://localhost:8080/gymlife/checkUserAccount?userAccount=${userAccount} `,
+        
+        })
+        .then(function (response) {
+            if (response.data.exists) {
+                // 如果服务器返回的 JSON 对象中 'exists' 属性为 true，显示账号已注册
+                resultSpan.textContent = '此帳號已經註冊'; // 修改标签的内容
+                resultSpan.style.color ='red'
+                console.log('此帳號已經註冊');
+            } else {
+                // 如果服务器返回的 JSON 对象中 'exists' 属性为 false，显示账号可以注册
+                resultSpan.textContent = '此帳號可以註冊';
+                resultSpan.style.color ='green'
+                console.log('此帳號可以註冊');
+            }
+        })
+        .catch(function (error) {
+            console.log(error);
+            console.log("錯了錯了");
+        });
+    });
+
+    registerForm.addEventListener('submit',(event)=>{
+        event.preventDefault();
+       let userAccount = userAccountListener.value;
+
+       if(userAccount.length < 8 || userAccount.length > 20){
+
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: '帳號必須在8到20個英數字之內',
+            })
+            .then(() => {
+                userAccountListener.focus();
+                }); 
+            return;
+        }
+        const regex = /^[a-zA-Z0-9]*$/;
+        if(!regex.test(userAccount)){
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: '帳號只能使用英文數字及字母',
+            })
+            .then(() => {
+                userAccountListener.focus();
+                });
+            return;
+        }
+        if (!validatePasswordMatch()) {
+        return; // if passwords do not match, stop the rest of the function
+    }
+
+        axios({ 
+            method: 'get',
+            url: `http://localhost:8080/gymlife/checkUserAccount?userAccount=${userAccount} `,
+        })
+        .then(function (response) {
+            if (response.data.exists) {
+                Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: '此帳號已經被其他使用者註冊了',
+            })
+            .then(() => {
+                userAccountListener.focus();
+                }); 
+            return;
+            } else {
+                registerForm.submit();
+            }
+        })
+        .catch(function (error) {
+            console.log(error);
+            console.log("錯了錯了");
+             // 將焦點移動到帳號輸入框
+        });
+   
+    });
+
+    //密碼function
+    
+    function validatePasswordMatch() {
+        let password = document.getElementById("userPassword").value;
+        let confirmPassword = document.getElementById("userPasswordCheck").value;
+            
+            if (password !== confirmPassword) {
+                Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: '密碼不相符，請重新確認',
+            })
+            event.preventDefault();     
+            return false;
+        }
+        return true;
+    }
+    //------------------------密碼doubleCheck---------------------------------
+    let passwordInput = document.getElementById('userPassword');
+    let confirmPasswordInput = document.getElementById('userPasswordCheck');
+    let passwordMatchMessage = document.getElementById('passwordMatchMessage');
+    
+    confirmPasswordInput.addEventListener('input', function() {
+        if (confirmPasswordInput.value === passwordInput.value) {
+            passwordMatchMessage.textContent = '密碼確認';
+            passwordMatchMessage.style.color = 'green';
+        } else {
+            passwordMatchMessage.textContent = '密碼不相符';
+            passwordMatchMessage.style.color = 'red';
+        }
+    });
+
+    //---------------------地區-----------------------
+    function populateAddressOptions() {
+            const addressOptions = [
+                "基隆市", "台北市", "新北市", "桃園市", "新竹市", "新竹縣", "苗栗縣",
+                "台中市", "彰化縣", "南投縣", "雲林縣", "嘉義市", "嘉義縣", "台南市",
+                "高雄市", "屏東縣", "台東縣", "花蓮縣", "宜蘭縣", "澎湖縣", "金門縣", "連江縣"
+            ];
+
+            const userAddressFirst = document.getElementById('userAddressFirst');
+            addressOptions.forEach(optionValue => {
+                const option = document.createElement('option');
+                option.value = optionValue;
+                option.textContent = optionValue;
+                userAddressFirst.appendChild(option);
+            });
+        }
+
+
+        //----------------------一鍵輸入--------------------------------
+        document.getElementById('autoFill').addEventListener('click', function () {
+            document.getElementById('userAccount').value = 'TestAccount2';
+            document.getElementById('userPassword').value = 'TestPassword';
+            document.getElementById('userPasswordCheck').value = 'TestPassword';
+            document.getElementById('userName').value = '王大槌';
+            document.getElementById('userNickName').value = '大槌';
+            document.getElementById('userGender').value = 'male';
+            document.getElementById('userAddressFirst').value = '台北市';
+            document.getElementById('userAddressDetail').value = '大安區有錢路沒命花巷';
+            document.getElementById('userTel').value = '0912345678';
+            document.getElementById('userEmail').value = 'zzxx5576843@gmail.com';
+            document.getElementById('userBirthDay').value = '1998-03-14';
+    });
+
+    //------------------------使用ajax傳送註冊資訊--------------------------
+
+//     document.getElementById('registerBtn').addEventListener('click',(e)=>{
+//         e.preventDefault();
+
+//         let userAccount  = document.getElementById('userAccount').value
+//         let userPassword  = document.getElementById('userPassword').value
+  
+//         let userName  = document.getElementById('userName').value 
+//         let userNickName = document.getElementById('userNickName').value 
+//         let userGender = document.getElementById('userGender').value 
+//         let userAddressFirst = document.getElementById('userAddressFirst').value 
+//         let userAddressDetail = document.getElementById('userAddressDetail').value
+//         let userTel = document.getElementById('userTel').value
+//         let userEmail = document.getElementById('userEmail').value
+//         let userBirthDay = document.getElementById('userBirthDay').value 
+ 
+//     axios.post('http://localhost:8080/gymlife/ajaxRegister', {
+//     userAccount: userAccount,
+//     userPassword:userPassword,
+//     userAddressFirst: userAddressFirst,
+//     userAddressDetail: userAddressDetail,
+//     userNickName:userNickName,
+//     userGender:userGender,
+//     userName:userName,
+//     userTel:userTel,
+//     userEmail:userEmail,
+//     userBirthDay:userBirthDay
+
+
+   
+// }).then(function (response) {
+  
+//     if(response.data.success) {
+//         Swal.fire(
+//             'Success',
+//             'Registration succeeded',
+//             'success'
+//         ).then(function() {
+//             window.location.href = '/frontgymlife/member/firstpage';
+//         });
+//     } else {
+//         Swal.fire(
+//             'Error',
+//             'Registration failed',
+//             'error'
+//         );
+//     }
+// }).catch(function (error) {
+//     console.log(error);
+// });
+
+// })
+
+
+
+
+
+
+
+</script>
+
+ <!-- Js Plugins -->
+   <script th:src="@{http://localhost:8080/gymlife/front/js/jquery-3.3.1.min.js}"></script>
+    <script th:src="@{http://localhost:8080/gymlife/front/js/bootstrap.min.js}"></script>
+    <script th:src="@{http://localhost:8080/gymlife/front/js/jquery.magnific-popup.min.js}"></script>
+    <script th:src="@{http://localhost:8080/gymlife/front/js/masonry.pkgd.min.js}"></script>
+    <script th:src="@{http://localhost:8080/gymlife/front/js/jquery.barfiller.js}"></script>
+    <script th:src="@{http://localhost:8080/gymlife/front/js/jquery.slicknav.js}"></script>
+    <script th:src="@{http://localhost:8080/gymlife/front/js/owl.carousel.min.js}"></script>
+    <script th:src="@{http://localhost:8080/gymlife/front/js/main.js}"></script>
+    <script th:src="@{JS/axios.min.js}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    
+
+</body>
+</html>

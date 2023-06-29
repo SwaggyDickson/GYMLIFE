@@ -1,0 +1,89 @@
+   /* Center the form and set width */
+    body {
+        background-color: #e4e4e4;
+    }
+
+    header { 
+        /* 調整bar 無法填滿整條問題 */
+        /*a width: 110%;
+        margin-left: -5%; */
+
+    }
+
+
+    .login-form {
+        /* max-width: 400px; */
+        width: 250px;
+        height: 400px;
+        margin: 100px auto;
+        margin-top: 200px;
+        padding: 30px;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        transform: scale(1.5);
+    }
+
+    .text-center {
+        font-size: 20px;
+        margin: 5px;
+    }
+
+    /* Style form elements */
+    .form-group {
+
+
+        /* margin-bottom: 10px; */
+
+        font-size: 10px;
+    }
+
+    .form-control {
+        /* width: 100px; */
+        font-size: 10px;
+    }
+
+    .form-control:focus {
+        box-shadow: none;
+
+    }
+
+    .btn-login {
+        width: auto;
+        /* font-weight: bold; */
+        margin-top: 30px;
+        /* 登入按鈕的字型大小 */
+        font-size: 12px;
+
+        text-align: right;
+    }
+    .btn-auto {
+        width: auto;
+        /* font-weight: bold; */
+        margin-top: 30px;
+        /* 登入按鈕的字型大小 */
+        font-size: 12px;
+
+        text-align: right;
+    }
+
+    .login {
+        text-align: right;
+    }
+
+    a {
+        color: #007bff;
+        text-decoration: none;
+    }
+
+    a:hover {
+        color: #0056b3;
+        text-decoration: underline;
+    }
+
+    .registration-link {
+        text-align: right;
+    }
+    .myMain{
+        background-color: black;
+    }

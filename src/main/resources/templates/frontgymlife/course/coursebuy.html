@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<title>GYMLIFE-課程購買</title>
+</head>
+<link th:href="@{/gym/course/front/coursebuy.css}" rel="stylesheet" type="text/css" />
+
+<body>
+	<div th:replace="~{layout/front_nav}"></div>
+	<!-- Breadcrumb Section Begin -->
+	<section class="breadcrumb-section set-bg" data-setbg="/gymlife/front/img/breadcrumb-bg.jpg">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-12 text-center">
+					<div class="breadcrumb-text">
+						<h2>教練課程</h2>
+						<div class="bt-option">
+							<a th:href="@{/}">Home</a> <a th:href="@{/front/coursesingle}">教練課程</a>
+							<span>購買課程</span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	<!-- Breadcrumb Section End -->
+	<!-- Class Details Section Begin -->
+					<form th:action="@{/ecpayCheckout}" method="post">
+	<section class="class-details-section spad">
+		<div class="container" style="background-color: white;">
+			<div class="row p-2">
+				<div class="col-lg-8 ">
+					<div class="row ">
+						<div class="col-lg-8 mb-2">
+							<div style="justify-content: center;align-items: center;">
+								<img th:src="@{'/courseImage/'+${cbean.images[0].imageId}}" class="img-fluid mx-auto"
+									alt="...">
+							</div>
+						</div>
+						<div class="col-lg-4 d-flex">
+							<div class="row mt-3">
+								<div class="col-lg-12"><a style="text-decoration: underline;"><i
+											class="fa-solid fa-circle fa-2xs"
+											style="color: #000000;"></i>&nbsp;&nbsp;每堂課50分鐘的專業指導。</a></div>
+								<div class="col-lg-12"><a style="text-decoration: underline;"><i
+											class="fa-solid fa-circle fa-2xs"
+											style="color: #000000;"></i>&nbsp;&nbsp;由專業教練一對一教授。</a></div>
+								<div class="col-lg-12"><a style="text-decoration: underline;"><i
+											class="fa-solid fa-circle fa-2xs"
+											style="color: #000000;"></i>&nbsp;&nbsp;提供量身定制的運動計劃。</a></div>
+								<div class="col-lg-12"><a style="text-decoration: underline;"><i
+											class="fa-solid fa-circle fa-2xs"
+											style="color: #000000;"></i>&nbsp;&nbsp;保證您的動作正確和安全。</a></div>
+								<div class="col-lg-12"><a style="text-decoration: underline;"><i
+											class="fa-solid fa-circle fa-2xs"
+											style="color: #000000;"></i>&nbsp;幫助您實現健康和健身目標。</a></div>
+							</div>
+						</div>
+						<div class="col-lg-12 ">
+							<h5 class="card-title" th:text="${cbean.courseName}"></h5>
+							<h5 class="card-title" th:text="'教練- '+${cbean.coach.coachNickName}"></h5>
+							<p class="card-text" th:text="${cbean.courseIntroduce}"></p>
+						</div>
+
+					</div>
+				</div>
+				<div class="col-lg-4 d-flex" style="border: 1px solid rgb(192, 192, 192);">
+					<div class="row">
+						<div class="col-lg-12 d-flex" style="justify-content: center;align-items: center;">
+							<span>購買堂數</span>
+							<!--							<i class="fa-solid fa-plus" style="color: #000000;"></i>-->
+							<input type="number" min="1" step="1" value="1" id="buynumber" name="corderQuantity">
+							<!--							<i class="fa-solid fa-minus" style="color: #000000;"></i>-->
+						</div>
+						<div class="col-lg-12 d-flex" style="justify-content: center;align-items: center;">
+							<input type="hidden" th:value="${cbean.courseCost}" id="courseCost">
+							<a>總金額:</a><a th:text="${cbean.courseCost}" id="allcost" ></a>
+						</div>
+						<div class="col-lg-12 d-flex" style="justify-content: center;align-items: center;">
+							<button type="submit" class="btn btn-danger" id="paybtn">結帳</button>
+						</div>
+						<input type="hidden" th:value="${cbean.courseName}" name="courseName">
+						<input type="hidden" th:value="${userId}" id="userId" name="userId">
+						<input type="hidden" th:value="${userName}" id="userName">
+						<input type="hidden" th:value="${cbean.courseId}" id="courseId" name="courseId">
+						<input type="hidden" value="完成" name="corderPayment">
+						<input type="hidden" name="corderCost" th:value="${cbean.courseCost}"id="corderCost">
+					</div>
+				</div>
+			</div>
+			<div id="paymodal"></div>
+		</div>
+	</section>
+						</form>
+
+	<div th:replace="~{layout/front_footer}"></div>
+<script th:src="@{/gym/course/front/coursebuy.js}"></script>
+</body>
+
+</html>

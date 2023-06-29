@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<title>coach</title>
+	<link th:href="@{/gym/course/back/selectAllCoach.css}" rel="stylesheet">
+</head>
+
+<body class="adminbody">
+	<div id="main">
+		<div th:replace="~{layout/navbar}"></div>
+		<div class="content-page">
+
+			<!-- Start content -->
+			<div class="content">
+
+				<div class="container-fluid">
+					<div class="row">
+						<div class="col-xl-12">
+							<div class="breadcrumb-holder">
+								<h1 class="main-title float-left">Course-Coach</h1>
+								<ol class="breadcrumb float-right">
+									<li class="breadcrumb-item">Home</li>
+									<li class="breadcrumb-item active">Google Maps</li>
+								</ol>
+								<div class="clearfix"></div>
+							</div>
+						</div>
+					</div>
+
+					<!-- 					-------------------------內文-------------------------------------------------------------- -->
+					<div class="row">
+						<div class="col-md-12"
+							style="text-align: center; justify-content: center; align-content: center;">
+							<a class="display-4" style="margin: 0 auto;">課程教練</a>
+							<button class=" d-flex" id="edit" style="border: none; float: right;">
+								<span class="p-3" id="editicon" style="border: none"><i
+										class="fa-solid fa-ellipsis-vertical fa-2xl"></i></span>
+							</button>
+							<button class="btn btn-danger btn-lg mt-3" id="insertbtn" style="float: left">
+								<div data-toggle="modal" data-target="#insertstaticBackdrop">新增教練</div>
+							</button>
+						</div>
+					</div>
+
+					<table class="table table-hover" style="text-align: center" id="alltable">
+						<thead>
+							<tr>
+								<th scope="col">編號</th>
+								<th scope="col">姓名</th>
+								<th scope="col">小名</th>
+								<th scope="col">教練圖片</th>
+								<th scope="col">手機號碼</th>
+								<th scope="col">E-mail</th>
+								<th scope="col">出生日期</th>
+								<th scope="col">身高</th>
+								<th scope="col">體重</th>
+								<th scope="col">介紹</th>
+								<th class="editth" colspan="2">編輯</th>
+							</tr>
+						</thead>
+						<tbody>
+							<th:block th:each="chbean :${chbeans}">
+								<tr>
+									<th scope="row" th:text="${chbean.coachId}"></th>
+									<td th:text="${chbean.coachName}" th:id="'CoachName-'+${chbean.coachId}"></td>
+									<td th:text="${chbean.coachNickName}" th:id="'CoachNickName-'+${chbean.coachId}"></td>
+									<td>
+									<button class="btn btn-outline-primary btn-sm chimgbtn" th:onclick="CoachImg([[${chbean.coachId}]])" th:data-chimgId="${chbean.coachId}">
+											<div data-toggle="modal"
+												data-target="#coachexampleModalCenter">查看</div>
+										</button>
+										</td>
+									<td th:text="${chbean.coachPhoneNumber}" th:id="'CoachPhoneNumber-'+${chbean.coachId}"></td>
+									<td th:text="${chbean.coachEmail}" th:id="'CoachEmail-'+${chbean.coachId}"></td>
+									<td th:text="${chbean.coachBirthday}" th:id="'CoachBirthday-'+${chbean.coachId}"></td>
+									<td th:text="${chbean.coachHeight}" th:id="'CoachHeight-'+${chbean.coachId}"></td>
+									<td th:text="${chbean.coachWeight}" th:id="'CoachWeight-'+${chbean.coachId}"></td>
+									<td th:text="${chbean.coachIntroduce}" th:id="'CoachIntroduce-'+${chbean.coachId}"></td>
+									
+									<td class="updatebtn"><button class="btn btn-outline-primary btn-sm"
+											th:onclick="updateCoach([[${chbean.coachId}]])">
+											<div data-toggle="modal" data-target="#staticBackdrop">更新</div>
+										</button></td>
+									<td class="deletebtn">
+											<button type="button" class="btn btn-outline-danger btn-sm deletechbtn" name="coachId" th:data-deleteid="${chbean.coachId}"
+											th:onclick="deletecoach([[${chbean.coachId}]])">刪除</button>
+									</td>
+								</tr>
+							</th:block>
+
+						</tbody>
+					</table>
+
+				</div>
+				<!-- END container-fluid -->
+
+			</div>
+			<!-- END content -->
+
+		</div>
+		<!-- END content-page -->
+		<div th:replace="~{layout/footer}"></div>
+	</div>
+
+	<!------------- 教練照片彈跳視窗 ----------------------------------------------------------------------------------->
+	<!------------- 教練照片彈跳視窗 ----------------------------------------------------------------------------------->
+	<!------------- 教練照片彈跳視窗 ----------------------------------------------------------------------------------->
+		<div class="modal fade" th:id="coachexampleModalCenter" tabindex="-1" role="dialog"
+			aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-centered" role="document">
+				<div class="modal-content">
+					<div class="modal-header justify-content-center position-relative">
+						<h5 class="modal-title" id="exampleModalLongTitle">
+							<a id="chtext1"></a>
+						</h5>
+						<button type="button" class="close ml-0 position-absolute" data-dismiss="modal"
+							style="right: 20px" aria-label="Close" id="cancelButton2">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<!----- 教練照片 ---------->
+<!-- 						<div id="coachimg"></div> -->
+<img class="img-fluid mx-auto" id="coachimg">
+
+
+						<!-----教練照片_End ------->
+					</div>
+					<form action="#" th:method="put" enctype="multipart/form-data" id="changeimgform">
+						<div class="modal-footer d-flex justify-content-center">
+							<button type="button" id="updatechbtn"
+								class="btn btn-primary">更新</button>
+							<input type="file" id="fileInput" name="coachImg"
+								style="display: none;">
+							<input type="text" id="changecoachimg" name="coachId" style="display: none;">
+							<button class="btn btn-primary" type="button" id="CoachImgbtn"
+								name="coachId" value="">提交</button>
+							<button type="button" class="btn btn-secondary" id="cancelButton"
+								data-dismiss="modal">確定</button>
+
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	<!------------- 更新彈跳視窗 ----------------------------------------------------------------------------------->
+	<!------------- 更新彈跳視窗 ----------------------------------------------------------------------------------->
+	<!------------- 更新彈跳視窗 ----------------------------------------------------------------------------------->
+	<form action="#" th:method="put" id="updatecoachform">
+		<div class="modal fade" id="staticBackdrop" tabindex="-1" role="dialog" data-backdrop="static"
+			data-keyboard="false" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header justify-content-center position-relative">
+						<h5 class="modal-title" id="staticBackdropLabel">更新教練資料</h5>
+						<button type="button" class="close ml-0 position-absolute" data-dismiss="modal"
+							style="right: 20px" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<!-- 					更新內容 -->
+						<h3>教練資訊</h3>
+						<hr style="border: 1px solid black;">
+						<div class="mb-3">
+							<label for="utext1" class="form-label">教練編號 </label> <input type="text" class="form-control"
+								id="utext1" name="coachId" aria-describedby="emailHelp" readonly>
+							<div id="emailHelp" class="form-text">請輸入教練編號</div>
+						</div>
+						<hr style="border: 1px solid #dddddd;">
+						<div class="mb-3">
+							<label for="utext2" class="form-label">教練名稱 </label> <input type="text" class="form-control"
+								id="utext2" name="coachName" aria-describedby="emailHelp">
+							<div id="emailHelp" class="form-text">請輸入教練名稱</div>
+						</div>
+						<hr style="border: 1px solid #dddddd;">
+						<div class="mb-3">
+							<label for="utext3" class="form-label">教練小名 </label> <input type="text" class="form-control"
+								id="utext3" name="coachNickName" aria-describedby="emailHelp">
+							<div id="emailHelp" class="form-text">請輸入教練小名</div>
+						</div>
+						<hr style="border: 1px solid #dddddd;">
+						<div class="mb-3">
+							<label for="utext4" class="form-label">電話 </label> <input type="text" class="form-control"
+								id="utext4" name="coachPhoneNumber" aria-describedby="emailHelp">
+							<div id="emailHelp" class="form-text">請輸入教練電話</div>
+						</div>
+						<hr style="border: 1px solid #dddddd;">
+						<div class="mb-3">
+							<label for="utext5" class="form-label">e-mail </label> <input type="text" class="form-control"
+								id="utext5" name="coachEmail" aria-describedby="emailHelp">
+							<div id="emailHelp" class="form-text">請輸入教練e-mail</div>
+						</div>
+						<hr style="border: 1px solid #dddddd;">
+						<div class="mb-3">
+							<label for="utext6" class="form-label">生日 </label> <input type="date" class="form-control"
+								id="utext6" name="coachBirthday" aria-describedby="emailHelp">
+							<div id="emailHelp" class="form-text">請輸入教練生日</div>
+						</div>
+						<hr style="border: 1px solid #dddddd;">
+						<div class="mb-3">
+							<label for="utext7" class="form-label">教練身高 </label> <input type="text" class="form-control"
+								id="utext7" name="coachHeight" aria-describedby="emailHelp">
+							<div id="emailHelp" class="form-text">請輸入教練身高</div>
+						</div>
+						<hr style="border: 1px solid #dddddd;">
+						<div class="mb-3">
+							<label for="utext8" class="form-label">教練體重 </label> <input type="text" class="form-control"
+								id="utext8" name="coachWeight" aria-describedby="emailHelp">
+							<div id="emailHelp" class="form-text">請輸入教練體重</div>
+						</div>
+						<hr style="border: 1px solid #dddddd;">
+						<div class="mb-3">
+							<div class="form-group">
+								<label for="utext9" class="form-label">教練介紹</label>
+								<textarea class="form-control" rows="5" id="utext9" name="coachIntroduce"
+									aria-describedby="emailHelp"></textarea>
+								<div id="emailHelp" class="form-text">請輸入教練介紹</div>
+							</div>
+						</div>
+						
+						<!-- 					更新內容_End -->
+					</div>
+					<div class="modal-footer d-flex justify-content-center">
+						<button type="button" class="btn btn-primary" id="updatecoach">更新</button>
+						<button type="button" class="btn btn-secondary" data-dismiss="modal" id="updatex">取消</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+	<!------------- 新增彈跳視窗 ----------------------------------------------------------------------------------->
+	<!------------- 新增彈跳視窗 ----------------------------------------------------------------------------------->
+	<!------------- 新增彈跳視窗 ----------------------------------------------------------------------------------->
+	<div class="modal fade" id="insertstaticBackdrop" tabindex="-1" role="dialog" data-backdrop="static"
+		data-keyboard="false" aria-labelledby="insertstaticBackdropLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header justify-content-center position-relative">
+					<h5 class="modal-title" id="insertstaticBackdropLabel">新增教練</h5>
+					<button type="button" class="close ml-0 position-absolute" data-dismiss="modal" style="right: 20px"
+						aria-label="Close" id="insertx2">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<form method="post" action="#" 
+					id="insertform" enctype="multipart/form-data">
+					<div class="modal-body">
+						<!-- 					新增內容 -->
+
+						<h3>教練資訊</h3>
+						<hr style="border: 1px solid black;">
+
+						<div class="mb-3">
+							<label for="ictext1" class="form-label">姓名 </label> <input type="text"
+								class="form-control" id="ictext1" name="coachName" aria-describedby="emailHelp">
+							<div id="emailHelp" class="form-text">請輸入教練姓名</div>
+						</div>
+						<hr style="border: 1px solid #dddddd;">
+						<div class="mb-3">
+							<label for="ictext2" class="form-label">小名 </label> <input type="text"
+								class="form-control" id="ictext2" name="coachNickName" aria-describedby="emailHelp">
+							<div id="emailHelp" class="form-text">請輸入教練小名</div>
+						</div>
+						<hr style="border: 1px solid #dddddd;">
+						<div>
+							<div class="mb-3">
+								<label for="formFileLg" class="form-label">上傳教練圖片</label> <input
+									class="form-control form-control-lg" id="formFileLg" type="file" name="coachImg"
+									>
+							</div>
+						</div>
+						<hr style="border: 1px solid #dddddd;">
+						<div class="mb-3">
+							<label for="ictext3" class="form-label">手機 </label> <input type="text"
+								class="form-control" id="ictext3" name="coachPhoneNumber" aria-describedby="emailHelp">
+							<div id="emailHelp" class="form-text">請輸入教練手機</div>
+						</div>
+						<hr style="border: 1px solid #dddddd;">
+						<div class="mb-3">
+							<label for="ictext4" class="form-label">e-mail </label> <input type="email"
+								class="form-control" id="ictext4" name="coachEmail" aria-describedby="emailHelp">
+							<div id="emailHelp" class="form-text">請輸入教練e-mail</div>
+						</div>
+						<hr style="border: 1px solid #dddddd;">
+						<div class="mb-3">
+							<label for="ictext5" class="form-label">生日 </label> <input type="date"
+								class="form-control" id="ictext5" name="coachBirthday" aria-describedby="emailHelp">
+							<div id="emailHelp" class="form-text">請輸入教練e-mail</div>
+						</div>
+						<hr style="border: 1px solid #dddddd;">
+						<div class="mb-3">
+							<label for="ictext6" class="form-label">教練身高 </label> <input type="text"
+								class="form-control" id="ictext6" name="coachHeight" aria-describedby="emailHelp">
+							<div id="emailHelp" class="form-text">請輸入教練身高</div>
+						</div>
+						<hr style="border: 1px solid #dddddd;">
+						<div class="mb-3">
+							<label for="ictext7" class="form-label">教練體重 </label> <input type="text"
+								class="form-control" id="ictext7" name="coachWeight" aria-describedby="emailHelp">
+							<div id="emailHelp" class="form-text">請輸入教練體重</div>
+						</div>
+						<hr style="border: 1px solid #dddddd;">
+						<div class="mb-3">
+							<div class="form-group">
+								<label for="ictext8" class="form-label">教練介紹</label>
+								<textarea class="form-control" rows="5" id="ictext8" name="coachIntroduce"
+									aria-describedby="emailHelp"></textarea>
+								<div id="emailHelp" class="form-text">請輸入教練介紹</div>
+							</div>
+						</div>
+						<div class="modal-footer d-flex justify-content-center">
+							<button type="button" id="fastinsertcoach" class="btn btn-primary">一鍵輸入</button>
+						</div>
+						<!-- 					新增內容_End -->
+					</div>
+					<div class="modal-footer d-flex justify-content-center">
+						<button type="button" class="btn btn-primary" id="insertcoach">新增</button>
+						<button type="button" id="insertx" class="btn btn-secondary">取消</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+	
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+	<script th:src="@{/gym/course/back/selectAllCoach.js}"></script>
+	<script th:src="@{/gym/course/back/coachajax.js}"></script>
+	<script th:src="@{http://localhost:8080/gymlife/JS/axios.min.js}"></script>
+</body>
+
+</html>

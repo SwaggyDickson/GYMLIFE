@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>文章管理頁面</title>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/jq-3.3.1/dt-1.11.3/datatables.min.css"/>
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body class="adminbody">
+	<div id="main">
+		<div th:replace="~{layout/navbar}"></div>
+		<div class="content-page">
+
+			<!-- Start content -->
+			<div class="content">
+
+				<div class="container-fluid">
+					<div class="row">
+						<div class="col-xl-12">
+							<div class="breadcrumb-holder">
+								<h1 class="main-title float-left">Example</h1>
+								<ol class="breadcrumb float-right">
+									<li class="breadcrumb-item">Home</li>
+									<li class="breadcrumb-item active">Google Maps</li>
+								</ol>
+								<div class="clearfix"></div>
+							</div>
+						</div>
+					</div>
+
+					<!-- 					-------------------------內文-------------------------------------------------------------- -->
+					<table id="myTable" class="display hover compact stripe ">
+						<thead>
+							<tr>
+								<th>文章編號</th>
+								<th>會員編號</th> 
+								<th>會員名稱</th> 
+								<th>文章標題</th>
+								<th>文章主題分類</th>
+								<th>文章內容</th>
+								<th>發文時間</th>
+								<th>最新修改時間</th>
+								<th>文章圖片</th>
+								<th>文章狀態</th>
+								<th>修改</th>
+								<th>刪除</th> 
+
+							</tr>
+						</thead>
+						<tbody>
+						
+							<th:block th:each="article:${articleBeans}">
+								<tr>
+									<th scope="row" th:text="${article}?${article.articleId}"></th>
+									 <td th:text="${article.member != null and article.member.userId != null} ? ${article.member.userId} : ''"></td>
+    								<td th:text="${article.member != null and article.member.userName != null} ? ${article.member.userName} : ''"></td>
+									<td th:text="${article}?${article.articleTitle}"></td>
+									<td th:text="${article}?${article.articleType}"></td>
+									<td th:text="${article != null} ? (${#strings.length(article.articleContent) > 40} ? ${#strings.substring(article.articleContent, 0, 40) + '...'} : ${article.articleContent}) : ''"></td>
+									<td th:text="${article}?${#dates.format(article.articleTime,'yyyy-MM-dd, HH:mm:ss')}"></td>
+									<td th:text="${article}?${#dates.format(article.articleUpdateTime,'yyyy-MM-dd, HH:mm:ss')}"></td>
+										
+									<td><img width="200px" th:src="@{'/downloadImage/'+${article.articleId}}"></td>	
+									
+									
+									<!-- 修改文章狀態 -->
+									<td><form th:action="@{/forum/status}" method="post">
+									    <input type="hidden" name="_method" value="PUT" />
+									    <input type="hidden" name="articleId" th:value="${article.articleId}" />
+									    <select name="status">
+									        <option th:selected="${article.status == 'Active'}">Active</option>
+									        <option th:selected="${article.status == 'Disabled'}">Disabled</option>
+									    </select>
+									    <input type="submit" value="Update Status" class="btn btn-outline-warning btn-sm"/>
+									</form></td>
+										
+										<!-- 修改 -->
+										<td><form th:action="@{/forum/edit}" method="get">
+											<!-- 雖然藏起來但是參數有跟著送過去 -->
+											<input name="articleId" th:value="${article.articleId}" type="hidden"/>
+											 <input type="submit" value="編輯" class="btn btn-outline-success btn-sm"/>
+											</form></td> 
+											<!-- 修改 -->
+											
+									
+										<!-- 刪除 （真刪除） -->
+						<!--		<td><form th:action="@{/forum/delete}" method="post" id="deleteForm">
+									<input name="articleId" th:value="${article.articleId}" type="hidden"/>
+									<input name="_method" th:value="delete" type="hidden" /> 
+									<button type="submit" class="btn btn-outline-danger btn-sm deleteButton"  id="deleteButton">刪除</button>
+											</form></td>    --> 
+											<!-- 刪除 --> 
+					
+									<!-- 測試刪除(假刪除)  -->
+						<!-- 	<td><form th:action="@{'/forum/delete/' + ${article.articleId}}" method="post" id="deleteForm">
+				   				 <button type="submit" class="btn btn-outline-danger btn-sm deleteButton"  id="deleteButton">刪除</button>
+								</form></td>    -->
+					
+								<!-- 測試刪除(假刪除)  -->
+									<td>
+									<form th:action="@{'/forum/delete/' + ${article.articleId}}" method="post" th:id="'deleteForm-' + ${article.articleId}">
+									    <button type="submit" class="btn btn-outline-danger btn-sm deleteButton" th:id="'deleteButton-' + ${article.articleId}">刪除</button>
+									</form>
+									</td>  
+								
+								</tr>
+								
+								<!-- 	<th:block th:each="article ,iterStat:${articles}" th:with="i=${iterStat.index}>  -->
+								<!-- modal -->
+								<div class="modal fade" id="exampleModal" tabindex="-1"
+									role="dialog" aria-labelledby="exampleModalLabel"
+									aria-hidden="true">
+									<div class="modal-dialog" role="document">
+										<div class="modal-content">
+											<div class="modal-header">
+												<h5 class="modal-title" id="exampleModalLabel">New
+													message</h5>
+												<button type="button" class="close" data-dismiss="modal"
+													aria-label="Close">
+													<span aria-hidden="true">&times;</span>
+												</button>
+											</div>
+											
+											<div class="modal-body">
+												<!-- form -->
+												<form action="#">
+													<div class="form-group">
+														<label for="recipient-name" class="col-form-label">Recipient:</label>
+														<input type="text" class="form-control"
+															id="recipient-name">
+													</div>
+													
+													<div class="form-group">
+														<label for="message-text" class="col-form-label">Message:</label>
+														<textarea class="form-control" id="message-text"></textarea>
+													</div>
+												</form>
+												<!-- form -->
+											</div>
+											
+												<div class="modal-footer">
+												<button type="button" class="btn btn-secondary"
+													data-dismiss="modal">Close</button>
+												<button type="button" class="btn btn-primary">Send
+													message</button>
+													</div>
+												</div>
+										</div>
+									</div>
+								<!-- modal -->
+								
+								
+								<!--</th:block>-->
+							</th:block>
+						</tbody>
+					</table>
+
+
+				</div>
+				<!-- END container-fluid -->
+
+			</div>
+			<!-- END content -->
+
+		</div>
+		<!-- END content-page -->
+		<div th:replace="~{layout/footer}"></div>
+	</div>
+
+	<script>
+        $(document).ready(function () {
+            $('#myTable').DataTable();
+            
+            
+        $('.deleteButton').on('click', function(e) {
+    e.preventDefault();
+    var buttonId = $(this).attr('id');
+    var formId = 'deleteForm-' + buttonId.split('-')[1];
+
+    Swal.fire({
+        title: '確定刪除?',
+        text: "你將無法恢復此內容!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: '是的, 刪除!',
+        cancelButtonText: '取消'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $('#' + formId).submit();
+	        }
+	    })
+	});
+       
+ });
+        
+        
+       
+    </script>
+    <script type="text/javascript" src="https://cdn.datatables.net/v/dt/jq-3.3.1/dt-1.11.3/datatables.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>登入</title>
+<link rel="stylesheet" th:href="@{gym/member/css/loginProblem.css}">
+</head>
+
+<body class="test">
+
+<header class="myHeader" th:replace="~{layout/front_nav}"></header>
+	
+        <main class="myMain">
+        	
+            <div style="padding-top: 60px;" class="container">
+            	
+                <form id="mailCheckForm" class="login-form" th:action="@{/Login}" method="POST">
+        	
+        	
+        			 <div class="progress" style="margin-bottom: 20px;">
+			        <div id="progress-bar" class="progress-bar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+			     </div>
+                    <div class="form-group">
+                        <label for="userEmail">信箱: </label>
+                        <input type="email" id="userEmail" name="userEmail" class="form-control" placeholder="請輸入Email" >
+                       
+                        
+                    </div>
+                    <div class="form-group">
+                        <label for="userAccount">帳號:</label>
+                        <input type="text" id="userAccount" name="userAccount" class="form-control" placeholder="請輸入密碼" >
+                        
+                    </div>
+                    <div id="errMsg" ></div>
+                    
+                    <div class="login">
+                        <button id="loginBtn" type="submit" value="Login"class="btn btn-primary btn-login">取得信件</button>
+                    </div>
+                    
+                   
+                   
+                </form>
+            </div>
+			            <!-- Step 2: Enter Verification Code -->
+			<div id="step2" >
+			    <form id="codeForm" class="login-form" th:action="@{/VerifyCode}" method="POST">
+			        <div class="form-group">
+			            <label for="verificationCode">驗證碼:</label>
+			            <input type="text" id="verificationCode" name="verificationCode" class="form-control" placeholder="請輸入驗證碼" >
+			        </div>
+			        <div class="login">
+			            <button id="verifyCodeBtn" type="submit" class="btn btn-primary btn-login">驗證碼</button>
+			        </div>
+			    </form>
+			</div>
+			
+			<!-- Step 3: Reset Password -->
+			<div id="step3" >
+			    <form id="resetPasswordForm" class="login-form" th:action="@{/ResetPassword}" method="POST">
+			        <div class="form-group">
+			            <label for="newPassword">新密碼:</label>
+			            <input type="password" id="newPassword" name="newPassword" class="form-control" placeholder="請輸入新密碼" >
+			        </div>
+			        <div class="form-group">
+			            <label for="confirmPassword">確認新密碼:</label>
+			            <input type="password" id="confirmPassword" name="confirmPassword" class="form-control" placeholder="請再次輸入新密碼" >
+			        </div>
+			        <div class="login">
+			            <button id="resetPasswordBtn" type="submit" class="btn btn-primary btn-login">更改密碼</button>
+			        </div>
+			    </form>
+			</div>
+           <footer th:replace="~{layout/front_footer}"></footer>
+
+     </main>
+       
+     <script>
+     
+	// 第一步驟: 輸入帳號還有信箱比對資料庫是否有這兩個值 若是沒有回傳 false
+	//          前端頁面顯示sweat alert 來通知使用者結果(成功送出信件)/(沒有此筆帳號) 
+	//          成功送出信件後 跳到第二步驟 將step2 display show 出來 將step1 none
+	
+	// 第二步驟: 使用者接受信箱裡的6碼驗證碼後輸入進來比對是否正確 若正確則跳入到step3 
+	//         	頁面顯示sweat alert 通知結果(成功進入下一步) Step2 hide step3 show
+	
+	// 第三步驟: 顯示修改密碼的step3 然後確認密碼  送出後 sweatalert通知成功後導向登入頁面。
+	
+	
+
+
+     </script>
+
+
+ <script th:src="@{front/js/jquery-3.3.1.min.js}"></script>
+ <script th:src="@{front/js/bootstrap.min.js}"></script>
+ <script th:src="@{front/js/jquery.magnific-popup.min.js}"></script>
+ <script th:src="@{front/js/masonry.pkgd.min.js}"></script>
+ <script th:src="@{front/js/jquery.barfiller.js}"></script>
+ <script th:src="@{front/js/jquery.slicknav.js}"></script>
+ <script th:src="@{front/js/owl.carousel.min.js}"></script>
+ <script th:src="@{front/js/main.js}"></script>
+ <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+</body>
+</html>

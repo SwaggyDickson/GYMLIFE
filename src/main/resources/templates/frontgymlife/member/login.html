@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>登入</title>
+<link rel="stylesheet" th:href="@{gym/member/css/login.css}">
+</head>
+
+<body class="test">
+
+<header class="myHeader" th:replace="~{layout/front_nav}"></header>
+
+        <main class="myMain">
+            <div style="padding-top: 60px;" class="container">
+                <form id="loginForm" class="login-form" th:action="@{/Login}" method="POST">
+                    <div class="form-group">
+                        <label for="userAccount">帳號:  <span id="userAccountCheckResult"></span> <span th:if="${errors.containsKey('userAccount')}" th:text="${errors.userAccount}"></span></label>
+                        <input type="text" id="userAccount" name="userAccount" class="form-control" placeholder="請輸入帳號" >
+                       
+                        
+                    </div>
+                    <div class="form-group">
+                        <label for="userPassword">密碼:<span th:if="${errors.containsKey('userPassword')}" th:text="${errors.userPassword}"></span></label>
+                        <input type="password" id="userPassword" name="userPassword" class="form-control" placeholder="請輸入密碼" >
+                        
+                    </div>
+                    <div id="errMsg" th:if="${errors.containsKey('msg')}" th:text="${errors.msg}"></div>
+                    <div id="failedAttemptsMsg" th:if="${failedAttempts != null}" th:text="'Failed login attempts: ' + ${failedAttempts}"></div>
+                    <div class="login">
+                        <button id="autoFill" type="button" class="btn btn-primary btn-auto">一鍵輸入</button>
+                        <button id="loginBtn" type="submit" value="Login"class="btn btn-primary btn-login">登入</button>
+                    </div>
+                   
+                    <div class="mt-2 registration-link">
+                        沒有帳號嗎? <a th:href="@{/Register}">註冊</a>
+                    </div>
+                    <div class="login">
+                        <a id="forgotPwdBtn" th:href="@{/loginProblem}" class="btn btn-primary btn-login">忘記密碼</a>
+                    </div>
+                </form>
+            </div>
+           <footer th:replace="~{layout/front_footer}"></footer>
+
+     </main>
+
+     <script>
+        let userAccountListener = document.getElementById('userAccount');
+        let resultSpan = document.getElementById('userAccountCheckResult');
+        let loginForm = document.getElementById('login-form');
+        
+        
+        userAccountListener.addEventListener('blur',(e)=>{
+            let userAccount = e.target.value;
+            console.log("ok");
+
+            const regex = /^[a-zA-Z0-9]*$/;
+            if(userAccount.length < 8 || userAccount.length > 20 || !regex.test(userAccount)){
+                resultSpan.textContent = '帳號格式錯誤';
+                return;
+            }
+
+            axios({
+                method: 'get',
+                url: `http://localhost:8080/gymlife/checkUserAccount?userAccount=${userAccount} `,
+            
+            })
+            .then(function (response) {
+                if (response.data.exists) {
+                    resultSpan.textContent = ''; 
+                    resultSpan.style.color ='';
+                    console.log('登入吧!');
+                } else {
+                   
+                  
+                    console.log('請重新來過');
+                }
+            })
+            .catch(function (error) {
+                console.log(error);
+                console.log("錯了錯了");
+            });
+        });
+
+            document.getElementById('loginForm').addEventListener('submit', function(e) {
+                e.preventDefault(); 
+                let userAccount = document.getElementById('userAccount').value;
+                let userPassword = document.getElementById('userPassword').value;
+
+                if(userAccount === "" || userPassword === "") {
+                    e.preventDefault();
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: '請輸入帳號與密碼!',
+                    })
+                    return;
+                }
+                axios.post(`http://localhost:8080/gymlife/Login`, {
+            userAccount: userAccount,
+            userPassword: userPassword
+        })
+        .then(function (response) {
+            let data = response.data;
+            // 如果服務器返回的data表示登錄成功
+           
+            if (data.status === 'success') {
+                //---前端來實現跳轉頁面邏輯-----
+                //console.log('Permission:', data.userPermission);
+                // if(data.userPermission === "0"){
+                //     window.location.href ="http://localhost:8080/gymlife/";
+                 
+
+                // } else if(data.userPermission === "1") {
+                //     window.location.href = "http://localhost:8080/gymlife/Admin";
+                // }
+                // else {
+                //     window.location.href = "http://localhost:8080/gymlife/Login";
+                // }
+                window.location.href = data.redirectUrl;//交給後端邏輯決定
+
+            } else if (data.status === 'notAcctive') {
+                swal.fire({
+                    icon: 'warning',
+                    title: '帳戶未驗證',
+                    text: '該使用者還未激活帳戶',
+                });
+            }
+           
+            //如果服務器返回的data表示登錄失敗
+            else {
+                // 根據失敗的原因顯示不同的SweetAlert
+                if (data.failedAttempts && data.failedAttempts >= 5) {
+                    swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: '請你冷靜!',
+                    });
+                } else {
+                    console.log('錯誤次數:' + data.failedAttempts); 
+                    swal.fire({
+                        icon: 'error',
+                        title: '錯誤輸入次數(達到5次時會暫時禁止用戶輸入)：',
+                        text: data.failedAttempts,
+                        didOpen: function() {
+                            let title = document.getElementsByClassName('swal2-title')[0];
+                            title.style.color = 'red';
+                        }
+                    })
+
+                }
+            }
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+            });
+            
+        // ----------------讓errMsg消失--------------------------
+        //使用了ajax傳送了登入訊息，此方法不用了
+        // let userAccountInput = document.getElementById('userAccount');
+        // let errMsgDiv = document.getElementById('errMsg');
+
+        // userAccountInput.addEventListener('keyup', () => {
+        //     errMsgDiv.style.display = 'none';
+        // });
+
+        //------------------讓使用者知道自己密碼錯誤幾次-----------------------
+        //後端驗證
+        let failedAttemptsMsg = document.getElementById('failedAttemptsMsg');
+
+        if (failedAttemptsMsg) {
+            let failedAttempts = parseInt(failedAttemptsMsg.textContent.split(':')[1].trim());
+
+            if (failedAttempts >= 5) {
+        swal("錯誤", "帳號已被鎖定", "error");
+    } else {
+        swal("錯誤", "錯誤登入次數：" + failedAttempts, "warning");
+    }
+        }
+
+        document.getElementById('autoFill').addEventListener('click', (e)=>{
+            document.getElementById('userAccount').value = 'TestAccount2';
+            document.getElementById('userPassword').value = 'TestPassword';
+        })
+
+
+
+     </script>
+
+
+ <script th:src="@{front/js/jquery-3.3.1.min.js}"></script>
+ <script th:src="@{front/js/bootstrap.min.js}"></script>
+ <script th:src="@{front/js/jquery.magnific-popup.min.js}"></script>
+ <script th:src="@{front/js/masonry.pkgd.min.js}"></script>
+ <script th:src="@{front/js/jquery.barfiller.js}"></script>
+ <script th:src="@{front/js/jquery.slicknav.js}"></script>
+ <script th:src="@{front/js/owl.carousel.min.js}"></script>
+ <script th:src="@{front/js/main.js}"></script>
+ <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+</body>
+</html>

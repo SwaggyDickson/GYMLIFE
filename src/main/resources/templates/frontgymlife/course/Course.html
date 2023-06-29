@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>GYMLIFE-課程專區</title>
+</head>
+
+<body>
+    <div th:replace="~{layout/front_nav}"></div>
+     <!-- Breadcrumb Section Begin -->
+    <section class="breadcrumb-section set-bg" th:data-setbg="@{/front/img/breadcrumb-bg.jpg}">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <div class="breadcrumb-text">
+                        <h2>課程專區</h2>
+                        <div class="bt-option">
+                            <a th:href="@{/}">Home</a>
+                            <span>課程專區</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Breadcrumb Section End -->
+    <!-- ChoseUs Section Begin -->
+    <section class="choseus-section spad">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="section-title">
+                        <h2>方案選擇</h2><br>
+                        <span>歡迎來到我們的健身房課程！我們提供多種適合不同程度和目標的課程，旨在幫助您改善體能、塑造身材和增加健康。</span>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="section-title">
+                        <h2>團體課程</h2><br>
+                        <span>我們提供個人訓練方案，以幫助您實現健康目標、改善體能和塑造理想身材。無論您是初學者還是有經驗的運動員，我們的專業教練團隊將根據您的需求和能力，量身設計個人化的訓練計劃。
+
+我們的健身教練將與您合作，評估您的目標、健康狀況和運動背景。根據這些信息，教練將制定一個符合您需求的全面訓練計劃，包括有氧運動、重量訓練、核心訓練、柔軟度和靈活性訓練等。教練將引導您進行正確的動作和姿勢，確保您在訓練過程中達到最佳效果並減少受傷的風險。
+
+我們的教練將定期追蹤您的進展，並根據需要進行調整。他們將提供專業的指導、鼓勵和支持，幫助您克服困難、保持動力並實現目標。無論您是減脂、增肌、增加力量還是改善體能，我們的教練都將致力於幫助您取得最佳結果。</span>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="section-title">
+                        <h2>教練課程</h2><br>
+                        <span>我們也提供多種團體客課程，旨在營造歡樂的氛圍中共同鍛煉和挑戰自己。團體客課程不僅能讓您享受社交互動，還能激發您的動力和培養團隊合作精神。
+
+我們的團體客課程包括有氧運動、舞蹈、循環訓練和功能性訓練等。有氧運動課程（如有氧搏擊、有氧舞蹈、跑步機等）將提高您的心肺功能、增強耐力和燃燒卡路里。舞蹈課程將帶您跳舞，同時提升心肺功能、協調性和靈活度。循環訓練課程結合了有氧運動和高強度間歇訓練，讓您在短時間內燃燒卡路里、提高代謝率並增加肌肉力量。功能性訓練課程將重點放在身體的動作模式和日常功能上，幫助您改善姿勢、增加靈活性和提高核心穩定性。
+
+參加我們的團體客課程，您將享受到集體運動的動感和樂趣。</span>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </section>
+    <!-- ChoseUs Section End -->
+     <!-- Banner Section Begin -->
+    <section class="banner-section set-bg" th:data-setbg="@{/front/img/banner-bg.jpg}">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <div class="bs-text">
+                        <h2>Chose you want</h2>
+                        <div class="bt-tips">Where health, beauty and fitness meet.</div>
+                        <div style="justify-content: space-between">
+                        <a href="#" class="primary-btn  btn-normal">團體課程</a>
+                        <a th:href="@{/front/coursesingle}" class="primary-btn  btn-normal">教練課程</a></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Banner Section End -->
+    
+    
+    
+    <div th:replace="~{layout/front_footer}"></div>
+
+
+</body>
+
+</html>

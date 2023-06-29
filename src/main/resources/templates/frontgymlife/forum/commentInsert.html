@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>新增留言</title>
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<style>
+.test {
+	display: flex;
+	flex-direction: column;
+	min-height: 100vh;
+	background-color: black;
+	color: white
+}
+</style>
+<!-- CSS only -->
+</head>
+<body class="test">
+	<div th:replace="~{layout/front_nav}"></div>
+	
+	<div align="center">
+	
+<form th:method="post" th:action="@{'/front/article/' + ${article.articleId} + '/comment'}"  enctype="multipart/form-data" id="insertForm">
+	
+	<div class="container" style="padding-top: 100px; color:black;">
+		<div class="row">
+			<div class="col-10">
+ 					<div class="card">
+                    <h2>新增留言</h2>
+	<input type="hidden" name="articleId" th:value="${article.articleId}" />
+	<!-- readonly="readonly" -->
+				<div style="text-align: center;color:black;"><br/>
+					<label for="content">內容：</label><br>
+                    <textarea id="content" type="text"  name="commentContent" rows="10"
+							cols="50"></textarea> <br/>
+                    <input type="file" name="commentImg" ><br><br>
+                    <input type="submit" style="width:200px;color:black;" value="確定" class="btn btn-warning" id="editButton"/> 
+                    <input type="submit" style="width:200px;color:black;" value="取消" class="btn btn-danger" th:onclick="history.back()"  >
+                </div>
+                </div>
+ 			</div>
+        </div>
+    </div>
+</form>
+</div>
+
+<div th:replace="~{layout/front_footer}"></div>
+	<script
+		src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+		integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+		crossorigin="anonymous"></script>
+</body>
+</html>

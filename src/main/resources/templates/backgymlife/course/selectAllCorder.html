@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>課程訂單</title>
+<link rel="stylesheet"
+	href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.css" />
+</head>
+<body class="adminbody">
+	<div id="main">
+		<div th:replace="~{layout/navbar}"></div>
+		<div class="content-page">
+
+			<!-- Start content -->
+			<div class="content">
+
+				<div class="container-fluid">
+					<div class="row">
+						<div class="col-xl-12">
+							<div class="breadcrumb-holder">
+								<h1 class="main-title float-left">Course-Order</h1>
+								<ol class="breadcrumb float-right">
+									<li class="breadcrumb-item">Home</li>
+									<li class="breadcrumb-item active">Google Maps</li>
+								</ol>
+								<div class="clearfix"></div>
+							</div>
+						</div>
+					</div>
+
+					<!-- 					-------------------------內文-------------------------------------------------------------- -->
+					<div class="row">
+						<div class="col-md-12"
+							style="text-align: center; justify-content: center; align-content: center;">
+							<a class="display-4" style="margin: 0 auto;">訂單</a>
+							<button class=" d-flex" id="edit"
+								style="border: none; float: right;">
+								<span class="p-3" id="editicon" style="border: none"><i
+									class="fa-solid fa-ellipsis-vertical fa-2xl"></i></span>
+							</button>
+						</div>
+					</div>
+
+					<table id="myTable" class="display">
+						<thead>
+							<tr>
+								<th>訂單編號</th>
+								<th>會員資料</th>
+								<th>課程資料</th>
+								<th>付款狀態</th>
+								<th>購買時間</th>
+								<th>購買數量</th>
+								<th>訂單總金額</th>
+							</tr>
+						</thead>
+						<tbody>
+							<th:block th:each="corder:${corders}">
+							<tr>
+								<td th:text="${corder.corderId}"></td>
+								<td th:text="${corder.userId}"></td>
+								<td th:text="${corder.courseId}"></td>
+								<td th:text="${corder.corderPayment}"></td>
+								<td th:text="${corder.corderTime}"></td>
+								<td th:text="${corder.corderQuantity}"></td>
+								<td th:text="${corder.corderCost}"></td>
+							</tr>
+							</th:block>
+						</tbody>
+					</table>
+
+				</div>
+				<!-- END container-fluid -->
+
+			</div>
+			<!-- END content -->
+
+		</div>
+		<!-- END content-page -->
+		<div th:replace="~{layout/footer}"></div>
+		<script
+			src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.js"></script>
+		<script>let table = new DataTable('#myTable');</script>
+		<script th:src="@{http://localhost:8080/gymlife/JS/axios.min.js}"></script>
+	</div>
+</body>
+</html>

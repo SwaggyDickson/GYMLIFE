@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>GYM | 選貨店</title>
+    <!-- SweetAlert2框框 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- 自己的CSS -->
+    <link rel="stylesheet" th:href="@{http://localhost:8080/gymlife/gym/com/css/front_shop.css}">
+</head>
+
+<body>
+    <div th:replace="~{layout/front_nav}"></div>
+
+    <!-- Breadcrumb Section Begin -->
+    <section class="breadcrumb-section set-bg"
+        th:data-setbg="@{http://localhost:8080/gymlife/gym/com/img/shop_background3.jpg}" style="height: 420px;">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <div class="breadcrumb-text">
+                        <h2>GymLife Shop</h2>
+                        <div class="bt-option">
+                            <a th:href="@{/}">Home</a>
+                            <span>GymLife Shop</span>
+                        </div>
+                        <a th:href="@{/shopList.func}" class="primary-btn">Into Shop </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Breadcrumb Section End -->
+
+    <!-- Services Section Begin -->
+    <section class="services-section spad">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="section-title">
+                        <span>What you NEED?</span>
+                        <h2>Dress Like Your Strength</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-3 order-lg-1 col-md-6 p-0" style="display: flex;">
+                    <div class="ss-pic">
+                        <img th:src="@{http://localhost:8080/gymlife/gym/com/img/shop_shirt.jpg}" alt="">
+                    </div>
+                </div>
+                <div class="col-lg-3 order-lg-2 col-md-6 p-0">
+                    <div class="ss-text">
+                        <h4>Personal Shirt</h4>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor ut dolore
+                            facilisis.</p>
+                        <a th:href="@{/type/上衣}">Explore</a>
+                    </div>
+                </div>
+                <div class="col-lg-3 order-lg-3 col-md-6 p-0" style="display: flex;">
+                    <div class="ss-pic">
+                        <img th:src="@{http://localhost:8080/gymlife/gym/com/img/shop_pants.jpg}" alt="">
+                    </div>
+                </div>
+                <div class="col-lg-3 order-lg-4 col-md-6 p-0">
+                    <div class="ss-text">
+                        <h4>Fitness Pants</h4>
+                        <p>Quis ipsum suspendisse ultrices gravida. Risus commodo viverra maecenas accumsan lacus.</p>
+                        <a th:href="@{/type/褲子}">Explore</a>
+                    </div>
+                </div>
+                <div class="col-lg-3 order-lg-8 col-md-6 p-0" style="display: flex;">
+                    <div class="ss-pic">
+                        <img th:src="@{http://localhost:8080/gymlife/gym/com/img/shop_equip.jpg}" alt="">
+                    </div>
+                </div>
+                <div class="col-lg-3 order-lg-7 col-md-6 p-0">
+                    <div class="ss-text second-row">
+                        <h4>Body Equipment</h4>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor ut dolore
+                            facilisis.</p>
+                        <a th:href="@{/type/配件}">Explore</a>
+                    </div>
+                </div>
+                <div class="col-lg-3 order-lg-6 col-md-6 p-0" style="display: flex;">
+                    <div class="ss-pic">
+                        <img th:src="@{http://localhost:8080/gymlife/gym/com/img/shop_protect.jpg}" alt="">
+                    </div>
+                </div>
+                <div class="col-lg-3 order-lg-5 col-md-6 p-0">
+                    <div class="ss-text second-row">
+                        <h4>Strength Protected</h4>
+                        <p>Quis ipsum suspendisse ultrices gravida. Risus commodo viverra maecenas accumsan lacus.</p>
+                        <a th:href="@{/type/護具}">Explore</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Services Section End -->
+
+
+
+    <!-- Pricing Section Begin -->
+    <section class="pricing-section service-pricing spad">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="section-title">
+                        <span>Our Plan</span>
+                        <h2>Choose your pricing plan</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-lg-4 col-md-8">
+                    <div class="ps-item">
+                        <h3>Class drop-in</h3>
+                        <div class="pi-price">
+                            <h2>$ 39.0</h2>
+                            <span>SINGLE CLASS</span>
+                        </div>
+                        <ul>
+                            <li>Free riding</li>
+                            <li>Unlimited equipments</li>
+                            <li>Personal trainer</li>
+                            <li>Weight losing classes</li>
+                            <li>Month to mouth</li>
+                            <li>No time restriction</li>
+                        </ul>
+                        <a href="#" class="primary-btn pricing-btn">Enroll now</a>
+                        <a href="#" class="thumb-icon"><i class="fa fa-picture-o"></i></a>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-8">
+                    <div class="ps-item">
+                        <h3>12 Month unlimited</h3>
+                        <div class="pi-price">
+                            <h2>$ 99.0</h2>
+                            <span>SINGLE CLASS</span>
+                        </div>
+                        <ul>
+                            <li>Free riding</li>
+                            <li>Unlimited equipments</li>
+                            <li>Personal trainer</li>
+                            <li>Weight losing classes</li>
+                            <li>Month to mouth</li>
+                            <li>No time restriction</li>
+                        </ul>
+                        <a href="#" class="primary-btn pricing-btn">Enroll now</a>
+                        <a href="#" class="thumb-icon"><i class="fa fa-picture-o"></i></a>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-8">
+                    <div class="ps-item">
+                        <h3>6 Month unlimited</h3>
+                        <div class="pi-price">
+                            <h2>$ 59.0</h2>
+                            <span>SINGLE CLASS</span>
+                        </div>
+                        <ul>
+                            <li>Free riding</li>
+                            <li>Unlimited equipments</li>
+                            <li>Personal trainer</li>
+                            <li>Weight losing classes</li>
+                            <li>Month to mouth</li>
+                            <li>No time restriction</li>
+                        </ul>
+                        <a href="#" class="primary-btn pricing-btn">Enroll now</a>
+                        <a href="#" class="thumb-icon"><i class="fa fa-picture-o"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Pricing Section End -->
+
+    <!--回到上方按鈕-->
+    <button id="back-to-top-btn" title="回到頁面頂端">
+        <i class="fa fa-arrow-up">TOP</i>
+    </button>
+
+    <div th:replace="~{layout/front_footer}"></div>
+
+    <!-- Js Plugins -->
+    <script th:src="@{http://localhost:8080/gymlife/front/js/jquery-3.3.1.min.js}"></script>
+    <script th:src="@{http://localhost:8080/gymlife/front/js/bootstrap.min.js}"></script>
+    <script th:src="@{http://localhost:8080/gymlife/front/js/jquery.magnific-popup.min.js}"></script>
+    <script th:src="@{http://localhost:8080/gymlife/front/js/masonry.pkgd.min.js}"></script>
+    <script th:src="@{http://localhost:8080/gymlife/front/js/jquery.barfiller.js}"></script>
+    <script th:src="@{http://localhost:8080/gymlife/front/js/jquery.slicknav.js}"></script>
+    <script th:src="@{http://localhost:8080/gymlife/front/js/owl.carousel.min.js}"></script>
+    <script th:src="@{http://localhost:8080/gymlife/front/js/main.js}"></script>
+
+    <!-- My Js 	 -->
+    <script th:src="@{http://localhost:8080/gymlife/gym/com/js/front_shop.js}"></script>
+</body>
+
+</html>

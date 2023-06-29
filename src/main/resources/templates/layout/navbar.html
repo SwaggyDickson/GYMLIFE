@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>後臺首頁</title>
+	<!-- Favicon -->
+	<link rel="shortcut icon" th:href="@{http://localhost:8080/gymlife/assets/images/favicon.ico}">
+	<!-- Bootstrap CSS -->
+	<link th:href="@{http://localhost:8080/gymlife/assets/css/bootstrap.min.css}" rel="stylesheet" type="text/css" />
+	<!-- Font Awesome CSS -->
+	<link th:href="@{http://localhost:8080/gymlife/assets/font-awesome/css/font-awesome.min.css}" rel="stylesheet" type="text/css" />
+	<!-- Custom CSS -->
+	<link th:href="@{http://localhost:8080/gymlife/assets/css/style.css}" rel="stylesheet" type="text/css" />
+	<script src="https://kit.fontawesome.com/fdf42e9c64.js" crossorigin="anonymous"></script>
+	<!-- --------------------------------------------------------------------------------------- -->
+	<!-- JSP CSS -->
+</head>
+
+<body class="adminbody">
+
+	<div id="main">
+
+		<!-- top bar navigation -->
+		<div class="headerbar">
+
+			<!-- LOGO -->
+			<div class="headerbar-left">
+				<a th:href="@{/backHomePage}" class="logo"><i class="fa-solid fa-dumbbell fa-xl"
+						style="color: #ffffff;"></i><span> GYMLIFE</span></a>
+			</div>
+
+			<nav class="navbar-custom">
+				<ul class="list-inline float-right mb-0">
+					<li class="list-inline-item dropdown notif">
+						<a class="nav-link dropdown-toggle nav-user" data-toggle="dropdown" href="#" role="button"
+							aria-haspopup="false" aria-expanded="false">
+							<img th:src="@{http://localhost:8080/gymlife/assets/images/avatars/admin.png}" alt="Profile image" class="avatar-rounded">
+						</a>
+						<div class="dropdown-menu dropdown-menu-right profile-dropdown ">
+							<!-- item-->
+							<div class="dropdown-item noti-title">
+								<h5 class="text-overflow"><small>Hello, admin</small> </h5>
+							</div>
+
+							<!-- item-->
+							<a th:href="@{/pro-profile}" class="dropdown-item notify-item">
+								<i class="fa fa-user"></i> <span>Profile</span>
+							</a>
+
+							<!-- item-->
+							<a href="#" class="dropdown-item notify-item">
+								<i class="fa fa-power-off"></i> <span>Logout</span>
+							</a>
+						</div>
+					</li>
+				</ul>
+
+				<ul class="list-inline menu-left mb-0">
+					<li class="float-left">
+						<button class="button-menu-mobile open-left">
+							<i class="fa fa-fw fa-bars"></i>
+						</button>
+					</li>
+				</ul>
+			</nav>
+
+		</div>
+		<!-- End Navigation -->
+
+
+		<!-- Left Sidebar -->
+		<div class="left main-sidebar">
+
+			<div class="sidebar-inner leftscroll">
+
+				<div id="sidebar-menu">
+
+					<ul>
+
+						<li class="submenu">
+							<a class="active" th:href="@{/backHomePage}"><i class="fa fa-fw fa-bars"></i><span> Dashboard </span>
+							</a>
+						</li>
+						
+						<li class="submenu">
+							<a href="charts.html"><i class="fa fa-fw fa-area-chart"></i><span> Charts </span> </a>
+						</li>
+							<li class="submenu"><a href="#"><i
+								class="fa fa-fw fa-indent"></i><span> Member </span><span
+								class="menu-arrow"></span></a>
+							<ul>
+								<li class="submenu"><a th:href="@{/MemberQuery}"><span> 會員列表 </span> <span
+										class="menu-arrow"></span> </a>
+								</li>
+							</ul></li>
+
+						<li class="submenu">
+							<a href="#"><i class="fa-solid fa-shop" style="color: #ffffff;"></i> <span> 商店管理 </span>
+								<span class="menu-arrow"></span></a>
+							<ul class="list-unstyled">
+								<li><a th:href="@{/itemListPage.func}">商品列表</a></li>
+								<li><a th:href="@{/addItemPage}">新增商品</a></li>
+								<li class="submenu">
+									<a href="#"><span>訂單管理</span> <span class="menu-arrow"></span> </a>
+									<ul>
+										<li><a href="#"><span>Third Level Item</span></a></li>
+										<li><a href="#"><span>Third Level Item</span></a></li>
+									</ul>
+								</li>
+							</ul>
+						</li>
+						
+							<li class="submenu"><a href="#"><i
+								class="fa fa-fw fa-indent"></i><span> Course </span><span
+								class="menu-arrow"></span></a>
+							<ul>
+							<li><a th:href="@{/course/coach}">教練</a></li>
+							<li><a th:href="@{/course}">課程</a></li>
+								<li class="submenu"><a href="#"><span>訂單</span> <span
+										class="menu-arrow"></span> </a>
+									<ul>
+										<li><a th:href="@{/course/corder}"><span>訂單管理</span></a></li>
+										<li><a href="#"><span>訂單分析</span></a></li>
+									</ul></li>
+							</ul></li>
+							
+							
+						<li class="submenu"><a href="#"><i
+								class="fa fa-fw fa-table"></i> <span> 活動 </span> <span
+								class="menu-arrow"></span></a>
+							<ul class="list-unstyled">
+								<li><a th:href="@{/activity/showAll}">活動管理</a></li>
+							</ul></li>
+							
+							<!--論壇  -->
+							<li class="submenu"><a href="#"><i
+								class="fa fa-fw fa-indent"></i><span> 論壇 </span><span
+								class="menu-arrow"></span></a>
+							<ul>
+								<li><a th:href="@{/forum/page}"><span>後台文章管理頁面</span></a></li>
+								<li><a th:href="@{/comment/page}"><span>後台留言管理頁面</span></a></li>
+							</ul>
+							</li>
+							<!--論壇  -->
+						
+						
+					</ul>
+					<div class="clearfix"></div>
+				</div>
+				<div class="clearfix"></div>
+			</div>
+		</div>
+		<!-- End Sidebar -->
+
+
+
+	
+	</div>
+	<!-- END main -->
+
+	<script th:src="@{http://localhost:8080/gymlife/assets/js/modernizr.min.js}"></script>
+	<script th:src="@{http://localhost:8080/gymlife/assets/js/jquery.min.js}"></script>
+	<script th:src="@{http://localhost:8080/gymlife/assets/js/moment.min.js}"></script>
+
+	<script th:src="@{http://localhost:8080/gymlife/assets/js/popper.min.js}"></script>
+	<script th:src="@{http://localhost:8080/gymlife/assets/js/bootstrap.min.js}"></script>
+
+	<script th:src="@{http://localhost:8080/gymlife/assets/js/detect.js}"></script>
+	<script th:src="@{http://localhost:8080/gymlife/assets/js/fastclick.js}"></script>
+	<script th:src="@{http://localhost:8080/gymlife/assets/js/jquery.blockUI.js}"></script>
+	<script th:src="@{http://localhost:8080/gymlife/assets/js/jquery.nicescroll.js}"></script>
+
+	<!-- App js -->
+	<script th:src="@{http://localhost:8080/gymlife/assets/js/pikeadmin.js}"></script>
+
+
+
+</body>
+
+</html>

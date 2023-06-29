@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="Gym Template">
+    <meta name="keywords" content="Gym, unica, creative, html">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Gym | Template</title>
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css?family=Muli:300,400,500,600,700,800,900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Oswald:300,400,500,600,700&display=swap" rel="stylesheet">
+
+    <!-- Css Styles -->
+   <link rel="stylesheet" th:href="@{front/css/bootstrap.min.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{front/css/font-awesome.min.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{front/css/flaticon.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{front/css/owl.carousel.min.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{front/css/barfiller.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{front/css/magnific-popup.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{front/css/slicknav.min.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{front/css/style.css}" type="text/css">
+	<meta charset="UTF-8">
+</head>
+<style>
+    label{
+        color: aliceblue;
+    }
+    
+    .form-control-id{
+    background-color:black;
+    }
+    
+    #editBtn,
+    #submitBtn,
+    #cancelBtn, 
+    #updateBtn {
+        font-size: 16px;
+        width: 30%;
+    }   
+   
+    #myButtonGroup{
+        text-align: right;
+    }
+    
+    
+</style>
+<body>
+  
+
+  <header class="myHeader" th:replace="~{frontgymlife/layout/front_nav}"></header>
+  
+
+    <!-- Breadcrumb Section Begin -->
+    <section class="breadcrumb-section set-bg" th:data-setbg="@{front/img/breadcrumb-bg.jpg}">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <div class="breadcrumb-text">
+                        <h2>個人資訊</h2>
+                        <div class="bt-option">
+                            <a th:href="@{/}">首頁</a>
+                            <a href="#">會員</a>
+                            <span>個人資訊</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Breadcrumb Section End -->
+
+    <!-- Contact Section Begin -->
+    <section class="contact-section spad">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="section-title contact-title">
+                        <span>Show Yourself</span>
+                        <h2>KEEP growing</h2>
+                    </div>
+                    <div class="contact-widget">
+                        
+                          <div class="cw-text">
+						       <img th:src="@{front/img/gallery/gallery-1.jpg}" alt="Your Image">
+						   </div>
+                        
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="leave-comment">
+                    
+                        <form>
+					        <div class="form-group">
+					            <label for="userId" class="idLabel">會員編號:</label>
+					            <input type="text" class="form-control" id="userId" name="userId" th:value="${userId}" disabled>
+					        </div>
+					        
+					        <div class="form-group">
+					            <label for="userAccount">會員帳號:</label>
+					            <input type="text" class="form-control" id="userAccount" name="userAccount" th:value="${userAccount}" disabled>
+					        </div>
+					
+					        <div class="form-group">
+					            <label for="userName">會員名稱:</label>
+					            <input type="text" class="form-control" id="userName" name="userName" th:value="${userName}" disabled>
+					        </div>
+					
+					        <div class="form-group">
+					            <label for="userGender">性別:</label>
+					            <input type="text" class="form-control" id="userGender" name="userGender" th:value="${userGender}" disabled>
+					        </div>
+					<!--  
+					        <div class="form-group">
+					            <label for="userBirthDay">生日:</label>
+					            <input type="date" class="form-control" id="userBirthDay" name="userBirthDay" th:value="${userBirthDay}" disabled>
+					        </div>
+					-->
+					        <div class="form-group">
+					            <label for="userAddress">地址:</label>
+					            <input type="text" class="form-control" id="userAddress" name="userAddress" th:value="${userAddress}" disabled>
+					        </div>
+					
+					        <div class="form-group">
+					            <label for="userTel">電話:</label>
+					            <input type="tel" class="form-control" id="userTel" name="userTel" th:value="${userTel}"disabled>
+					        </div>
+					
+					        <div class="form-group">
+					            <label for="userEmail">信箱:</label>
+					            <input type="email" class="form-control" id="userEmail" name="userEmail" th:value="${userEmail}" disabled>
+					        </div>
+					
+					        <div class="form-group">
+					            <label for="userNickName">暱稱:</label>
+					            <input type="text" class="form-control" id="userNickName" name="userNickName" th:value="${userNickName}" disabled>
+					        </div>
+                            <div id="myButtonGroup" class="editBtnDiv">
+                                <button  type="button" id="editBtn" class="btn btn-primary myEditButton">編輯</button>
+                                <button  type="button" id="cancelBtn" class="btn btn-primary " style="display:none;" >取消</button>
+                                <button type="submit" id="updateBtn" class="btn btn-danger" style="display:none;">確認更新</button>
+                                <button type="submit" id="submitBtn" class="btn btn-primary" style="display:none;">送出</button>
+                            </div>
+					    </form>
+                    </div>
+                </div>
+            </div>
+            <div >
+               
+            </div>
+        </div>
+    </section>
+    <!-- Contact Section End -->
+
+   
+
+    <!-- Search model Begin -->
+    <div class="search-model">
+        <div class="h-100 d-flex align-items-center justify-content-center">
+            <div class="search-close-switch">+</div>
+            <form class="search-model-form">
+                <input type="text" id="search-input" placeholder="Search here.....">
+            </form>
+        </div>
+    </div>
+    <!-- Search model end -->
+<footer class="myFooter" th:replace="~{frontgymlife/layout/front_footer}"></footer>
+   <script>
+  // 用於切換輸入欄位的可用狀態以及按鈕的顯示狀態
+  function toggleInputAndButton(disabled, editDisplay, cancelDisplay, updateDisplay) {
+      
+      let inputs = document.getElementsByTagName("input");
+      for(let i = 1; i < inputs.length; i++) {
+        
+          inputs[i].disabled = disabled;
+      }
+      document.getElementById('editBtn').style.display = editDisplay;
+          document.getElementById('cancelBtn').style.display = cancelDisplay;
+          document.getElementById('updateBtn').style.display = updateDisplay; // 新增的对更新按钮显示状态的管理
+    }
+
+    // 編輯按鈕的事件監聽器  
+    document.getElementById('editBtn').addEventListener('click', (e) => {
+        e.preventDefault();
+        toggleInputAndButton(false, "none", "inline", "inline" ,"none");  // 啟用輸入欄位，顯示取消按鈕，隱藏編輯按鈕
+    });
+
+    // 取消按鈕的事件監聽器
+    document.getElementById('cancelBtn').addEventListener('click', (e) => {
+        e.preventDefault();
+        toggleInputAndButton(true, "inline", "none","none","none");  // 禁用輸入欄位，顯示編輯按鈕，隱藏取消按鈕
+        document.getElementById('submitBtn').style.display = "none";
+    });
+
+    document.getElementById("updateBtn").addEventListener("click", function(e){
+        e.preventDefault();
+        document.getElementById("updateBtn").style.display = "none";
+        document.getElementById("submitBtn").style.display = "inline";
+    });
+
+    //-----------------submitBtn觸發更新，ajax送出------------------
+    document.getElementById('submitBtn').addEventListener('click', (e)=>{
+        e.preventDefault();
+
+        let userData = {
+
+        userId: document.getElementById("userId").value,
+        userAccount: document.getElementById("userAccount").value,
+        userName: document.getElementById("userName").value,
+        userGender: document.getElementById("userGender").value,
+        //userBirthDay: document.getElementById("userBirthDay").value,
+        userAddress: document.getElementById("userAddress").value,
+        userTel: document.getElementById("userTel").value,
+        userEmail: document.getElementById("userEmail").value,
+        userNickName: document.getElementById("userNickName").value
+
+        };
+
+        axios({
+            method:'post',
+            url:'http://localhost:8081/gymlife/userInfo', 
+            data: userData,
+           
+        }) 
+        .then(function (response) {
+        console.log(response);
+
+        // document.getElementById('submitBtn').style.display = 'none';
+        // document.getElementById('cancelBtn').style.display = 'none';
+        // document.getElementById('editBtn').style.display = 'inline';
+        // let inputs = document.getElementsByTagName("input");
+        // for(let i = 1; i < inputs.length; i++) {
+        //     inputs[i].disabled = true;
+        // }
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+
+    })
+
+     //-----------------cancelBtn觸發後，取消改過的資料，回復原本session中的資料
+
+     window.addEventListener('DOMContentLoaded', function() {
+    let inputs = document.getElementsByTagName('input');
+    for (let i = 0; i < inputs.length; i++) {
+        inputs[i].setAttribute('data-original-value', inputs[i].value);
+    }
+});
+
+     document.getElementById('cancelBtn').addEventListener('click',(e)=>{
+        e.preventDefault();
+
+        // 将每个输入字段的值还原为原始值
+    let inputs = document.getElementsByTagName('input');
+    for (let i = 0; i < inputs.length; i++) {
+        let originalValue = inputs[i].getAttribute('data-original-value');
+        inputs[i].value = originalValue;
+    }
+
+     })
+
+
+   </script>
+
+
+
+<!-- Js Plugins -->
+    <script src="js/jquery-3.3.1.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/jquery.magnific-popup.min.js"></script>
+    <script src="js/masonry.pkgd.min.js"></script>
+    <script src="js/jquery.barfiller.js"></script>
+    <script src="js/jquery.slicknav.js"></script>
+    <script src="js/owl.carousel.min.js"></script>
+    <script src="js/main.js"></script>
+
+
+
+</body>
+
+</html>

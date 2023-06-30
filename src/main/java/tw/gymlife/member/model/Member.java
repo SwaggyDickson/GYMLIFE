@@ -79,9 +79,9 @@ public class Member {
 	
 	
 	//新增課程訂單
-//	@OneToMany(fetch = FetchType.LAZY, mappedBy = "member", cascade = CascadeType.ALL)
-//	private List<CorderBean> corder;
-//	
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "member", cascade = CascadeType.ALL)
+	private List<CorderBean> corder;
+	
 	
 }
 	//接收登入資料

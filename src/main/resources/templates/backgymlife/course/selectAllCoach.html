@@ -38,8 +38,9 @@
 								<span class="p-3" id="editicon" style="border: none"><i
 										class="fa-solid fa-ellipsis-vertical fa-2xl"></i></span>
 							</button>
-							<button class="btn btn-danger btn-lg mt-3" id="insertbtn" style="float: left">
-								<div data-toggle="modal" data-target="#insertstaticBackdrop">新增教練</div>
+							<button class="btn btn-primary  mt-3" id="insertbtn" style="float: left">
+								<div data-toggle="modal" data-target="#insertstaticBackdrop">
+								<b>+</b> <span>新增課程</span></div>
 							</button>
 						</div>
 					</div>
@@ -133,7 +134,7 @@
 							<button type="button" id="updatechbtn"
 								class="btn btn-primary">更新</button>
 							<input type="file" id="fileInput" name="coachImg"
-								style="display: none;">
+								style="display: none;" accept="image/*">
 							<input type="text" id="changecoachimg" name="coachId" style="display: none;">
 							<button class="btn btn-primary" type="button" id="CoachImgbtn"
 								name="coachId" value="">提交</button>
@@ -269,7 +270,7 @@
 							<div class="mb-3">
 								<label for="formFileLg" class="form-label">上傳教練圖片</label> <input
 									class="form-control form-control-lg" id="formFileLg" type="file" name="coachImg"
-									>
+									accept="image/*">
 							</div>
 						</div>
 						<hr style="border: 1px solid #dddddd;">

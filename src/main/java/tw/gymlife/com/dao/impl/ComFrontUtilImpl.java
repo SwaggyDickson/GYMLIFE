@@ -33,6 +33,7 @@ import tw.gymlife.com.model.OrdersDetailsDTO;
 @Repository
 public class ComFrontUtilImpl implements ComFrontUtil {
 
+	private String cartPath = "C:\\testGym\\gymproject\\src\\main\\resources\\static\\gym\\com\\cart";
 	// 將Bean轉成DTO
 	@Override
 	public List<CommodityDTO> convertCommodityDTOList(List<Commoditys> comList) {
@@ -200,10 +201,9 @@ public class ComFrontUtilImpl implements ComFrontUtil {
 
 		ObjectMapper objectMapper = new ObjectMapper();
 		List<Cart> existingCartList = new ArrayList<>();
-		String path = "C:\\springBoot\\workspace\\springBootGym\\src\\main\\resources\\static\\gym\\com\\cart";
 		existingCartList = null;
 		try {
-			File file = new File(path + "\\" + userId + ".json");
+			File file = new File(cartPath + "\\" + userId + ".json");
 			if (file.exists()) {
 				existingCartList = objectMapper.readValue(file, new TypeReference<List<Cart>>() {
 				});
@@ -244,10 +244,9 @@ public class ComFrontUtilImpl implements ComFrontUtil {
 
 		ObjectMapper objectMapper = new ObjectMapper();
 		List<Cart> existingCartList = new ArrayList<>();
-		String path = "C:\\springBoot\\workspace\\springBootGym\\src\\main\\resources\\static\\gym\\com\\cart";
 		existingCartList = null;
 		try {
-			File file = new File(path + "\\" + userId + ".json");
+			File file = new File(cartPath + "\\" + userId + ".json");
 			if (file.exists()) {
 				existingCartList = objectMapper.readValue(file, new TypeReference<List<Cart>>() {
 				});
@@ -266,10 +265,9 @@ public class ComFrontUtilImpl implements ComFrontUtil {
 
 		ObjectMapper objectMapper = new ObjectMapper();
 		List<Cart> existingCartList = new ArrayList<>();
-		String path = "C:\\springBoot\\workspace\\springBootGym\\src\\main\\resources\\static\\gym\\com\\cart";
 		existingCartList = null;
 		try {
-			File file = new File(path + "\\" + userId + ".json");
+			File file = new File(cartPath + "\\" + userId + ".json");
 			if (file.exists()) {
 				existingCartList = objectMapper.readValue(file, new TypeReference<List<Cart>>() {
 				}); // 讀取json檔案並轉成beanList

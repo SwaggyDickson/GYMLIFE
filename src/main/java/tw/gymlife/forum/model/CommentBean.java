@@ -1,13 +1,16 @@
 package tw.gymlife.forum.model;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -16,6 +19,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
@@ -37,6 +41,18 @@ public class CommentBean {
 	@Lob
 	private byte[] commentImg;
 
+	private int likeCount = 0;
+
+	private Integer parentCommentId; // new
+
+	public int getLikeCount() {
+		return this.likeCount;
+	}
+
+	public void setLikeCount(int likeCount) {
+		this.likeCount = likeCount;
+	}
+
 	@DateTimeFormat(pattern = "yyyy/MM/dd HH:mm:ss")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date commentTime;
@@ -45,10 +61,10 @@ public class CommentBean {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date commentUpdateTime;
 
-	//留言狀態
+	// 留言狀態
 	@Column(name = "status", nullable = false)
-    private String status = "Active"; // 默认状态为 Active (預設值)
-	
+	private String status = "Active"; // 默认状态为 Active (預設值)
+
 	@ManyToOne
 	@JoinColumn(name = "articleId")
 	private ArticleBean article;
@@ -56,24 +72,26 @@ public class CommentBean {
 	@JsonIgnore
 	@JsonBackReference
 	@ManyToOne
-	@JoinColumn(name = "userId" )
+	@JoinColumn(name = "userId")
 	private Member member;
-	
-	
+
+	@OneToMany(mappedBy = "comment", cascade = CascadeType.ALL)
+	private List<CommentLike> commentLikes = new ArrayList<>();
+
 	@PrePersist // 當物件轉換成persist狀態以前，要做的事情放在方法裡面
 	public void onCreate() {
 		if (commentTime == null) {
 			commentTime = new Date();
 		}
 	}
-	
+
 	public String getCommentTimeString() {
-	    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-	    return formatter.format(this.commentTime);
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		return formatter.format(this.commentTime);
 	}
-	
+
 	public boolean isActive() {
-	    return "Active".equals(this.status);
+		return "Active".equals(this.status);
 	}
 
 }

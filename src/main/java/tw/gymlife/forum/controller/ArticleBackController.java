@@ -24,7 +24,8 @@ import tw.gymlife.forum.service.CommentService;
 @Controller
 @MultipartConfig
 public class ArticleBackController {
-
+	
+	
 	@Autowired
 	private ArticleService articleService;
 
@@ -95,6 +96,10 @@ public class ArticleBackController {
 	}
 
 	// ------------------------------刪除----------------------------------
+<<<<<<< HEAD
 	
 	
+=======
+
+>>>>>>> Hugo
 }

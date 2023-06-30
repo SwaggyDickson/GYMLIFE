@@ -22,6 +22,8 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 import tw.gymlife.course.model.CorderBean;
 import tw.gymlife.forum.model.ArticleBean;
+import tw.gymlife.forum.model.ArticleLike;
+import tw.gymlife.forum.model.CommentLike;
 import tw.gymlife.forum.model.CommentBean;
 
 @Data
@@ -56,18 +58,26 @@ public class Member {
 	   public boolean isVerified() {
 		   return userStatus == 1;
 	    }
-	// 跟文章關聯
-	@JsonIgnore
-	@JsonManagedReference
-	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
-	private List<ArticleBean> articles = new ArrayList<>(0);
+		// 跟文章關聯
+		@JsonIgnore
+		@JsonManagedReference
+		@OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+		private List<ArticleBean> articles = new ArrayList<>(0);
 
-	// 跟留言關聯
-	@JsonIgnore
-	@JsonManagedReference
-	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
-	private List<CommentBean> comments = new ArrayList<>(0);
+		// 跟留言關聯
+		@JsonIgnore
+		@JsonManagedReference
+		@OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+		private List<CommentBean> comments = new ArrayList<>(0);
 
+		@OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+		private List<ArticleLike> articleLikes = new ArrayList<>();
+
+		@OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+		private List<CommentLike> commentLikes = new ArrayList<>();
+
+	
+	
 	//新增課程訂單
 //	@OneToMany(fetch = FetchType.LAZY, mappedBy = "member", cascade = CascadeType.ALL)
 //	private List<CorderBean> corder;

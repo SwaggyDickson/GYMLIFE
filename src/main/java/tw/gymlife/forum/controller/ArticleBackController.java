@@ -93,6 +93,8 @@ public class ArticleBackController {
 	public String deleteArticle(@PathVariable Integer articleId) {
 		articleService.disableArticle(articleId);
 		System.out.println(666);
+		System.out.println(666);
+		System.out.println(666);
 		return "redirect:/forum/page";
 	}
 

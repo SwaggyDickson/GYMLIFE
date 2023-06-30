@@ -96,12 +96,7 @@ public class ArticleBackController {
 	}
 
 	// ------------------------------刪除----------------------------------
-<<<<<<< HEAD
-	
-	public void aaaaa() {
-	}
-}
-=======
+
 
 }
->>>>>>> testHugo
+

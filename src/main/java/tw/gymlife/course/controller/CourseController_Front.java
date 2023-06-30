@@ -93,6 +93,13 @@ public class CourseController_Front {
 		m.addAttribute("ibeans", ibeans);
 		return "frontgymlife/course/coursesingle";
 	}
+	// 查詢單筆會員 ajax
+	@ResponseBody
+	@GetMapping("/course/cordermember")
+	public Member findmemberById(@RequestParam(name="userId") Integer userId) throws ParseException {
+		Member member = oservice.selectMemberByuserId(userId);
+		return member;
+	}
 
 	// 查詢課程ByIdAjax
 	@ResponseBody

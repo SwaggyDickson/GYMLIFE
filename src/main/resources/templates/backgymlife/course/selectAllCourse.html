@@ -38,8 +38,8 @@
 								<span class="p-3" id="editicon" style="border: none"><i
 										class="fa-solid fa-ellipsis-vertical fa-2xl"></i></span>
 							</button>
-							<button class="btn btn-danger btn-lg mt-3" id="insertbtn" style="float: left">
-								<div data-toggle="modal" data-target="#insertstaticBackdrop">新增課程</div>
+							<button class="btn btn-primary  mt-3" id="insertbtn" style="float: left">
+								<div data-toggle="modal" data-target="#insertstaticBackdrop"><b>+</b> <span>新增課程</span></div>
 							</button>
 						</div>
 					</div>
@@ -141,10 +141,10 @@
 				</div>
 				<form action="#" th:method="post" enctype="multipart/form-data" id="insertcimg">
 					<div class="modal-footer d-flex justify-content-center">
-					<input type="text" id="cimgcourseId" name="courseId" style="display: none;">
+					<input type="text" id="cimgcourseId" name="courseId" style="display: none;" >
 						<button type="button" class="btn btn-primary" id="insertcbtn">新增照片</button>
 						<input type="file" id="insertfileInput" name="courseImg" style="display: none;"
-							onchange="submitForm()">
+							onchange="submitForm()" accept="image/*">
 						<button type="button" class="btn btn-secondary editimgclose" data-dismiss="modal">確定</button>
 
 					</div>
@@ -304,7 +304,7 @@
 							<div class="mb-3">
 								<label for="formFileLg" class="form-label">上傳課程圖片</label> <input
 									class="form-control form-control-lg" id="formFileLg" type="file" name="courseImg"
-									multiple="multiple">
+									multiple="multiple" accept="image/*">
 							</div>
 						</div>
 						<div class="modal-footer d-flex justify-content-center">
@@ -323,7 +323,6 @@
 	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 	<script th:src="@{/gym/course/back/selectAllCourse.js}"></script>
 	<script th:src="@{/gym/course/back/singlecourseajax.js}"></script>
-	<script th:src="@{http://localhost:8080/gymlife/JS/axios.min.js}"></script>
 
 </body>
 

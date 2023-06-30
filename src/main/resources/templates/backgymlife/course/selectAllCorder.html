@@ -33,11 +33,6 @@
 						<div class="col-md-12"
 							style="text-align: center; justify-content: center; align-content: center;">
 							<a class="display-4" style="margin: 0 auto;">訂單</a>
-							<button class=" d-flex" id="edit"
-								style="border: none; float: right;">
-								<span class="p-3" id="editicon" style="border: none"><i
-									class="fa-solid fa-ellipsis-vertical fa-2xl"></i></span>
-							</button>
 						</div>
 					</div>
 
@@ -45,25 +40,50 @@
 						<thead>
 							<tr>
 								<th>訂單編號</th>
-								<th>會員資料</th>
-								<th>課程資料</th>
+								<th>會員編號</th>
+								<th>課程名稱</th>
 								<th>付款狀態</th>
 								<th>購買時間</th>
+								<th>更新時間</th>
 								<th>購買數量</th>
 								<th>訂單總金額</th>
+								<th>更新</th>
+								<th>刪除</th>
 							</tr>
 						</thead>
 						<tbody>
 							<th:block th:each="corder:${corders}">
-							<tr>
-								<td th:text="${corder.corderId}"></td>
-								<td th:text="${corder.userId}"></td>
-								<td th:text="${corder.courseId}"></td>
-								<td th:text="${corder.corderPayment}"></td>
-								<td th:text="${corder.corderTime}"></td>
-								<td th:text="${corder.corderQuantity}"></td>
-								<td th:text="${corder.corderCost}"></td>
-							</tr>
+								<tr>
+									<td th:text="${corder.corderId}"></td>
+									<td><button class="btn btn-outline-primary btn-sm"
+											th:onclick="memberModal([[${corder.userId}]])">
+											<div data-toggle="modal" data-target="#allmember"
+												th:text="${corder.userId}"></div>
+										</button></td>
+									<td th:text="${corder.course.courseName}"></td>
+									<td th:text="${corder.corderPayment}"></td>
+									<td th:text="${corder.corderTime}"></td>
+									<td th:text="${corder.corderUpdateTime}"></td>
+									<td><div th:id="${corder.corderId}">
+											<a th:text="${corder.corderQuantity}"
+												th:id="'corderQuantity-'+${corder.corderId}"></a>
+										</div></td>
+									<td th:text="${corder.corderCost}"></td>
+									<td class="updatebtn"><button
+											class="btn btn-outline-primary btn-sm"
+											th:id="'updatebtn-'+${corder.corderId}"
+											th:onclick="updateCorderBtn([[${corder.corderId}]])">
+											更新</button>
+										<button class="btn btn-outline-primary btn-sm"
+											th:id="'updateclick-'+${corder.corderId}" th:onclick="updateCorder([[${corder.corderId}]])" style="display:none;">提交</button>
+									</td>
+									<td class="deletebtn">
+										<button type="button"
+											class="btn btn-outline-danger btn-sm deletechbtn"
+											name="coachId"
+											th:onclick="deletecorder([[${corder.corderId}]])">刪除</button>
+									</td>
+								</tr>
 							</th:block>
 						</tbody>
 					</table>
@@ -77,10 +97,43 @@
 		</div>
 		<!-- END content-page -->
 		<div th:replace="~{layout/footer}"></div>
+
+		<!------------- 會員彈跳視窗 ----------------------------------------------------------------------------------->
+		<!------------- 會員彈跳視窗 ----------------------------------------------------------------------------------->
+		<!------------- 會員彈跳視窗 ----------------------------------------------------------------------------------->
+		<div class="modal fade" id="allmember" tabindex="-1" role="dialog"
+			aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-centered" role="document">
+				<div class="modal-content">
+					<div class="modal-header justify-content-center position-relative">
+						<h5 class="modal-title" id="exampleModalLongTitle">
+							<a id="memberName"></a>
+						</h5>
+						<button type="button" class="close ml-0 position-absolute"
+							data-dismiss="modal" style="right: 20px" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<!----- 會員Card ---------->
+						<div id="membertable"></div>
+
+
+						<!-----會員Card_End ------->
+					</div>
+					<div class="modal-footer d-flex justify-content-center">
+						<button type="button" class="btn btn-secondary"
+							data-dismiss="modal">確定</button>
+
+					</div>
+				</div>
+			</div>
+		</div>
+
 		<script
 			src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.js"></script>
 		<script>let table = new DataTable('#myTable');</script>
-		<script th:src="@{http://localhost:8080/gymlife/JS/axios.min.js}"></script>
+		<script th:src="@{/gym/course/back/selectAllCorder.js}"></script>
 	</div>
 </body>
 </html>

@@ -69,9 +69,9 @@ public class Member {
 	private List<CommentBean> comments = new ArrayList<>(0);
 
 	//新增課程訂單
-//	@OneToMany(fetch = FetchType.LAZY, mappedBy = "member", cascade = CascadeType.ALL)
-//	private List<CorderBean> corder;
-//	
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "member", cascade = CascadeType.ALL)
+	private List<CorderBean> corder;
+	
 	
 }
 	//接收登入資料

@@ -10,6 +10,7 @@ import java.util.Base64;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -24,6 +25,10 @@ import tw.gymlife.com.model.Cart;
 import tw.gymlife.com.model.ComPic;
 import tw.gymlife.com.model.CommodityDTO;
 import tw.gymlife.com.model.Commoditys;
+import tw.gymlife.com.model.OrderDetails;
+import tw.gymlife.com.model.Orders;
+import tw.gymlife.com.model.OrdersDTO;
+import tw.gymlife.com.model.OrdersDetailsDTO;
 
 @Repository
 public class ComFrontUtilImpl implements ComFrontUtil {
@@ -45,7 +50,7 @@ public class ComFrontUtilImpl implements ComFrontUtil {
 				comDTO.setComContent(com.getComContent()); // 商品描述
 				comDTO.setComStatus(com.getComStatus()); // 商品狀態
 				comDTO.setComBuyNumber(com.getComBuyNumber()); // 商品總購買數
-
+				comDTO.setClickTime(com.getClickTime());
 				Map<Integer, byte[]> comPicInfo = new HashMap<>();
 				for (ComPic comPic : com.getComPics()) {
 //					String comPicBase64 = convertImageToBase64(virLocs + "\\" + comPic.getComPicName());
@@ -68,6 +73,7 @@ public class ComFrontUtilImpl implements ComFrontUtil {
 
 		List<CommodityDTO> comDTOList = new ArrayList<>();
 
+		byte[] aa = "01".getBytes();
 		try {
 			for (Commoditys com : comList) {
 				CommodityDTO comDTO = new CommodityDTO(); // 將取出資訊配合轉成圖片裝進DTO中回傳
@@ -82,10 +88,8 @@ public class ComFrontUtilImpl implements ComFrontUtil {
 
 				Map<Integer, byte[]> comPicInfo = new HashMap<>();
 				for (ComPic comPic : com.getComPics()) {
-//					String comPicBase64 = convertImageToBase64(virLocs + "\\" + comPic.getComPicName());
-//					String comPicBase64 = convertImageToBase64(comPic.getComPicFile());
 
-					comPicInfo.put(comPic.getComPicId(), comPic.getComPicFile());
+					comPicInfo.put(comPic.getComPicId(), aa);
 
 					comDTO.setComPicInfo(comPicInfo);
 					break;
@@ -166,7 +170,7 @@ public class ComFrontUtilImpl implements ComFrontUtil {
 				cartDTO.setComContent(com.getComContent()); // 商品描述
 				cartDTO.setComStatus(com.getComStatus()); // 商品狀態
 				cartDTO.setComBuyNumber(com.getComBuyNumber()); // 商品總購買數
-
+				
 				Map<Integer, byte[]> comPicInfo = new HashMap<>();
 				for (ComPic comPic : com.getComPics()) {
 					comPicName = comPic.getComPicName();
@@ -192,10 +196,11 @@ public class ComFrontUtilImpl implements ComFrontUtil {
 
 	// 按下加入購物車後 LoadJson檔案
 	@Override
-	public List<Cart> loadJson(List<Cart> cartList, String path, String userId) {
+	public List<Cart> loadJson(List<Cart> cartList, int userId) {
 
 		ObjectMapper objectMapper = new ObjectMapper();
 		List<Cart> existingCartList = new ArrayList<>();
+		String path = "C:\\springBoot\\workspace\\springBootGym\\src\\main\\resources\\static\\gym\\com\\cart";
 		existingCartList = null;
 		try {
 			File file = new File(path + "\\" + userId + ".json");
@@ -235,10 +240,11 @@ public class ComFrontUtilImpl implements ComFrontUtil {
 
 	// 進入購物車去讀取Json檔案
 	@Override
-	public List<Cart> goIntoCart(String path, String userId) {
+	public List<Cart> goIntoCart( int userId) {
 
 		ObjectMapper objectMapper = new ObjectMapper();
 		List<Cart> existingCartList = new ArrayList<>();
+		String path = "C:\\springBoot\\workspace\\springBootGym\\src\\main\\resources\\static\\gym\\com\\cart";
 		existingCartList = null;
 		try {
 			File file = new File(path + "\\" + userId + ".json");
@@ -256,10 +262,11 @@ public class ComFrontUtilImpl implements ComFrontUtil {
 
 	// 刪除購物車商品按鈕
 	@Override
-	public List<Cart> deleteCart(String path, String userId, int comId) {
+	public List<Cart> deleteCart( int userId, int comId) {
 
 		ObjectMapper objectMapper = new ObjectMapper();
 		List<Cart> existingCartList = new ArrayList<>();
+		String path = "C:\\springBoot\\workspace\\springBootGym\\src\\main\\resources\\static\\gym\\com\\cart";
 		existingCartList = null;
 		try {
 			File file = new File(path + "\\" + userId + ".json");
@@ -288,4 +295,49 @@ public class ComFrontUtilImpl implements ComFrontUtil {
 
 		return null;
 	}
+
+	//生成訂單DTO
+	@Override
+	public List<OrdersDTO> convertOrderToOrdersDTO(List<Orders> orderList, List<CommodityDTO> returnComList) {
+
+	    List<OrdersDTO> comDTOList = new ArrayList<>();
+	    //將Hibernate訂單裝入客製化訂單DTO
+	    for (Orders order : orderList) {
+	        OrdersDTO ordersDTO = new OrdersDTO();
+	        ordersDTO.setOrderId(order.getOrderId()); //訂單ID
+	        ordersDTO.setUserId(order.getUserId()); //userID
+	        ordersDTO.setOrderTime(order.getOrderTime()); //訂單成立時間
+	        if (order.getOrderPayment() == 0) {
+	            ordersDTO.setOrderPayment("未付款");
+	        } else if (order.getOrderPayment() == 1) {
+	            ordersDTO.setOrderPayment("已付款");
+	        }
+	        ordersDTO.setTotalPrice(order.getOrderTotalPrice()); //總價
+	        ordersDTO.setOrderUuid(order.getOrderUuid()); //訂單的UUID
+
+	        List<OrdersDetailsDTO> ordersDetailsDTOsList = new ArrayList<>();
+	        //將Hibernate的訂單明細裝入客製化訂單明細+商品明細DTO
+	        for (OrderDetails ordersDetails : order.getOrderDetails()) {
+	            OrdersDetailsDTO ordersDetailsDTO = new OrdersDetailsDTO();
+	            for (CommodityDTO commodityDTO : returnComList) {
+	                if (ordersDetails.getComId() == commodityDTO.getComId()) {
+	                    ordersDetailsDTO.setComId(commodityDTO.getComId()); //商品ID
+	                    ordersDetailsDTO.setComName(commodityDTO.getComName()); //商品名稱
+	                    ordersDetailsDTO.setComPrice(commodityDTO.getComPrice()); //商品價格
+	                    for (Integer comPicId : commodityDTO.getComPicInfo().keySet()) {
+	                        ordersDetailsDTO.setComPicId(comPicId);  //圖片ID
+	                        break;
+	                    }
+	                    ordersDetailsDTO.setPurchaseNumber(ordersDetails.getPurchaseNumber()); //購買數量
+	                    ordersDetailsDTOsList.add(ordersDetailsDTO);
+	                }
+	            }
+	        }
+	        ordersDTO.setOrderDetailsList(ordersDetailsDTOsList);
+	        comDTOList.add(ordersDTO);
+	    }
+
+	    return comDTOList;
+	}
+
 }

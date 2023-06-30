@@ -43,6 +43,9 @@ public class Commoditys {
 
 	@Column(name = "COMBUYNUMBER")
 	private int comBuyNumber; // 購買此商品總量
+	
+	@Column(name = "CLICKTIME")
+	private int clickTime;
 
 //	@Column(name = "COMPICNAME")
 //	private String comPicName;  //商品圖片名稱
@@ -81,7 +84,7 @@ public class Commoditys {
 //	}
 	
 	public Commoditys(int comId, String comName, int comNumber, int comPrice, String comContent, String comStatus,
-			String comType, int comBuyNumber, Set<ComPic> comPics) {
+			String comType, int comBuyNumber, Set<ComPic> comPics, int clickTime) {
 		super();
 		this.comId = comId;
 		this.comName = comName;
@@ -92,6 +95,7 @@ public class Commoditys {
 		this.comType = comType;
 		this.comBuyNumber = comBuyNumber;
 		this.comPics = comPics;
+		this.clickTime= clickTime;
 	}
 
 	@Override
@@ -173,5 +177,11 @@ public class Commoditys {
 		this.comBuyNumber = comBuyNumber;
 	}
 	
+	public int getClickTime() {
+		return clickTime;
+	}
+	public void setClickTime(int clickTime) {
+		this.clickTime = clickTime;
+	}
 	
 }

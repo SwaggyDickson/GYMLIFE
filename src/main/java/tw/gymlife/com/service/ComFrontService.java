@@ -34,31 +34,58 @@ public class ComFrontService {
 		String comStatus = "上架";
 		return comFrontRepo.findByComStatusAndComNameLike(comStatus, keyword);
 	}
-	//價格高低排序
-	public List<Commoditys> getSortByPrice(){
-		
+
+	// 價格高低排序
+	public List<Commoditys> getSortByPrice() {
+
 		String comStatus = "上架";
 		return comFrontRepo.findByComStatusOrderByComPriceDesc(comStatus);
 	}
-	
-	//類別查詢
-	public List<Commoditys> getComTypeList(String comType){
-		
-		String comStatuString="上架";
+
+	// 類別查詢
+	public List<Commoditys> getComTypeList(String comType) {
+
+		String comStatuString = "上架";
 		return comFrontRepo.findByComStatusAndComTypeLike(comStatuString, comType);
-		
+
 	}
+
 	/*------------shop單筆商品頁功能開始------------*/
-	
-	public List<Commoditys> getOneComList(Integer comId){
-		List<Commoditys> returnList= new ArrayList<>();
+	//每次點擊單筆商品 次數+1
+	public boolean updateClickTime(Integer comId) {
+
 		Optional<Commoditys> optional = comFrontRepo.findById(comId);
-		if(optional.isPresent()) {
+		if (optional.isPresent()) {
+			Commoditys com = optional.get();
+			com.setClickTime(com.getClickTime() + 1);
+			comFrontRepo.save(com);
+			return true;
+		}
+		return false;
+	}
+
+	//加入購物車查找單筆商品list
+	public List<Commoditys> getOneComList(Integer comId) {
+		List<Commoditys> returnList = new ArrayList<>();
+		Optional<Commoditys> optional = comFrontRepo.findById(comId);
+
+		if (optional.isPresent()) {
 			Commoditys com = optional.get();
 			returnList = Collections.singletonList(com);
 		}
-		
+
 		return returnList;
+	}
+
+	//生成訂單用
+	public Commoditys getCommoditys(Integer comId) {
+		Optional<Commoditys> optional = comFrontRepo.findById(comId);
+
+		if (optional.isPresent()) {
+			Commoditys com = optional.get();
+			return com;
+		}
+		return null;
 	}
 	/*------------shop單筆商品頁功能結束------------*/
 
@@ -68,4 +95,5 @@ public class ComFrontService {
 		String comStatus = "上架";
 		return comFrontRepo.findByComStatusAndComNameLike(comStatus, keyword);
 	}
+
 }

@@ -20,6 +20,7 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
+import tw.gymlife.com.model.Orders;
 import tw.gymlife.course.model.CorderBean;
 import tw.gymlife.forum.model.ArticleBean;
 import tw.gymlife.forum.model.ArticleLike;
@@ -76,7 +77,10 @@ public class Member {
 		@OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
 		private List<CommentLike> commentLikes = new ArrayList<>();
 
-	
+
+		//會員一對多商品訂單
+		@OneToMany(fetch = FetchType.LAZY, mappedBy ="members",cascade = CascadeType.ALL )
+		private List<Orders> orders = new ArrayList<>(); 
 	
 	//新增課程訂單
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "member", cascade = CascadeType.ALL)

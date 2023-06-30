@@ -42,6 +42,9 @@ textarea {
 	margin: 0 auto;
 	flex-direction: row;
 }
+.cardContent{
+	padding: 6px;
+}
 
 .com-list {
 	flex: 0 0 calc(23% - 1rem); /* 每行最多顯示4個卡片 */
@@ -140,6 +143,7 @@ textarea {
 	background-color: rgb(255, 255, 255);
 	padding: 5px;
 	border: 1px solid;
+	    left: 255px;
 }
 .div-aside:hover {
 	background-color: #c1c1c17a;

@@ -55,6 +55,7 @@ public class ComUtilImpl implements ComUtil {
 				comDTO.setComContent(com.getComContent()); // 商品描述
 				comDTO.setComStatus(com.getComStatus()); // 商品狀態
 				comDTO.setComBuyNumber(com.getComBuyNumber()); // 商品總購買數
+				comDTO.setClickTime(com.getClickTime());
 
 				Map<Integer, byte[]> comPicInfo = new LinkedHashMap<>();
 				for (ComPic comPic : com.getComPics()) {

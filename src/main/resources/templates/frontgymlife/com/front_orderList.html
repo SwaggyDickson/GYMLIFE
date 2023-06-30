@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Gym | 訂單列表</title>
+
+<!-- My CSS -->
+<link rel="stylesheet" th:href="@{http://localhost:8080/gymlife/gym/com/css/front_orderList.css}">
+<!-- SweetAlert2框框 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+	<div th:replace="~{layout/front_nav}"></div>
+	<section class="class-details-section spad">
+		<div class="container">
+			<!-- 包起整體頁面的div -->
+			<div class="wholePageContent">
+				<main class="main-content">
+					<div class="container orderCard">
+					<div class="orderTitle">
+						<h2>歷史訂單</h2> 
+					</div>
+						<div class="accordion " id="accordionExample">
+							<th:block th:each="order : ${orderList}">
+							    <div class="card orderList" >
+							        <div class="card-header" id="headingOne">
+							            <h2 class="mb-0">
+							                <button class="btn btn-link" type="button" data-toggle="collapse"
+							                        th:data-target="'#collapseOne'+${order.orderId}" aria-expanded="true"
+							                        aria-controls="collapseOne" style="color:white;">
+							                <span><i class="fa fa-caret-square-o-down fa-lg" aria-hidden="true"></i></span>  [[${order.orderTime}]]  [[${order.orderUuid}]] 
+							                </button>
+							            </h2>
+							        </div>
+							        <div th:id="'collapseOne'+${order.orderId}" class="collapse show" aria-labelledby="headingOne"
+							             data-parent="#accordionExample">
+							            <div class="card-body " style="background-color:#151515;">
+							              <p>訂單編號: <span class="orderDetailsContent">[[${order.orderUuid}]]</span></p>
+							              <p>訂單建立時間: <span class="orderDetailsContent">[[${order.orderTime}]]</span></p>
+							              
+							                <th:block th:each="orderDetails: ${order.orderDetailsList}">
+							                    <div class="orderItem">
+							                    	<div class="orderImgDiv">
+								                        <img class="orderImg" th:src="@{'/download/'+ ${orderDetails.comPicId}}">
+							                        </div>
+							                        <div class="orderContent">
+							                        <p>商品名稱: <span class="orderDetailsContent" th:text="${orderDetails.comName}"></span></p>
+							                        <p>$: <span class="orderDetailsContent" th:text="${orderDetails.comPrice}"></span></p>
+							                        <p>數量:  <span class="orderDetailsContent" th:text="${orderDetails.purchaseNumber}"></span></p>
+							                        </div>
+							                        <!-- 其他订单明细的属性 -->
+							                    </div>
+							                </th:block>
+							                <div class="orderData">
+							                	<p style="color:white;">付款狀態: <span class="orderDataContent" th:text="${order.orderPayment}"></span>
+							                	<p style="color:white;">付款金額: $ <span class="orderDataContent" th:text="${order.totalPrice}"></span>
+							                </div>
+							                <div class="orderBtn">
+							                
+								                <!-- Button trigger modal -->
+												<button type="button" class="btn myBtn" style="color:white; background-color:darkgreen; display:flex;" data-toggle="modal" th:data-target="'#exampleModalCenter'+${order.orderId}">
+												  <span class="btnSpan" >前往結帳 :</span><i class="fa fa-cc-visa fa-2x" aria-hidden="true"></i>
+												</button>
+												
+												<!-- Modal -->
+												<div class="modal fade" th:id="'exampleModalCenter'+ ${order.orderId}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+												  <div class="modal-dialog modal-dialog-centered" role="document">
+												    <div class="modal-content">
+												      <div class="modal-header">
+												        <h5 class="modal-title" id="exampleModalCenterTitle">請選擇付款方式?</h5>
+												        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+												          <span aria-hidden="true">&times;</span>
+												        </button>
+												      </div>
+												         <form action="#" method="POST">
+													      <div class="modal-body">
+											                <input type="hidden" name="orderId" th:value="${order.orderId}">
+											                <input type="hidden" name="orderUserId" th:value="${order.userId}">
+											                <input type="hidden" name="orderTime" th:value="${order.orderTime}">
+											                <input type="hidden" name="orderUuid" th:value="${order.orderUuid}">
+											                <input type="hidden" name="orderTotalPrice" th:value="${order.totalPrice}">
+											                
+											                <input type="radio" name="payment" value="green"><i class="fa fa-cc-visa fa-2x" aria-hidden="true" style="color:black;"></i><span class="btnSpans" >綠界 </span><br>
+															<input type="radio" name="payment" value="Line"> <i ></i><span class="btnSpanss" style="background-image: url('http://localhost:8080/gymlife/gym/com/img/Line-PayPng.png');"></span><br>
+												      </div>
+												      <div class="modal-footer">
+												        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+												        <button type="submit" class="btn btn-primary checkOutBtn">結帳</button>
+												      </div>
+												       </form>
+												    </div>
+												  </div>
+												</div>
+							                </div>
+							            </div>
+							        </div>
+							    </div>
+							</th:block>
+
+						</div>
+					</div>
+				</main>
+			</div>
+		</div>
+	</section>
+
+	<!--回到上方按鈕-->
+	<button id="back-to-top-btn" title="回到頁面頂端">
+		<i class="fa fa-arrow-up">TOP</i>
+	</button>
+
+
+	<div th:replace="~{layout/front_footer}"></div>
+	<!-- Js Plugins -->
+	<script	th:src="@{http://localhost:8080/gymlife/front/js/jquery-3.3.1.min.js}"></script>
+	<script	th:src="@{http://localhost:8080/gymlife/front/js/bootstrap.min.js}"></script>
+	<script	th:src="@{http://localhost:8080/gymlife/front/js/jquery.magnific-popup.min.js}"></script>
+	<script	th:src="@{http://localhost:8080/gymlife/front/js/masonry.pkgd.min.js}"></script>
+	<script	th:src="@{http://localhost:8080/gymlife/front/js/jquery.barfiller.js}"></script>
+	<script	th:src="@{http://localhost:8080/gymlife/front/js/jquery.slicknav.js}"></script>
+	<script	th:src="@{http://localhost:8080/gymlife/front/js/owl.carousel.min.js}"></script>
+	<script th:src="@{http://localhost:8080/gymlife/front/js/main.js}"></script>
+	<!-- My Js 	 -->
+	<script	th:src="@{http://localhost:8080/gymlife/gym/com/js/front_orderList.js}"></script>
+</body>
+</html>

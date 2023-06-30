@@ -18,6 +18,28 @@ document.getElementById("back-to-top-btn").onclick = function() {
 	document.documentElement.scrollTop = 0;
 };
 /* 回到上方按鈕結束 */
+/* 新增商品開始 */
+
+$(document).ready(function() {
+	$('form').submit(function(event) {
+		event.preventDefault(); // 取消表单提交事件
+
+		Swal.fire({
+			title: '確定新增商品？',
+			icon: 'question',
+			showCancelButton: true,
+			confirmButtonText: '新增',
+			cancelButtonText: '取消'
+		}).then((result) => {
+			if (result.isConfirmed) {
+				// 最后，如果需要，手动提交表单
+				$(this).unbind('submit').submit();
+			}
+		});
+	});
+});
+
+/* 新增商品結束 */
 /* 預覽圖片開始 */
 function previewImages(input) {
 	var previewContainer = document.querySelector('.preview'); // 預覽容器

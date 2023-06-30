@@ -93,7 +93,7 @@
                                     </div>
                                     <!-- 輪播結束 -->
 
-                                    <div class="card-body cardContent">
+                                    <div class="card-body cardContent" style="padding:6px;">
                                         <div>
                                             商品:<input type="text" name="comName" th:value="${com.comName}" readonly>
                                         </div>
@@ -119,11 +119,7 @@
                                                 <option value="下架" th:selected="${com.comStatus=='下架'}">下架</option>
                                             </select>
                                         </div>
-                                        <div>
-                                            描述:<textarea name="comContent" cols="20" rows="5"
-                                                placeholder="${com.comContent}" readonly resized="none"
-                                                th:text="${com.comContent}"></textarea>
-                                        </div>
+
                                         <!-- Button trigger modal -->
                                         <button type="button" class="btn btn-primary" data-toggle="modal"
                                             th:data-target="'#exampleModal-' + ${com.comId}"

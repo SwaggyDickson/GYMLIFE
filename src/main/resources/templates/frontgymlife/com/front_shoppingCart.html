@@ -57,8 +57,8 @@
 																</div>
 															</td>
 															<td width="65" height="fit-content"><input
-																type="text" class="form-control itemNum"
-																th:value="${com.comNumber}" th:data-price="${com.comPrice}" th:data-productId="${com.comId}"/></td>
+																type="number" class="form-control itemNum"
+																th:value="${com.comNumber}" th:data-price="${com.comPrice}" th:data-productId="${com.comId}" style="width:55px;" min="1"/></td>
 															<td>
 																<h5>$: [[${com.comPrice}]] </h5>
 															</td>
@@ -83,7 +83,7 @@
 						</div>
 
 						<div class="col-md-3">
-							<form action="${pageContext.request.contextPath}/UserServlet" method="post">
+							<form th:action="@{/test.func}" method="post">
 								<div class="ibox">
 									<div class="ibox-title">
 										<h5>Cart Summary</h5>
@@ -96,7 +96,7 @@
 										<span class="text-muted small"> *For United States, France and Germany applicable sales tax will be applied </span>
 										<div class="m-t-sm">
 											<div class="btn-group">
-												<button type="submit" class="btn btn-primary pull-right">
+												<button type="submit" class="btn btn-primary pull-right" id="buyBtn">
 													<i class="fa fa fa-shopping-cart"></i> 結帳
 												</button>
 											</div>
@@ -105,10 +105,9 @@
 								</div>
 								<th:block th:each="com : ${CartList}">
 									<input type="hidden" name="comId" th:id="'productId'+${com.comId}" th:value="${com.comId}">
-									<input type="hidden" th:name="'itemNum-'+${com.comId}" th:id="'itemNum-'+${com.comId}" th:value="${com.comNumber}">
-									<input type="hidden" name="totalPrice" class="totalPrice">
-									<input type="hidden" name="userState" value="payMoney">
+									<input type="hidden" name="itemNum" th:id="'itemNum-'+${com.comId}" th:value="${com.comNumber}">
 								</th:block>
+									<input type="hidden" name="totalPrice" class="totalPrice">
 							</form>
 							<div class="ibox">
 								<div class="ibox-title">

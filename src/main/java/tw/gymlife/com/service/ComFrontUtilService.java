@@ -9,6 +9,8 @@ import tw.gymlife.com.dao.ComFrontUtil;
 import tw.gymlife.com.model.Cart;
 import tw.gymlife.com.model.CommodityDTO;
 import tw.gymlife.com.model.Commoditys;
+import tw.gymlife.com.model.Orders;
+import tw.gymlife.com.model.OrdersDTO;
 
 @Service
 public class ComFrontUtilService {
@@ -20,8 +22,9 @@ public class ComFrontUtilService {
 	public List<CommodityDTO> convertCommodityDTOList(List<Commoditys> comList) {
 		return userUtil.convertCommodityDTOList(comList);
 	}
-	//一張圖片的DTO
-	public List<CommodityDTO> convertOneCOmPicDTOList(List<Commoditys> comList){
+
+	// 一張圖片的DTO
+	public List<CommodityDTO> convertOneCOmPicDTOList(List<Commoditys> comList) {
 		return userUtil.convertOneCOmPicDTOList(comList);
 	}
 
@@ -46,17 +49,23 @@ public class ComFrontUtilService {
 	}
 
 	// 按下加入購物車後 LoadJson檔案
-	public List<Cart> loadJson(List<Cart> cartList, String path, String userId) {
-		return userUtil.loadJson(cartList, path, userId);
+	public List<Cart> loadJson(List<Cart> cartList, int userId) {
+		return userUtil.loadJson(cartList, userId);
 	}
 
 	// 進入購物車去讀取Json檔案
-	public List<Cart> goIntoCart(String path, String userId) {
-		return userUtil.goIntoCart(path, userId);
+	public List<Cart> goIntoCart(int userId) {
+		return userUtil.goIntoCart(userId);
 	}
 
 	// 刪除購物車商品按鈕
-	public List<Cart> deleteCart(String path, String userId, int comId) {
-		return userUtil.deleteCart(path, userId, comId);
+	public List<Cart> deleteCart(int userId, int comId) {
+		return userUtil.deleteCart(userId, comId);
+	}
+
+	// 轉成訂單DTO
+	public List<OrdersDTO> convertOrderToOrdersDTO(List<Orders> orderList, List<CommodityDTO> returnComList) {
+
+		return userUtil.convertOrderToOrdersDTO(orderList, returnComList);
 	}
 }

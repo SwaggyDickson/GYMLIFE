@@ -11,9 +11,8 @@ $(document).ready(
 			'change',
 			function() {
 				const itemNum = $(this).val();
-				console.log(itemNum);
 				const comId = $(this).attr("data-productId");
-				console.log("comId: "+comId);
+				console.log("修改數量的comId: "+comId);
 
 				// 更新 hidden 標籤
 				$(`#itemNum-` + comId).val(itemNum);
@@ -24,8 +23,8 @@ $(document).ready(
 				// 透過迴圈取得每個數量欄位的值
 				itemNums.forEach(function(itemNum) {
 					console.log(itemNum.value);
-					console.log("----- ");
 					console.log($(`#itemNum-${comId}`).val());
+					console.log("----- ");
 				});
 
 				updateTotal();
@@ -49,6 +48,8 @@ function updateTotal() {
 	$('.totalPrice').val(total.toFixed(2));
 }
 /*-----------計算總價結束-------------  */
+
+
 /*-----------回到上方按鈕開始-------------  */
 // 當網頁滾動超過 20px 時，按鈕才會顯示
 window.onscroll = function() {

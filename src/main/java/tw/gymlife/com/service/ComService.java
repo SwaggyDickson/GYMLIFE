@@ -112,24 +112,39 @@ public class ComService {
 		return returnList;
 	}
 
-	//價格排序
-	public List<Commoditys> searchByPrice(){
+	// 價格排序
+	public List<Commoditys> searchByPrice() {
 
 		List<Commoditys> returnList = cRepo.findByOrderByComPriceDesc();
 		return returnList;
 	}
-	
-	//類別查詢
-	public List<Commoditys> searchByType(String keyword){
-		
+
+	// 類別查詢
+	public List<Commoditys> searchByType(String keyword) {
+
 		List<Commoditys> returnList = cRepo.findByComTypeContainingOrderByComStatusDesc(keyword);
 		return returnList;
 	}
-	
-	//上下架查詢
-	public List<Commoditys> searchByStatus(String keyword){
-		
+
+	// 上下架查詢
+	public List<Commoditys> searchByStatus(String keyword) {
+
 		List<Commoditys> returnList = cRepo.findByComStatusContaining(keyword);
+		return returnList;
+	}
+
+	// 購買數量排序
+	public List<Commoditys> sortByComBuyNumber() {
+		Sort sort = Sort.by(Sort.Direction.DESC, "comBuyNumber");
+		List<Commoditys> returnList = cRepo.findAll(sort);
+		return returnList;
+	}
+
+	// 瀏覽次數排序
+	public List<Commoditys> sortByClickTime() {
+		Sort sort = Sort.by(Sort.Direction.DESC, "clickTime");
+		List<Commoditys> returnList = cRepo.findAll(sort);
+		System.out.println(returnList);
 		return returnList;
 	}
 }

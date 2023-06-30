@@ -8,6 +8,7 @@
     <link rel="stylesheet" th:href="@{http://localhost:8080/gymlife/gym/com/css/front_shopList.css}">
     <!-- SweetAlert2框框 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script th:src="@{http://localhost:8080/gymlife/Js/jquery-3.6.4.min.js}"></script>
 </head>
 
 <body>
@@ -23,7 +24,6 @@
                         <h2>GymLife Shop</h2>
                         <div class="bt-option">
                             <a th:href="@{/}">Home</a>
-                            <a th:href="@{/shop}">GymLife Shop</a>
                             <span>ShopList</span>
                         </div>
                     </div>
@@ -49,7 +49,7 @@
                 </div>
             </div>
 
-            <div class="row">
+            <div class="row rowcontent">
 
                 <!--Aside-->
                 <div class="div-aside">
@@ -131,6 +131,7 @@
     <div th:replace="~{layout/front_footer}"></div>
     <!-- My Js 	 -->
     <script th:src="@{http://localhost:8080/gymlife/gym/com/js/front_shopList.js}"></script>
+
 </body>
 
 </html>

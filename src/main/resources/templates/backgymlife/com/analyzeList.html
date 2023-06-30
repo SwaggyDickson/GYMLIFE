@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- --------------------------------------------------------------------------------------- -->
+    <!-- SweetAlert2框框 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- JQ -->
+    <script th:src="@{Js/jquery-3.6.4.min.js}"></script>
+    <!-- Chart.js v2.9.3 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script>
+    <!-- Com CSS -->
+    <link rel="stylesheet" th:href="@{gym/com/css/analyzeList.css}">
+    <!-- dataTable -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.css" />
+
+
+
+
+    <title>分析列表</title>
+</head>
+
+<body class="adminbody">
+    <div id="main">
+        <div th:replace="~{layout/navbar}"></div>
+
+        <div class="content-page">
+
+            <!-- Start content -->
+            <div class="content">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <div class="breadcrumb-holder">
+                                <h1 class="main-title float-left">分析列表</h1>
+                                <ol class="breadcrumb float-right">
+                                    <li class="breadcrumb-item">Home</li>
+                                    <li class="breadcrumb-item active">分析列表</li>
+                                </ol>
+                                <div class="clearfix"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- -------------------------內文-------------------------------------------------------------- -->
+                    <!-- 4 -->
+
+                    <div class="row" id="myDiv">
+                        <div  class="col-xs-12 col-sm-12 col-md-12 col-lg-6 col-xl-6 ">
+                            <div class="card mb-3 myCard">
+                                <div class="card-header">
+                                    <h3><i class="fa fa-table"></i> 數據分析 </h3>
+                                </div>
+
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table id="myTable" class="table table-bordered table-hover display">
+                                            <thead>
+                                                <tr>
+                                                    <th>商品ID</th>
+                                                    <th>商品名稱</th>
+                                                    <th>商品價格</th>
+                                                    <th onclick="getChatByBuyNumber()">購賣人數</th>
+                                                    <th onclick="getCharByClickTime()">觀看次數</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                            <th:block th:each="com : ${comList}">
+                                                <tr>
+                                                    <td>[[${com.comId}]]</td>
+                                                    <td>[[${com.comName}]]</td>
+                                                    <td>[[${com.comPrice}]]</td>
+                                                    <td>[[${com.comBuyNumber}]]</td>
+                                                    <td>[[${com.clickTime}]]</td>
+                                                </tr>
+											</th:block>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+						  <div class="col-xs-12 col-sm-12 col-md-12 col-lg-6 col-xl-6 ">
+						                            <div class="chart-box dark">
+						
+						                                <div class="chart-header dark">
+						                                    <span>subtitle</span>
+						                                    <h3 class="title"></h3>
+						                                    <div id="tagDiv">
+						                                    <button class="btn myBtn" style="display:flex;" onclick="getChatByBuyNumber()">
+						                                    	<span class="btnSpan" style="color:	#FF8000;">#消費者分析</span><i class="fa fa-pie-chart fa-2x" aria-hidden="true"></i>
+						                                    </button>
+						                                    <button class="btn myBtn" style="display:flex;" onclick="getCharByClickTime()">
+						                                    	<span class="btnSpan" style="color:	#FF8000;">#瀏覽人次分析</span><i class="fa fa-pie-chart fa-2x" aria-hidden="true"></i>
+						                                    </button>
+						                                    </div>
+						                                </div>
+						                                <div class="chart-body">
+						                                    <canvas id="myChart-4"></canvas>
+						                                </div>
+						                            </div>
+						
+						                        </div>
+                       
+                        <!-- end chart-body -->
+
+                    </div>
+                    <!-- end chart-box -->
+
+
+
+
+                    <!--回到上方按鈕-->
+                    <button id="back-to-top-btn" title="回到頁面頂端">
+                        <i class="fas fa-arrow-up">TOP</i>
+                    </button>
+
+                </div>
+                <!-- END container-fluid -->
+            </div>
+            <!-- END content -->
+        </div>
+        <!-- END content-page -->
+        <div th:replace="~{layout/footer}"></div>
+    </div>
+    <!-- My JS -->
+    <script th:src="@{gym/com/js/analyzeList.js}"></script>
+    <!-- Datatable -->
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.js"></script>
+
+</body>
+
+</html>

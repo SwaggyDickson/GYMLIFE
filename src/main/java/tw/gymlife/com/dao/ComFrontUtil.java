@@ -7,6 +7,8 @@ import org.springframework.stereotype.Repository;
 import tw.gymlife.com.model.Cart;
 import tw.gymlife.com.model.CommodityDTO;
 import tw.gymlife.com.model.Commoditys;
+import tw.gymlife.com.model.Orders;
+import tw.gymlife.com.model.OrdersDTO;
 
  
 
@@ -35,11 +37,14 @@ public interface ComFrontUtil {
 	public List<CommodityDTO> sortByLowPrice(List<CommodityDTO> comDTOList);
 	
 	//按下加入購物車後去新增LoadJson檔案
-	public List<Cart> loadJson(List<Cart> cartList,String path,String userId);
+	public List<Cart> loadJson(List<Cart> cartList,int userId);
 	
 	//進入購物車去讀取Json檔案
-	public List<Cart> goIntoCart(String path,String userId);
+	public List<Cart> goIntoCart(int userId);
 	
 	//刪除購物車內容
-	public List<Cart> deleteCart(String path, String userId, int comId);
+	public List<Cart> deleteCart( int userId, int comId);
+	
+	//轉成訂單DTO
+	public List<OrdersDTO> convertOrderToOrdersDTO(List<Orders> orderList, List<CommodityDTO> returnComList);
 }

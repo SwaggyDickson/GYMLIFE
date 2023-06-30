@@ -24,4 +24,8 @@ public interface ComRepository extends JpaRepository<Commoditys, Integer> {
 	
 	//上下架查詢
 	public List<Commoditys> findByComStatusContaining(String keyword);
+	
+	//查詢前五筆資料
+	@Query("SELECT c FROM Commoditys c ORDER BY c.comBuyNumber DESC")
+	public  List<Commoditys> findTop5ByComBuyNumber();
 }

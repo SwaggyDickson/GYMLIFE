@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import tw.gymlife.com.dao.impl.ComUtilImpl;
 import tw.gymlife.com.model.ComPic;
@@ -78,6 +79,7 @@ public class ComBackController {
 			comBean.setComStatus(comStatus);
 			comBean.setComContent(comContent);
 			comBean.setComBuyNumber(0);
+			comBean.setClickTime(0);
 
 			Set<ComPic> pics = new LinkedHashSet<>();
 			List<MultipartFile> comPicPart = request.getFiles("comPic"); // 取得圖片
@@ -306,11 +308,69 @@ public class ComBackController {
 			return "backgymlife/com/itemList";
 		}
 		
-		public int aaaaaaaaaaaaaaaa() {
-			return  0 ;
+		/* -------------- 分析列表------------*/
+		@GetMapping("/analyze.func")
+		public String getanalyPage(Model m) {
+			
+			List<CommodityDTO> comDTOList = new ArrayList<>();
+
+			try {
+				List<Commoditys> returnList = comService.checkAllCommoditys();
+				if (returnList != null) {
+					comDTOList = comUtilService.convertCommodityDTOList(returnList);
+				}
+				// 將資料轉發到商品頁面
+				m.addAttribute("comList", comDTOList);
+
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+			return "backgymlife/com/analyzeList";
 		}
 		
-		public void bbbbbbbb() {
+		//購買人數分析圖表
+		@GetMapping("/getChatByComBuyNumber.func")
+		public ResponseEntity<Object> getChatByComBuyNumberJson(){
 			
+			List<CommodityDTO> comDTOList = new ArrayList<>();
+
+			try {
+				List<Commoditys> returnList = comService.sortByComBuyNumber();
+				if (returnList != null) {
+					comDTOList = comUtilService.convertCommodityDTOList(returnList);
+				}
+				// 將資料轉為JSON轉發到商品頁面
+				ObjectMapper objectMapper = new ObjectMapper();
+				String jsonDTOList = objectMapper.writeValueAsString(comDTOList);
+				
+				return ResponseEntity.ok(jsonDTOList);
+
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return ResponseEntity.notFound().build();
+		}
+		//瀏覽人數分析圖表
+		@GetMapping("/getChatByClickTime.func")
+		public ResponseEntity<Object> getChatByClickTimeJson(){
+			
+			List<CommodityDTO> comDTOList = new ArrayList<>();
+
+			try {
+				List<Commoditys> returnList = comService.sortByClickTime();
+				if (returnList != null) {
+					comDTOList = comUtilService.convertCommodityDTOList(returnList);
+				}
+				// 將資料轉為JSON轉發到商品頁面
+				ObjectMapper objectMapper = new ObjectMapper();
+				String jsonDTOList = objectMapper.writeValueAsString(comDTOList);
+				
+				return ResponseEntity.ok(jsonDTOList);
+
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return ResponseEntity.notFound().build();
 		}
 }

@@ -95,7 +95,10 @@ nav a {
 #back-to-top-btn.hide {
 	display: none;
 }
-
+/* 模板外層 */
+.wholePageContent{
+	margin-top:50px;	
+}
 /* 購物車模板 */
 h3 {
 	font-size: 16px;
@@ -203,3 +206,4 @@ table.shoping-cart-table tr td:last-child {
 	background: #ffffff;
 	padding: 10px 15px;
 }
+

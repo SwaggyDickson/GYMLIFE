@@ -101,26 +101,7 @@
 
         <!-- 提交表單 -->
         <script th:inline="javascript">
-            /*<![CDATA[*/
-            $(document).ready(function () {
-                $('form').submit(function (event) {
-                    event.preventDefault(); // 取消表单提交事件
-
-                    Swal.fire({
-                        title: '確定新增商品？',
-                        icon: 'question',
-                        showCancelButton: true,
-                        confirmButtonText: '新增',
-                        cancelButtonText: '取消'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            // 最后，如果需要，手动提交表单
-                            $(this).unbind('submit').submit();
-                        }
-                    });
-                });
-            });
-		    /*]]>*/
+         
         </script>
         <div th:replace="~{layout/footer}"></div>
         <script th:src="@{gym/com/js/addItemPage.js}"></script>

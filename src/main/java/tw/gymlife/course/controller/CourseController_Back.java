@@ -282,5 +282,12 @@ public class CourseController_Back {
 										//檔案, header, HttpStatus
 		return new ResponseEntity<byte[]>(photoFile,headers,HttpStatus.OK);
 	}
+	
 */
+		@GetMapping("/course/corder")
+		public String aaaaaaaaaaaa() {
+			
+			return "dada";
+		}
+	
 }

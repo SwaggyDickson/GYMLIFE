@@ -2,6 +2,7 @@ package tw.gymlife.forum.service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,48 @@ public class CommentService {
 
 	@Autowired
 	private CommentRepository commentRepository;
+	
+	
+	
 
+	// ------------------------------巢狀留言----------------------------------
+
+	// Get all replies for a comment
+	public List<CommentBean> findRepliesByCommentId(Integer parentCommentId) {
+		return commentRepository.findByParentCommentId(parentCommentId);
+	}
+
+	// Add a reply
+	public CommentBean addReply(Integer parentCommentId, CommentBean newReply) {
+		// Set parent comment id of the new reply
+		newReply.setParentCommentId(parentCommentId);
+		// Save the reply to the database
+		return commentRepository.save(newReply);
+	}
+
+	// Update a reply
+	public CommentBean updateReply(Integer replyId, CommentBean updatedReply) {
+	    // Check if the reply exists
+	    if (!commentRepository.existsById(replyId)) {
+	        throw new NoSuchElementException("Reply not found");
+	    }
+	    // Get the existing reply from the database
+	    CommentBean existingReply = commentRepository.findById(replyId).get();
+	    // Update the reply content
+	    existingReply.setCommentContent(updatedReply.getCommentContent());
+	    // Save the updated reply to the database
+	    return commentRepository.save(existingReply);
+	}
+
+	// Delete a reply
+	public void deleteReply(Integer replyId) {
+		// Delete the reply from the database
+		commentRepository.deleteById(replyId);
+	}
+
+	// ----------------------------評論新增----------------------------------
+
+	
 	// 新增
 	public void insert(CommentBean CommentBean) {
 		// CommentBean.setCommentTime(new Date()); // 设置评论时间
@@ -38,10 +80,14 @@ public class CommentService {
 		return page;
 	}
 
-	//文章內頁
+	// 文章內頁
 	public Page<CommentBean> findActiveCommentsByArticleId(Integer articleId, int pageNumber, int pageSize) {
-		Pageable pageable = PageRequest.of(pageNumber - 1, 3, Sort.Direction.ASC, "commentTime");
-		Page<CommentBean> page =commentRepository.findByArticleArticleIdAndStatus(articleId, "Active", pageable);
+		Pageable pageable = PageRequest.of(pageNumber - 1, pageSize, Sort.Direction.ASC, "commentTime"); // Use pageSize
+																											// instead
+																											// of
+																											// hardcoded
+																											// 3
+		Page<CommentBean> page = commentRepository.findByArticleArticleIdAndStatus(articleId, "Active", pageable);
 		return page;
 	}
 

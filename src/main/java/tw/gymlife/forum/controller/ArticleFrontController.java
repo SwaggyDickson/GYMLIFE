@@ -9,6 +9,9 @@ import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
+import java.util.HashSet;
+
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -29,12 +32,16 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+import org.thymeleaf.spring6.processor.SpringInputCheckboxFieldTagProcessor;
 
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.http.HttpSession;
 import tw.gymlife.forum.model.ArticleBean;
 import tw.gymlife.forum.model.CommentBean;
+import tw.gymlife.forum.model.CommentLike;
+import tw.gymlife.forum.service.ArticleLikeService;
 import tw.gymlife.forum.service.ArticleService;
+import tw.gymlife.forum.service.CommentLikeService;
 import tw.gymlife.forum.service.CommentService;
 
 @Controller
@@ -47,26 +54,58 @@ public class ArticleFrontController {
 	@Autowired
 	private CommentService commentService;
 
+	@Autowired
+	private ArticleLikeService articleLikeService;
+
+	@Autowired
+	private CommentLikeService commentLikeService;
+
 	// 測試頁面
 //	@GetMapping("/front")
 //	public String testFront() {
 //		return "FrontGYMLIFE/forum/gymlife";
 //	}
 
+	// 文章按讚
+	@ResponseBody
+	@PostMapping("/article/{articleId}/likes")
+	public void toggleLike2(@PathVariable Integer articleId, @RequestParam Integer userId) {
+		articleLikeService.toggleLike(userId, articleId);
+	}
+
+//	@PostMapping("/front/{articleId}/{commentId}/likes")
+//	public ResponseEntity<Map<String, Object>> toggleLike(@PathVariable Integer commentId, HttpSession session) {
+//	    Member member = (Member) session.getAttribute("member");
+//
+//	    if (member == null) {
+//	        return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+//	    }
+//
+//	    commentLikeService.toggleLike(member.getUserId(), commentId);
+//
+//	    int likeCount = commentLikeService.getLikeCount(commentId);
+//	    boolean liked = commentLikeService.isLiked(member.getUserId(), commentId);
+//
+//	    Map<String, Object> response = new HashMap<>();
+//	    response.put("likeCount", likeCount);
+//	    response.put("liked", liked);
+//
+//	    return new ResponseEntity<>(response, HttpStatus.OK);
+//	}
+
 	// ------------------------------首頁----------------------------------
 
-	
 //	// 透過左上角主題分類，跳轉至各主題的首頁
 	@GetMapping("/front/active/{articleType}")
-	public String listActiveArticlesByType(@PathVariable String articleType, @RequestParam(name = "p", defaultValue = "1") Integer pageNumber,
+	public String listActiveArticlesByType(@PathVariable String articleType,
+			@RequestParam(name = "p", defaultValue = "1") Integer pageNumber,
 			@RequestParam(value = "pageSize", defaultValue = "3") int pageSize, Model model) {
 		Page<ArticleBean> articleBeans = articleService.findActiveArticlesByType(articleType, pageNumber, pageSize);
 		model.addAttribute("articleBeans", articleBeans);
 //		model.addAttribute("totalPages", articleBeans.getTotalPages()); // 新添加的代码
 		return "frontgymlife/forum/articleFrontPage";
 	}
-	
-	
+
 //	// 查詢active狀態的文章 (之後都redirect回首頁)
 	@GetMapping("/front/active")
 	public String listActiveArticles(@RequestParam(name = "p", defaultValue = "1") Integer pageNumber,
@@ -77,24 +116,51 @@ public class ArticleFrontController {
 		return "frontgymlife/forum/articleFrontPage";
 	}
 
-	// 查看文章內頁 -只顯示active狀態的留言
-	@GetMapping("front/{articleId}")
-	public String showArticleDetail(@PathVariable Integer articleId, @RequestParam(name = "p", defaultValue = "1") Integer pageNumber,
-			@RequestParam(value = "pageSize", defaultValue = "3") int pageSize,
-			Model model) {
+	// 查看文章內頁 -只顯示active狀態的文章、留言， ----------------- 回覆還沒設定，是真刪除
+	@GetMapping("/front/{articleId}")
+	public String showArticleDetail(@PathVariable Integer articleId,
+			@RequestParam(name = "p", defaultValue = "1") Integer pageNumber,
+			@RequestParam(value = "pageSize", defaultValue = "3") int pageSize, Model model, HttpSession session) {
+		Integer userId = (Integer) session.getAttribute("userId");
 		ArticleBean article = articleService.findById(articleId);
-		// 假设你想要每页显示3个评论
-//		List<CommentBean> allComments = article.getComments();
-//		// 使用Java 8的Stream API來過濾出active的comments
-//		List<CommentBean> activeComments = allComments.stream().filter(CommentBean::isActive) // 假設你在CommentBean中有一個叫做isActive的方法來判斷是否為active
-//				.collect(Collectors.toList());
+		boolean isLoggedIn = userId != null;
 		Page<CommentBean> comments = commentService.findActiveCommentsByArticleId(articleId, pageNumber, pageSize);
+	
+		Map<Integer, List<CommentBean>> commentReplies = new HashMap<>();
+		// 按讚-新版
+		Map<Integer, Boolean> userLikedComments = new HashMap<>();
+	    Map<Integer, Integer> likeCounts = new HashMap<>();  // New Map to store like counts
+
+		for (CommentBean comment : comments.getContent()) {
+			// Check if the comment is liked by the current user
+			CommentLike liked = commentLikeService.findByMemberUserIdAndCommentCommentId(userId,
+					comment.getCommentId());
+			// If the CommentLike object exists and the liked field is 1, then the user has
+			// liked this comment
+			boolean userLikedThisComment = liked != null && liked.getLiked() == 1;
+			userLikedComments.put(comment.getCommentId(), userLikedThisComment);
+
+			 // Get like count for each comment
+	        int likeCount = commentLikeService.getLikeCount(comment.getCommentId());
+	        likeCounts.put(comment.getCommentId(), likeCount);
+			
+			
+			//回復
+			List<CommentBean> replies = commentService.findRepliesByCommentId(comment.getCommentId());
+			commentReplies.put(comment.getCommentId(), replies);
+		}
 		model.addAttribute("article", article);
 		model.addAttribute("comments", comments);
 		model.addAttribute("currentPage", pageNumber);
-		model.addAttribute("pageSize", pageSize);	
-	    model.addAttribute("totalComments", comments.getTotalElements());
-//		model.addAttribute("comments", activeComments); // 只將active的comments添加到model中
+		model.addAttribute("pageSize", pageSize);
+		model.addAttribute("totalComments", comments.getTotalElements());
+		model.addAttribute("commentReplies", commentReplies);
+
+		// Add userLikedComments to the model
+	    model.addAttribute("userLikedComments", userLikedComments);
+	    model.addAttribute("likeCounts", likeCounts);  // Add likeCounts to the model
+
+	    
 		return "frontgymlife/forum/articleInnerPage";
 	}
 
@@ -109,7 +175,7 @@ public class ArticleFrontController {
 
 	// 實際新增貼文
 	@PostMapping("/front/insert")
-	public String insertArticle(HttpSession session,@RequestParam("articleTitle") String articleTitle,
+	public String insertArticle(HttpSession session, @RequestParam("articleTitle") String articleTitle,
 			@RequestParam("articleContent") String articleContent, @RequestParam("articleType") String articleType,
 			@RequestParam("articleImg") MultipartFile file, Model model) throws IOException {
 		Member member = (Member) session.getAttribute("member");
@@ -121,7 +187,7 @@ public class ArticleFrontController {
 		article.setMember(member);
 		articleService.insert(article);
 		model.addAttribute("article", article);
-        model.addAttribute("member", member);
+		model.addAttribute("member", member);
 		return "redirect:/front/active";
 	}
 

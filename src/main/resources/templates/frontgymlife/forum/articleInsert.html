@@ -9,15 +9,15 @@
         flex-direction: column;
         min-height: 100vh;
         background-color: black;
-        color:white
-    }
+        color:white;
+          }
 </style>
 </head>
 <body class="test">
 
 <div th:replace="~{layout/front_nav}"></div>
 
-  <div class="container" style="padding-top: 100px;" >
+  <div class="container" style="padding-top: 100px;"  >
 			<div class="row">
 				<div class="col-6">  
 
@@ -38,7 +38,10 @@
 							<option value="課程">課程</option>
 							<option value="活動">活動</option>
 							<option value="會員">會員</option>
-						</select> <br> <br> <label for="articleTitle">標題：</label> <input
+						</select> <br> <br>
+						<div id="editor"  style="color:black;"></div>
+						 <br><br>
+						<label for="articleTitle">標題：</label> <input
 							type="text" id="title" name="articleTitle"
 							th:text="${article}?${article.articleTitle}" autofocus required
 							placeholder="請輸入文章標題" autocomplete="off" size="42"><br>
@@ -73,8 +76,15 @@
 
     
 <div th:replace="~{layout/front_footer}"></div>
-
+<script src="https://cdn.ckeditor.com/ckeditor5/38.1.0/classic/ckeditor.js"></script>
 <script>
+  ClassicEditor
+        .create( document.querySelector( '#editor' ) )
+        .catch( error => {
+            console.error( error );
+        } );
+
+
 document.getElementById('autoFillBtn').addEventListener('click', function(e) {
     e.preventDefault(); // 阻止按鈕的預設提交行為
     

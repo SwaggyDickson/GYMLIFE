@@ -96,6 +96,5 @@ public class ArticleBackController {
 
 	// ------------------------------刪除----------------------------------
 	
-	public void aaaaa() {
-	}
+	
 }

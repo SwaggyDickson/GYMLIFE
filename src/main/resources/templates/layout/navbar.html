@@ -97,20 +97,27 @@
 							</ul></li>
 
 						<li class="submenu">
-							<a href="#"><i class="fa-solid fa-shop" style="color: #ffffff;"></i> <span> 商店管理 </span>
-								<span class="menu-arrow"></span></a>
-							<ul class="list-unstyled">
-								<li><a th:href="@{/itemListPage.func}">商品列表</a></li>
-								<li><a th:href="@{/addItemPage}">新增商品</a></li>
-								<li class="submenu">
-									<a href="#"><span>訂單管理</span> <span class="menu-arrow"></span> </a>
-									<ul>
-										<li><a href="#"><span>Third Level Item</span></a></li>
-										<li><a href="#"><span>Third Level Item</span></a></li>
-									</ul>
-								</li>
-							</ul>
-						</li>
+								<a href="#"><i class="fa-solid fa-shop" style="color: #ffffff;"></i> <span> 商店管理 </span>
+									<span class="menu-arrow"></span></a>
+								<ul class="list-unstyled">
+									
+									<li class="submenu">
+										<a href="#"><span>商品管理</span> <span class="menu-arrow"></span> </a>
+										<ul>
+											<li><a th:href="@{/itemListPage.func}">商品列表</a></li>
+											<li><a th:href="@{/addItemPage}">新增商品</a></li>
+											<li><a th:href="@{/analyze.func}">商品分析</a></li>
+										</ul>
+									</li>
+									<li class="submenu">
+										<a href="#"><span>訂單管理</span> <span class="menu-arrow"></span> </a>
+										<ul>
+											<li><a href="#"><span>Third Level Item</span></a></li>
+											<li><a href="#"><span>Third Level Item</span></a></li>
+										</ul>
+									</li>
+								</ul>
+							</li>
 						
 							<li class="submenu"><a href="#"><i
 								class="fa fa-fw fa-indent"></i><span> Course </span><span

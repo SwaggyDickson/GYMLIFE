@@ -6,6 +6,10 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.HashMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,16 +20,11 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import jakarta.mail.Session;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import tw.gymlife.member.model.Member;
@@ -115,13 +114,26 @@ public class Register {
         session.setAttribute("token", uuid);
         message += "http://localhost:8080/gymlife/checkEmailStatus?token="+uuid+"&no="+member.getUserId();
         
-        boolean isMailSent = mailService.prepareAndSend(member.getUserEmail(), subject, message);
-        if (isMailSent) {
-			System.out.println("信件送出");
-		}else {	
-			System.out.println("沒有送出");
-		}
-       
+        ExecutorService executorService = Executors.newFixedThreadPool(10);
+        final String finalMessage = message;
+        executorService.submit(() -> {
+            // call your mail sending service here
+        	CompletableFuture<Boolean> future = mailService.prepareAndSend(member.getUserEmail(), subject, finalMessage);
+        	boolean isMailSent;
+        	try {
+        	    isMailSent = future.get();  // wait for the Future to complete
+        	} catch (InterruptedException | ExecutionException e) {
+        	    e.printStackTrace();
+        	    isMailSent = false;
+        	}
+        	if (isMailSent) {
+        	    System.out.println("信件送出");
+        	} else {    
+        	    System.out.println("沒有送出");
+        	}
+             
+        });
+      
         if (insertedMember != null) {
             // Registration succeeded, redirect to a success page
         	

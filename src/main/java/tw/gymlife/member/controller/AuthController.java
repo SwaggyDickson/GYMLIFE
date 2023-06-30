@@ -2,11 +2,17 @@ package tw.gymlife.member.controller;
 
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Random;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -21,6 +27,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.servlet.http.HttpSession;
 import tw.gymlife.member.model.Member;
+import tw.gymlife.member.service.MailService;
 import tw.gymlife.member.service.MemberService;
 
 	@Controller
@@ -31,13 +38,15 @@ import tw.gymlife.member.service.MemberService;
 		
 		private static final int LOCK_DURATION = 1000;
 		
-		//跳轉登入頁面
+		
 			@GetMapping("/Login") 
 		    public String showLoginPage(Model model) {
 				  HashMap<String, String> errors = new HashMap<String,String>();
 				    model.addAttribute("errors", errors);
 		        return "frontgymlife/member/login";  
 		    } 
+			
+			//登入邏輯
 			@PostMapping("/Login")
 			@ResponseBody
 			public Map<String, Object> handleLogin(@RequestBody Map<String, String> accpwd, HttpSession httpsession) {
@@ -153,6 +162,7 @@ import tw.gymlife.member.service.MemberService;
 				return page;
 			}
 
+			
 		  @GetMapping("/logout")
 		    public String handleLogout(HttpSession session) {	
 		        session.invalidate();
@@ -164,9 +174,57 @@ import tw.gymlife.member.service.MemberService;
 		  public String loginProblem() {
 			  return "frontgymlife/member/loginProblem";
 		  }
-		  
-		  public String testGit() {
-			  return "請接收數據";
+		  ;
+		  @PostMapping("/requestPasswordReset")
+		  @ResponseBody
+		  public ResponseEntity<String> requestPasswordReset(@RequestBody Map<String, String> credentials, HttpSession session) {
+			 
+			  String userAccount = credentials.get("userAccount");
+		      String userEmail = credentials.get("userEmail");
+		      
+		      Optional<Member> member = memberService.findUserByUserAccountAndUserEmail(userAccount, userEmail);
+		      if (member.isPresent()) {
+		    	  
+		    	  // Generate a random verification code.
+		          String verificationCode = String.format("%06d", new Random().nextInt(999999));
+		          System.out.println(verificationCode);
+		    	  
+		         // Save verification code and its expiration to session.
+		    	  session.setAttribute("verificationCode", verificationCode);
+		          session.setAttribute("codeExpiration", LocalDateTime.now().plusMinutes(15)); // The code will expire in 15 minutes.
+		    	  
+		            // Send the verification code to the user's email.
+		          ExecutorService executorService = Executors.newFixedThreadPool(10);
+
+		          executorService.submit(() -> {
+		              // call your mail sending service here
+		              MailService.codeSend(userEmail, "Your verification code", verificationCode);
+		          });
+		            
+		            return new ResponseEntity<>("A verification code has been sent to your email. Please enter the code to reset your password.", HttpStatus.OK);
+		        } else {
+		            return new ResponseEntity<>("No user found with this email and username.", HttpStatus.BAD_REQUEST);
+		        }
+		  }
+		
+		  //驗證 驗證碼是否正確
+		  @PostMapping("/VerifyCode")
+		  @ResponseBody
+		  public ResponseEntity<String> verifyCode(@RequestBody Map<String, String> data, HttpSession session) {
+		      String code = data.get("verificationCode");
+
+		      // Get verification code and its expiration from session.
+		      String verificationCode = (String) session.getAttribute("verificationCode");
+		      LocalDateTime codeExpiration = (LocalDateTime) session.getAttribute("codeExpiration");
+
+		      // Check if the code matches and it's not expired.
+		      if (code.equals(verificationCode) &&
+		          LocalDateTime.now().isBefore(codeExpiration)) {
+		          // If the code is correct and not expired, allow user to change password.
+		          return new ResponseEntity<>("Verification successful. You can now reset your password.", HttpStatus.OK);
+		      } else {
+		          return new ResponseEntity<>("Verification failed. The code is incorrect or expired.", HttpStatus.BAD_REQUEST);
+		      }
 		  }
 		  
 }

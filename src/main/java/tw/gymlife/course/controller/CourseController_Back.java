@@ -1,6 +1,7 @@
 package tw.gymlife.course.controller;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -270,6 +272,19 @@ public class CourseController_Back {
 			m.addAttribute("corders",corders);
 			return "/backgymlife/course/selectAllCorder";
 		}
+		//修改訂單
+		@ResponseBody
+		@PutMapping("/course/corder/update")
+		public String updateCorder(@RequestParam(name="corderId")Integer corderId,@RequestParam(name="corderQuantity")Integer corderQuantity) {
+			System.out.println(corderId);
+			System.out.println(corderQuantity);
+			// 建立 SimpleDateFormat 物件，指定日期時間的格式
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+			// 取得現在的日期時間
+			String currentDate = sdf.format(new Date());
+			oservice.updateCorder(corderId, currentDate, corderQuantity);
+			return "success";
+		}
 	/*
 	//查詢教練圖片
 	@GetMapping("/coachImage/{courseId}")
@@ -282,7 +297,5 @@ public class CourseController_Back {
 										//檔案, header, HttpStatus
 		return new ResponseEntity<byte[]>(photoFile,headers,HttpStatus.OK);
 	}
-	
 */
-		
 }

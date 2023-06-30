@@ -289,5 +289,10 @@ public class CourseController_Back {
 			
 			return "dada";
 		}
-	
+		
+		@GetMapping("/course/corder")
+		public String bbbbbbb() {
+			
+			return "dada";
+		}
 }

@@ -97,9 +97,6 @@ public class ArticleBackController {
 
 	// ------------------------------刪除----------------------------------
 		
-	private String aaaaab(){
-		return "12";
-	}
 
 }
 

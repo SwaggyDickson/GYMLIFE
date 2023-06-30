@@ -113,6 +113,11 @@
 		})
 		.catch(function (error) {
 			console.log(error);
+			swal.fire({
+                    icon: 'error',
+                    title: '帳號或信箱錯誤',
+                    text: '請重新確認資料',
+                });
 
 		});
 	});
@@ -138,14 +143,94 @@
         console.log(response);
         $("#step2").hide();
         $("#step3").show(); // Show the password reset form.
+		swal.fire({
+                    icon: 'success',
+                    title: '驗證成功',
+                    text: '請修改您的密碼',
+                });
     })
     .catch(function (error) {
         // This part handles the request failure situation, like displaying error messages
         console.log(error);
+		swal.fire({
+                    icon: 'error',
+                    title: '驗證碼錯誤',
+                    text: '請重新確認驗證碼',
+                });
     });
 });
 
+$("#resetPasswordForm").on('submit',(e)=>{
+	e.preventDefault();
 
+	let newPassword = $("#newPassword").val();
+    let confirmPassword = $("#confirmPassword").val();
+
+	if (!newPassword || !confirmPassword) {
+        swal.fire({
+            icon: 'error',
+            title: '錯誤',
+            text: '請輸入密碼並確認',
+        });
+        return;
+    }
+
+    // 检查密码是否一致
+    if (newPassword !== confirmPassword) {
+        swal.fire({
+            icon: 'error',
+            title: '錯誤',
+            text: '輸入的密碼不一致',
+        });
+        return;
+    }
+
+	axios({
+		method: 'post',
+        url: 'http://localhost:8080/gymlife/ResetPassword',
+		data: {
+			newPassword: newPassword,
+			confirmPassword: confirmPassword
+		}
+	})
+	.then(function (response) {
+		console.log(response);
+		let timerInterval
+		Swal.fire({
+		title: '修改成功',
+		html: '頁面將於 <b></b> 秒鐘後跳轉.',
+		timer: 2000,
+		timerProgressBar: true,
+		didOpen: () => {
+			Swal.showLoading()
+			const b = Swal.getHtmlContainer().querySelector('b')
+			timerInterval = setInterval(() => {
+			b.textContent = Swal.getTimerLeft()
+			}, 100)
+		},
+		willClose: () => {
+			clearInterval(timerInterval)
+		}
+		}).then((result) => {
+		/* Read more about handling dismissals below */
+		if (result.dismiss === Swal.DismissReason.timer) {
+			console.log('兩秒後關閉')
+		}
+		})
+	}).then(() => {
+		setTimeout(() => {
+			window.location.href = "http://localhost:8080/gymlife/Login";
+		}, 2000); 
+	})
+	.catch(function (error) {
+		console.error(error);
+	});
+
+
+
+
+
+})
 
 
 

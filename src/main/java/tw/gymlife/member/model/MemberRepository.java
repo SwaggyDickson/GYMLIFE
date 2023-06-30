@@ -15,8 +15,12 @@ public interface MemberRepository extends JpaRepository<Member, Integer> {
 	
 	public Optional<Member> findByUserAccountAndUserEmail(String userAccount, String userEmail);
 	
-//	public Member updateUserDetails(int userId, String userAccount, String userName, String userGender, 
-//				String userAddress, Date userBirthDay, String userTel, String userEmail, String userNickName);
+	public Optional<Member> findUserByUserAccount(String userAccount);
 	
 
+	
+	
+	
+//	public Member updateUserDetails(int userId, String userAccount, String userName, String userGender, 
+//				String userAddress, Date userBirthDay, String userTel, String userEmail, String userNickName);
 }

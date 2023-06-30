@@ -118,8 +118,8 @@ public class MemberService {
 	        }
 	    }
 	 
-//	 public Member findUserByUserAccountAndUserEmail(String userAccount,String userEmail) {
-//		 memberRepo.findUserByUserAccountAndUserEmail();
-//	 }
-//	
+	 public Optional<Member> findUserByUserAccountAndUserEmail(String userAccount,String userEmail) {
+			return memberRepo.findByUserAccountAndUserEmail(userAccount, userEmail);
+	 }
+	
 }

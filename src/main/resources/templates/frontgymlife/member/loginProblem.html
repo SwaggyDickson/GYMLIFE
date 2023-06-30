@@ -14,8 +14,8 @@
         	
             <div style="padding-top: 60px;" class="container">
             	
+				<div id="step1">
                 <form id="mailCheckForm" class="login-form" th:action="@{/Login}" method="POST">
-        	
         	
         			 <div class="progress" style="margin-bottom: 20px;">
 			        <div id="progress-bar" class="progress-bar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
@@ -28,7 +28,7 @@
                     </div>
                     <div class="form-group">
                         <label for="userAccount">帳號:</label>
-                        <input type="text" id="userAccount" name="userAccount" class="form-control" placeholder="請輸入密碼" >
+                        <input type="text" id="userAccount" name="userAccount" class="form-control" placeholder="請輸入帳號" >
                         
                     </div>
                     <div id="errMsg" ></div>
@@ -37,13 +37,13 @@
                         <button id="loginBtn" type="submit" value="Login"class="btn btn-primary btn-login">取得信件</button>
                     </div>
                     
-                   
+				</div>
                    
                 </form>
             </div>
 			            <!-- Step 2: Enter Verification Code -->
-			<div id="step2" >
-			    <form id="codeForm" class="login-form" th:action="@{/VerifyCode}" method="POST">
+			<div id="step2" style="display: none;">
+			    <form id="codeForm"  class="login-form" th:action="@{/VerifyCode}" method="POST">
 			        <div class="form-group">
 			            <label for="verificationCode">驗證碼:</label>
 			            <input type="text" id="verificationCode" name="verificationCode" class="form-control" placeholder="請輸入驗證碼" >
@@ -55,8 +55,8 @@
 			</div>
 			
 			<!-- Step 3: Reset Password -->
-			<div id="step3" >
-			    <form id="resetPasswordForm" class="login-form" th:action="@{/ResetPassword}" method="POST">
+			<div id="step3" style="display: none;">
+			    <form id="resetPasswordForm"  class="login-form" th:action="@{/ResetPassword}" method="POST">
 			        <div class="form-group">
 			            <label for="newPassword">新密碼:</label>
 			            <input type="password" id="newPassword" name="newPassword" class="form-control" placeholder="請輸入新密碼" >
@@ -85,7 +85,73 @@
 	
 	// 第三步驟: 顯示修改密碼的step3 然後確認密碼  送出後 sweatalert通知成功後導向登入頁面。
 	
-	
+		$("#mailCheckForm").on("submit", function(e) {
+		e.preventDefault();
+		let userEmail = $("#userEmail").val(); // 從email input欄位取得email
+		let userAccount = $("#userAccount").val(); // 從account input欄位取得帳號
+		
+		
+		// 使用axios發送POST請求到你的後端服務
+		axios({
+			method: 'post',
+			url: 'http://localhost:8080/gymlife/requestPasswordReset',
+			data: {
+				userEmail: userEmail,
+				userAccount: userAccount
+			},
+			
+		})
+		.then(function (response) {
+			console.log(response);
+			$("#step1").hide();
+       		$("#step2").show();
+			 swal.fire({
+                    icon: 'success',
+                    title: '信件成功送出',
+                    text: '請至信箱查看信件',
+                });
+		})
+		.catch(function (error) {
+			console.log(error);
+
+		});
+	});
+
+	//第二步: 驗證驗證碼
+	$("#codeForm").on("submit", function(e) {
+    e.preventDefault();
+    let verificationCode = $("#verificationCode").val(); // Get the verification code from the input field.
+
+ 
+    axios({
+        method: 'post',
+        url: 'http://localhost:8080/gymlife/VerifyCode',
+        data: {
+            verificationCode: verificationCode
+        },
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(function (response) {
+        // This part handles the successful request situation, like jumping to the next step
+        console.log(response);
+        $("#step2").hide();
+        $("#step3").show(); // Show the password reset form.
+    })
+    .catch(function (error) {
+        // This part handles the request failure situation, like displaying error messages
+        console.log(error);
+    });
+});
+
+
+
+
+
+
+
+
 
 
      </script>
@@ -100,6 +166,6 @@
  <script th:src="@{front/js/owl.carousel.min.js}"></script>
  <script th:src="@{front/js/main.js}"></script>
  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
+ <script th:src="@{http://localhost:8080/gymlife/JS/axios.min.js}"></script>
 </body>
 </html>

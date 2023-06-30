@@ -36,6 +36,9 @@ import tw.gymlife.member.service.MemberService;
 		@Autowired 
 		private MemberService memberService;
 		
+		@Autowired
+		private MailService mailService;
+		
 		private static final int LOCK_DURATION = 1000;
 		
 		
@@ -185,22 +188,17 @@ import tw.gymlife.member.service.MemberService;
 		      Optional<Member> member = memberService.findUserByUserAccountAndUserEmail(userAccount, userEmail);
 		      if (member.isPresent()) {
 		    	  
-		    	  // Generate a random verification code.
+		    	  // 生成亂數
 		          String verificationCode = String.format("%06d", new Random().nextInt(999999));
 		          System.out.println(verificationCode);
 		    	  
-		         // Save verification code and its expiration to session.
+		         // 存取至session,並且限制15分鐘
 		    	  session.setAttribute("verificationCode", verificationCode);
-		          session.setAttribute("codeExpiration", LocalDateTime.now().plusMinutes(15)); // The code will expire in 15 minutes.
-		    	  
-		            // Send the verification code to the user's email.
-		          ExecutorService executorService = Executors.newFixedThreadPool(10);
-
-		          executorService.submit(() -> {
+		          session.setAttribute("codeExpiration", LocalDateTime.now().plusMinutes(15)); 
+		    	 
 		              // call your mail sending service here
-		              MailService.codeSend(userEmail, "Your verification code", verificationCode);
-		          });
-		            
+		          mailService.prepareAndSend(userEmail, "Your verification code", verificationCode);
+
 		            return new ResponseEntity<>("A verification code has been sent to your email. Please enter the code to reset your password.", HttpStatus.OK);
 		        } else {
 		            return new ResponseEntity<>("No user found with this email and username.", HttpStatus.BAD_REQUEST);

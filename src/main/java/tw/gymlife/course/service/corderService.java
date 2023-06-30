@@ -16,6 +16,7 @@ import ecpay.payment.integration.domain.AioCheckOutPeriod;
 import ecpay.payment.integration.domain.CreateServerOrderObj;
 import ecpay.payment.integration.domain.QueryCreditCardPeriodInfoObj;
 import ecpay.payment.integration.domain.QueryTradeInfoObj;
+import jakarta.transaction.Transactional;
 import tw.gymlife.course.model.CorderBean;
 import tw.gymlife.course.model.CorderRepository;
 import tw.gymlife.course.model.CourseBean;
@@ -88,6 +89,7 @@ public class corderService {
 		obean.setCorderPayment(corderPayment);
 		obean.setCorderQuantity(corderQuantity);
 		obean.setCorderCost(corderCost);
+		obean.setCorderState(0);
 		oRepo.save(obean);
 		// 結束後跳轉
 		obj.setReturnURL("http://localhost:8080/gymlife/front/coursesingle");
@@ -97,6 +99,16 @@ public class corderService {
 		obj.setNeedExtraPaidInfo("N");
 		String form = all.aioCheckOut(obj, null);
 		return form;
+	}
+	//更新訂單
+	@Transactional
+	public void updateCorder(Integer corderId,String corderUpdateTime,Integer corderQuantity) {
+		Optional<CorderBean> optional = oRepo.findById(corderId);
+		if(optional.isPresent()) {
+			CorderBean obean = optional.get();
+			obean.setCorderUpdateTime(corderUpdateTime);
+			obean.setCorderQuantity(corderQuantity);
+		}
 	}
 
 }

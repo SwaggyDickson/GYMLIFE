@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>CorderAnalyze</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="adminbody">
+	<div id="main">
+		<div th:replace="~{layout/navbar}"></div>
+		<div class="content-page">
+
+			<!-- Start content -->
+			<div class="content">
+
+				<div class="container-fluid">
+					<div class="row">
+						<div class="col-xl-12">
+							<div class="breadcrumb-holder">
+								<h1 class="main-title float-left">Course-Order</h1>
+								<ol class="breadcrumb float-right">
+									<li class="breadcrumb-item">Home</li>
+									<li class="breadcrumb-item active">Google Maps</li>
+								</ol>
+								<div class="clearfix"></div>
+							</div>
+						</div>
+					</div>
+
+					<!-- 					-------------------------內文-------------------------------------------------------------- -->
+					<div class="row">
+						<div class="col-md-12"
+							style="text-align: center; justify-content: center; align-content: center;">
+							<a class="display-4" style="margin: 0 auto;">訂單分析</a>
+						</div>
+					</div>
+					<div class="container">
+					<div class="row">
+						<div class="col-md-12 d-flex" id="corderAnalyze"></div>
+						</div>
+					</div>
+				</div>
+				<!-- END container-fluid -->
+
+			</div>
+			<!-- END content -->
+
+		</div>
+		<!-- END content-page -->
+		<div th:replace="~{layout/footer}"></div>
+	</div>
+	<div></div>
+
+
+	<script th:src="@{/gym/course/back/courseAnalyze.js}"></script>
+	<script th:src="@{http://localhost:8080/gymlife/JS/axios.min.js}"></script>
+</body>
+</html>

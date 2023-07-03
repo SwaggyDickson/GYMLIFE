@@ -6,13 +6,17 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -25,7 +29,6 @@ import tw.gymlife.course.model.CorderBean;
 import tw.gymlife.course.model.CourseDTO;
 import tw.gymlife.course.model.ImageBean;
 import tw.gymlife.course.model.convertDTO;
-import tw.gymlife.course.service.CourseOrderService;
 import tw.gymlife.course.service.coachService;
 import tw.gymlife.course.service.corderService;
 import tw.gymlife.course.service.courseService;
@@ -49,8 +52,6 @@ public class CourseController_Front {
 	@Autowired
 	private convertDTO converDTO;
 
-	@Autowired
-	CourseOrderService orderService;
 
 //	//前台首頁
 //	@GetMapping("/front")
@@ -91,8 +92,37 @@ public class CourseController_Front {
 
 		m.addAttribute("cbeans", cbeans);
 		m.addAttribute("ibeans", ibeans);
-		return "frontgymlife/course/coursesingle";
+		return "frontgymlife/course/Course";
 	}
+	//查詢單筆課程
+		@GetMapping("/front/coursesingle/{courseId}")
+		public String findCourseById(@PathVariable Integer courseId,Model m){
+			CourseBean cbean = cservice.selectCourseById(courseId);
+			cservice.insertCourseViewers(courseId);
+			List<CourseBean> cbeans = cservice.selectAllCourse();
+			CourseDTO cdto = converDTO.convertCourseDTO(cbean);
+			System.out.println(cdto);
+			System.out.println(cbeans.get(0).getCourseBuyers());
+//			TreeSet set = new TreeSet();
+//			for(CourseBean ccbean:cbeans) {
+//				set.add(ccbean.getCourseViewers());
+//			}
+//			for(Object item : set) {
+//				System.out.println(item);
+//			}
+			HashMap map = new HashMap();
+			for(CourseBean ccbean:cbeans) {
+				map.put(ccbean.getCourseId(),ccbean.getCourseViewers());
+			}
+			Set keys = map.keySet();
+			for(Object key : keys) {
+				Integer ccourseId = (Integer)key;
+				System.out.println(ccourseId+" "+map.get(ccourseId));
+			}
+			m.addAttribute("cbeans", cbeans);
+			m.addAttribute("cbean", cdto);
+			return "frontgymlife/course/coursesingle";
+		}
 	// 查詢單筆會員 ajax
 	@ResponseBody
 	@GetMapping("/course/cordermember")
@@ -106,6 +136,7 @@ public class CourseController_Front {
 	@GetMapping("/front/coursesingle/select")
 	public CourseDTO cousesingle(@RequestParam(name = "courseId") Integer courseId) {
 		CourseBean cbean = cservice.selectCourseById(courseId);
+		cservice.insertCourseViewers(courseId);
 		CourseDTO cdto = converDTO.convertCourseDTO(cbean);
 		System.out.println(cdto);
 		return cdto;
@@ -127,7 +158,8 @@ public class CourseController_Front {
 			return "redirect:/Login";
 		}
 	}
-
+	
+	
 	// 新增訂單
 	/*@PostMapping("/course/order/insert")
 //	@GetMapping("/course/order/insert")

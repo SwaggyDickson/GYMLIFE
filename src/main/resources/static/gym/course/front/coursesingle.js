@@ -61,9 +61,21 @@ function findsinglecourse(cbtn) {
 //		console.log(Data.coach)
 		coachphoto.innerHTML = `<img width="200px" src="http://localhost:8080/gymlife/coachImage/${Data.coachId}">`;
 		coachName.innerText = Data.coachName;
-		coachBirthday.innerText = Data.coachBirthday;
+		coachBirthday.innerText = getAge(Data.coachBirthday);
 		coachHeight.innerText = Data.coachHeight;
 		coachWeight.innerText = Data.coachWeight;
 		coachIntroduce.innerText = Data.coachIntroduce;
 	}
+	
+}
+//出生日期轉成年齡
+function getAge(birthday) {
+  if (birthday != null) {
+    var birthdate = new Date(birthday);
+    var now = new Date();
+    var diff = now.getTime() - birthdate.getTime();
+    var ageDate = new Date(diff);
+    return Math.abs(ageDate.getUTCFullYear() - 1970);
+  }
+  return 0;
 }

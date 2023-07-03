@@ -4,6 +4,7 @@
 <head>
 	<meta charset="UTF-8">
 	<title>GYMLIFE-教練課程</title>
+	<script src="https://kit.fontawesome.com/fdf42e9c64.js" crossorigin="anonymous"></script>
 </head>
 
 <body>
@@ -16,7 +17,7 @@
 					<div class="breadcrumb-text">
 						<h2>教練課程</h2>
 						<div class="bt-option">
-							<a th:href="@{/}">Home</a> <a th:href="@{/front/course}">課程專區</a>
+							<a th:href="@{/}">Home</a> <a th:href="@{/front/coursesingle}">課程專區</a>
 							<span>教練課程</span>
 						</div>
 					</div>
@@ -35,9 +36,9 @@
 						<!----------------------------	輪播開始---------------------------------------->
 						<div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
 							<div class="carousel-inner" id="coursephoto">
-								<th:block th:each="img, iterStat  :${cbeans[0].images}" th:with="i=${iterStat.index}">
+								<th:block th:each="img, iterStat  :${cbean.imageId}" th:with="i=${iterStat.index}">
 									<div th:class="${i== 1? 'carousel-item active':'carousel-item'}">
-										<img class="d-block w-100" th:src="@{'/courseImage/'+${img.imageId}}"
+										<img class="d-block w-100" th:src="@{'/courseImage/'+${img}}"
 											alt="First slide">
 									</div>
 								</th:block>
@@ -54,8 +55,8 @@
 						<!----------------------------	課程內文---------------------------------------->
 						<div class="cd-text">
 							<div class="cd-single-item">
-								<h3 id="courseName" th:text="${cbeans[0].courseName}"></h3>
-								<p id="courseIntroduce" th:text="${cbeans[0].courseIntroduce}"></p>
+								<h3 id="courseName" th:text="${cbean.courseName}"></h3>
+								<p id="courseIntroduce" th:text="${cbean.courseIntroduce}"></p>
 							</div>
 
 						</div>
@@ -63,34 +64,34 @@
 							<div class="row">
 								<div class="col-md-6">
 
-									<!----------------------------	教練圖片------------------------------------------>
+<!-- 									--------------------------	教練圖片---------------------------------------- -->
 									<div class="cd-trainer-pic" id="coachphoto">
-										<img th:src="@{'/coachImage/'+${cbeans[0].coach.coachId}}">
+										<img th:src="@{'/coachImage/'+${cbean.coachId}}">
 									</div>
 								</div>
 								<div class="col-md-6">
 									<div class="cd-trainer-text">
 										<div class="trainer-title">
-											<h4 id="coachName" th:text="${cbeans[0].coach.coachName}"></h4>
+											<h4 id="coachName" th:text="${cbean.coachName}"></h4>
 											<span>Gym Trainer</span>
 										</div>
 										<div class="trainer-social" id="chphoneemail">
-											<a th:href="'tel:'+${cbeans[0].coach.coachPhoneNumber}"
+											<a th:href="'tel:'+${cbean.coachPhoneNumber}"
 												id="coachPhoneNumber"><i class="fa-solid fa-phone"
 													style="color: #fefefe;"></i></a>
-											<a th:href="'mailto:'+${cbeans[0].coach.coachEmail}" id="coachEmail"><i
+											<a th:href="'mailto:'+${cbean.coachEmail}" id="coachEmail"><i
 													class="fa  fa-envelope-o"></i></a>
 										</div>
 										<ul class="trainer-info">
 											<li><span>Age</span><span id="coachBirthday"
-													th:text="${cbeans[0].coach.getAge(cbeans[0].coach.coachBirthday)}">
+													th:text="${cbean.getAge(cbean.coachBirthday)}">
 												</span></li>
 											<li><span>Height</span><span id="coachHeight"
-													th:text="${cbeans[0].coach.coachHeight}"></span></li>
+													th:text="${cbean.coachHeight}"></span></li>
 											<li><span>Weight</span><span id="coachWeight"
-													th:text="${cbeans[0].coach.coachWeight}"></span></li>
+													th:text="${cbean.coachWeight}"></span></li>
 										</ul>
-										<p id="coachIntroduce" th:text="${cbeans[0].coach.coachIntroduce}"></p>
+										<p id="coachIntroduce" th:text="${cbean.coachIntroduce}"></p>
 									</div>
 								</div>
 							</div>
@@ -101,7 +102,7 @@
 							<div class="ps-item">
 								<h3>單堂</h3>
 								<div class="pi-price">
-									<h2 th:text="'$ '+${cbeans[0].courseCost}" id="courseCost"></h2>
+									<h2 th:text="'$ '+${cbean.courseCost}" id="courseCost"></h2>
 									<span>SINGLE CLASS</span>
 								</div>
 								<ul>
@@ -109,7 +110,7 @@
 									<li>50分鐘/堂</li>
 								</ul>
 								<form th:action="@{/course/buy}" method="get">
-									<input type="submit" id="buycourseId" name="courseId" th:value="${cbeans[0].courseId}" style="display: none;">
+									<input type="submit" id="buycourseId" name="courseId" th:value="${cbean.courseId}" style="display: none;">
 									<a href="#" class="primary-btn pricing-btn" id="buybtn">立即購買</a>
 								</form>
 							</div>
@@ -120,7 +121,7 @@
 				<div class="col-lg-4 col-md-8">
 					<div class="sidebar-option">
 						<div class="so-categories">
-							<!------------------------ 課程種類 ---------------------------------------------->
+<!-- 							---------------------- 課程種類 -------------------------------------------- -->
 							<h5 class="title">課程列表</h5>
 							<ul>
 								<th:block th:each="cbean :${cbeans}">
@@ -130,19 +131,19 @@
 							</ul>
 						</div>
 						<div class="so-latest">
-							<h5 class="title">Latest posts</h5>
-							<div class="latest-large set-bg" data-setbg="img/letest-blog/latest-1.jpg">
-								<div class="ll-text">
-									<h5>
-										<a href="#">This Japanese Way of Making Iced Coffee Is a
-											Game...</a>
-									</h5>
-									<ul>
-										<li>Aug 20, 2019</li>
-										<li>20 Comment</li>
-									</ul>
-								</div>
-							</div>
+							<h5 class="title">最多人購買</h5>
+<!-- 							<div class="latest-large set-bg" data-setbg="img/letest-blog/latest-1.jpg"> -->
+<!-- 								<div class="ll-text"> -->
+<!-- 									<h5> -->
+<!-- 										<a href="#">This Japanese Way of Making Iced Coffee Is a -->
+<!-- 											Game...</a> -->
+<!-- 									</h5> -->
+<!-- 									<ul> -->
+<!-- 										<li>Aug 20, 2019</li> -->
+<!-- 										<li>20 Comment</li> -->
+<!-- 									</ul> -->
+<!-- 								</div> -->
+<!-- 							</div> -->
 							<div class="latest-item">
 								<div class="li-pic">
 									<img src="img/letest-blog/latest-2.jpg" alt="">

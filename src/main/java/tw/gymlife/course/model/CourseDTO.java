@@ -1,5 +1,8 @@
 package tw.gymlife.course.model;
 
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -23,6 +26,26 @@ public class CourseDTO {
 	private Integer coachWeight;
 	private Integer coachHeight;
 	private String coachIntroduce;
+	private Integer corderId;
+	private Integer userId;
+	private String corderPayment;
+	private String corderTime;
+	private String corderUpdateTime;
+	private Integer corderQuantity;
+	private Integer corderCost;
+	private Integer corderState;
+	private Integer courseViewers;
+	private Integer courseBuyers;
+	public int getAge(String birthday) {
+        if (birthday != null) {
+        	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        	LocalDate birthdate = LocalDate.parse(birthday, formatter);
+            LocalDate now = LocalDate.now();
+            Period age = Period.between(birthdate, now);
+            return age.getYears();
+        }
+        return 0;
+    }
 //	private Map<Integer,byte[]> cimgs = new HashMap<>();
 //	private Map<Integer,CourseBean> cbeans = new HashMap<>();
 }

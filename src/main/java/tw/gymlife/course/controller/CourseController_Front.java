@@ -15,6 +15,8 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,7 +26,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import ecpay.payment.integration.AllInOne;
 import ecpay.payment.integration.domain.AioCheckOutALL;
+import ecpay.payment.integration.domain.QueryTradeInfoObj;
 import jakarta.servlet.http.HttpSession;
 import tw.gymlife.course.model.CourseBean;
 import tw.gymlife.course.model.CorderBean;
@@ -51,6 +55,8 @@ public class CourseController_Front {
 	@Autowired
 	private corderService oservice;
 
+	@Autowired
+	private JavaMailSender javaMailSender;
 	@Autowired
 	private convertDTO converDTO;
 
@@ -85,16 +91,59 @@ public class CourseController_Front {
 
 		return aioCheckOutALLForm;
 	}
+	
+
+	// 查詢訂單結果
+	public void findCorderEnter(String MerchantTradeNo,String userEmail) {
+		AllInOne all = new AllInOne("");
+		QueryTradeInfoObj obj = new QueryTradeInfoObj();
+		obj.setMerchantTradeNo(MerchantTradeNo);
+		String data = all.queryTradeInfo(obj);
+		
+		System.out.println(data);
+		//擷取字串
+		String tradeStatusValue = "";
+		String[] params = data.split("&");
+		for (String param : params) {
+		    String[] keyValue = param.split("=");
+		    //抓取TradeStatus
+		    if (keyValue.length == 2 && keyValue[0].equals("TradeStatus")) {
+		        tradeStatusValue = keyValue[1];
+		        break;
+		    }
+		}
+			//TradeStatus=0
+		if (tradeStatusValue.equals("0")) {
+		    System.out.println("購買失敗!");
+		} else if (tradeStatusValue.equals("1")) {
+			//TradeStatus=1
+			System.out.println("購買成功!");
+			//成功寄送e-mail
+			SimpleMailMessage message = new SimpleMailMessage();
+			message.setTo(userEmail);
+			message.setSubject("GYMLIFE");
+			message.setText("謝謝您的購買");
+
+			javaMailSender.send(message);
+		} 	
+	}
 
 	// 教練課程(查詢所有課程)
 	@GetMapping("/front/coursesingle")
-	public String findAllsingle(Model m) throws ParseException {
+	public String findAllsingle(@RequestParam(required = false) String MerchantTradeNo,HttpSession session, Model m) throws ParseException {
+		if (MerchantTradeNo != null) {
+			String userEmail = session.getAttribute("userEmail").toString();
+			// 訂單頁面導來
+			findCorderEnter(MerchantTradeNo,userEmail);
+		}
+		// 普通跳轉
 		List<CourseBean> cbeans = cservice.selectAllCourse();
 		List<ImageBean> ibeans = iservice.selectAllCourseImage();
 
 		m.addAttribute("cbeans", cbeans);
 		m.addAttribute("ibeans", ibeans);
 		return "frontgymlife/course/Course";
+
 	}
 
 	// 查詢單筆課程

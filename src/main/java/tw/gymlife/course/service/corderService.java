@@ -8,6 +8,8 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 import ecpay.payment.integration.AllInOne;
@@ -32,6 +34,8 @@ public class corderService {
 	private MemberRepository mRepo;
 	@Autowired
 	private courseService cservice;
+//	 @Autowired
+//	    private JavaMailSender javaMailSender;
 
 //	// 新增訂單
 //	public void insertCorder(CorderBean obean) {
@@ -95,12 +99,17 @@ public class corderService {
 		// 結束後跳轉
 		obj.setReturnURL("http://localhost:8080/gymlife/front/coursesingle");
 //		obj.setClientRedirectURL("http://localhost:8080/gymlife/front/course");
-		obj.setClientBackURL("http://localhost:8080/gymlife/front/coursesingle");
+//		System.out.println(uuId);
+//		obj.setClientBackURL("http://localhost:8080/gymlife/front/coursesingle/corderenter?MerchantTradeNo="+uuId);
+		obj.setClientBackURL("http://localhost:8080/gymlife/front/coursesingle?MerchantTradeNo="+uuId);
 //		obj.setOrderResultURL("http://localhost:8080/gymlife/course/order/insert?userId="+userId+"&courseId="+courseId+"&corderPayment="+corderPayment+"&corderQuantity="+corderQuantity+"&corderCost="+corderCost);
 		obj.setNeedExtraPaidInfo("N");
 		String form = all.aioCheckOut(obj, null);
+		
+		
 		return form;
 	}
+	
 	//更新訂單
 	@Transactional
 	public void updateCorder(Integer corderId,String corderUpdateTime,Integer corderQuantity) {

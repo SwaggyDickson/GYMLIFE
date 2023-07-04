@@ -117,9 +117,20 @@ public class MemberService {
 	            throw new RuntimeException("User not found");
 	        }
 	    }
-	 
+	 //--------忘記密碼-----
+	 //透過帳號信箱比對資料庫
 	 public Optional<Member> findUserByUserAccountAndUserEmail(String userAccount,String userEmail) {
 			return memberRepo.findByUserAccountAndUserEmail(userAccount, userEmail);
 	 }
+
+	 //使用帳號搜尋該筆資料
+	 public Optional<Member> findUserByUserAccount(String userAccount) {
+		
+		return memberRepo.findUserByUserAccount(userAccount);
+	}
 	
+	 public Member seveUserPassword(Member member) {
+		 return memberRepo.save(member);
+	 }
+	 
 }

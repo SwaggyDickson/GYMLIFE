@@ -13,6 +13,7 @@ import java.util.concurrent.Executors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -35,6 +36,12 @@ import tw.gymlife.member.service.MemberService;
 			
 		@Autowired 
 		private MemberService memberService;
+		
+		@Autowired
+		private MailService mailService;
+		
+		@Autowired
+		private  PasswordEncoder pwdEncoder;
 		
 		private static final int LOCK_DURATION = 1000;
 		
@@ -182,28 +189,26 @@ import tw.gymlife.member.service.MemberService;
 			  String userAccount = credentials.get("userAccount");
 		      String userEmail = credentials.get("userEmail");
 		      
+		      session.setAttribute("userAccount", userAccount);
+		      
+		      
 		      Optional<Member> member = memberService.findUserByUserAccountAndUserEmail(userAccount, userEmail);
 		      if (member.isPresent()) {
 		    	  
-		    	  // Generate a random verification code.
+		    	  // 生成亂數
 		          String verificationCode = String.format("%06d", new Random().nextInt(999999));
 		          System.out.println(verificationCode);
 		    	  
-		         // Save verification code and its expiration to session.
+		         // 存取至session,並且限制15分鐘
 		    	  session.setAttribute("verificationCode", verificationCode);
-		          session.setAttribute("codeExpiration", LocalDateTime.now().plusMinutes(15)); // The code will expire in 15 minutes.
-		    	  
-		            // Send the verification code to the user's email.
-		          ExecutorService executorService = Executors.newFixedThreadPool(10);
-
-		          executorService.submit(() -> {
+		          session.setAttribute("codeExpiration", LocalDateTime.now().plusMinutes(1)); 
+		    	 
 		              // call your mail sending service here
-		              MailService.codeSend(userEmail, "Your verification code", verificationCode);
-		          });
-		            
-		            return new ResponseEntity<>("A verification code has been sent to your email. Please enter the code to reset your password.", HttpStatus.OK);
+		          mailService.prepareAndSend(userEmail, "Your verification code", verificationCode);
+
+		            return new ResponseEntity<>("驗證碼已寄出", HttpStatus.OK);
 		        } else {
-		            return new ResponseEntity<>("No user found with this email and username.", HttpStatus.BAD_REQUEST);
+		            return new ResponseEntity<>("找不到該用戶還有帳號", HttpStatus.BAD_REQUEST);
 		        }
 		  }
 		
@@ -221,10 +226,44 @@ import tw.gymlife.member.service.MemberService;
 		      if (code.equals(verificationCode) &&
 		          LocalDateTime.now().isBefore(codeExpiration)) {
 		          // If the code is correct and not expired, allow user to change password.
-		          return new ResponseEntity<>("Verification successful. You can now reset your password.", HttpStatus.OK);
+		          return new ResponseEntity<>("成功", HttpStatus.OK);
 		      } else {
-		          return new ResponseEntity<>("Verification failed. The code is incorrect or expired.", HttpStatus.BAD_REQUEST);
+		          return new ResponseEntity<>("失敗", HttpStatus.BAD_REQUEST);
 		      }
+		  }
+		  
+		  @PostMapping("/ResetPassword")
+		  @ResponseBody
+		  public ResponseEntity<String> resetPassword(@RequestBody Map<String, String> data, HttpSession session) {
+		      String newPassword = data.get("newPassword");
+		      String confirmPassword = data.get("confirmPassword");
+
+		      if (!newPassword.equals(confirmPassword)) {
+		          return new ResponseEntity<>("Passwords do not match.", HttpStatus.BAD_REQUEST);
+		      }
+
+		     
+		      String userAccount = (String) session.getAttribute("userAccount");
+		      
+		      // 使用用户名来查找用户
+		      Optional<Member> optionalMember = memberService.findUserByUserAccount(userAccount);
+
+		     
+
+		      if (!optionalMember.isPresent()) {
+		          return new ResponseEntity<>("User not found.", HttpStatus.NOT_FOUND);
+		      }
+
+		      // Update the password
+		      Member member = optionalMember.get();
+		      member.setUserPassword(pwdEncoder.encode(newPassword));
+
+		      memberService.seveUserPassword(member);
+		      
+		      System.out.println("setPassword down");
+		      session.removeAttribute("userAccount");
+		      
+		      return new ResponseEntity<>("Password updated successfully.", HttpStatus.OK);
 		  }
 		  
 }

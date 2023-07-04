@@ -1,6 +1,7 @@
 package tw.gymlife.member.service;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailException;
@@ -13,7 +14,7 @@ import org.springframework.mail.SimpleMailMessage;
 @Service
 public class MailService {
  
-    private static JavaMailSender mailSender;
+    private JavaMailSender mailSender;
  
     @Autowired
     public MailService(JavaMailSender mailSender) {
@@ -30,21 +31,27 @@ public class MailService {
             messageHelper.setText(message);  // set the content
         };
       
-        try {
-            mailSender.send(messagePreparator);
-            return CompletableFuture.completedFuture(true);
-        } catch (MailException e) {
-            return CompletableFuture.completedFuture(false);
-        }
-    }
-    @Async
-    public static void codeSend(String recipient, String subject, String message) {
-        SimpleMailMessage msg = new SimpleMailMessage();
-        msg.setTo(recipient);
-        msg.setSubject(subject);
-        msg.setText(message);
+        CompletableFuture<Boolean> future = new CompletableFuture<>();
 
-        mailSender.send(msg);
+        Executors.newSingleThreadExecutor().submit(() -> {
+            try {
+                mailSender.send(messagePreparator);
+                future.complete(true);
+            } catch (MailException e) {
+                future.complete(false);
+            }
+        });
+
+        return future;
     }
+//    @Async
+//    public static void codeSend(String recipient, String subject, String message) {
+//        SimpleMailMessage msg = new SimpleMailMessage();
+//        msg.setTo(recipient);
+//        msg.setSubject(subject);
+//        msg.setText(message);
+//
+//        mailSender.send(msg);
+//    }
 
 }

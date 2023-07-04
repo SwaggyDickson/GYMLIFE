@@ -37,9 +37,9 @@ public class CourseBean {
 	@Column(name = "courseCost")
 	private Integer courseCost;
 	@Column(name = "courseViewers")
-	private Integer courseViewers;
+	private Integer courseViewers = 0;
 	@Column(name = "courseBuyers")
-	private Integer courseBuyers;
+	private Integer courseBuyers = 0;
 	@JsonManagedReference
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "course", cascade = CascadeType.ALL)
 	private List<ImageBean> images;

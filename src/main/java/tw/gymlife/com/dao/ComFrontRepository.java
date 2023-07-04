@@ -25,6 +25,9 @@ public interface ComFrontRepository extends JpaRepository<Commoditys, Integer> {
 	 @Query(value = "SELECT * FROM Commoditys  WHERE comStatus = :comStatus AND comType LIKE %:comType% ESCAPE '\\'",nativeQuery=true)
 	 List<Commoditys> findByComStatusAndComTypeLike(@Param("comStatus") String comStatus, @Param("comType") String comType);
 	 
+	 //前三筆最多人觀看商品
 	 
+	 @Query(value = "Select Top 3 * From Commoditys WHERE comStatus = :comStatus Order By clicktime ", nativeQuery = true)
+	 List<Commoditys> getTopThreeCommoditys(@Param("comStatus")String comStatus);
 	 
 }

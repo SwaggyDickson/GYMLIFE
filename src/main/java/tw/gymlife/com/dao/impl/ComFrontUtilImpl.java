@@ -2,24 +2,26 @@ package tw.gymlife.com.dao.impl;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.MailException;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.mail.javamail.MimeMessagePreparator;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Repository;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import jakarta.servlet.http.Part;
 import tw.gymlife.com.dao.ComFrontUtil;
 import tw.gymlife.com.model.Cart;
 import tw.gymlife.com.model.ComPic;
@@ -32,8 +34,9 @@ import tw.gymlife.com.model.OrdersDetailsDTO;
 
 @Repository
 public class ComFrontUtilImpl implements ComFrontUtil {
-
-	private String cartPath = "C:\\testGym\\gymproject\\src\\main\\resources\\static\\gym\\com\\cart";
+	
+	 
+	
 	// 將Bean轉成DTO
 	@Override
 	public List<CommodityDTO> convertCommodityDTOList(List<Commoditys> comList) {
@@ -201,9 +204,10 @@ public class ComFrontUtilImpl implements ComFrontUtil {
 
 		ObjectMapper objectMapper = new ObjectMapper();
 		List<Cart> existingCartList = new ArrayList<>();
+		String path = "C:\\springBoot\\workspace\\springBootGym\\src\\main\\resources\\static\\gym\\com\\cart";
 		existingCartList = null;
 		try {
-			File file = new File(cartPath + "\\" + userId + ".json");
+			File file = new File(path + "\\" + userId + ".json");
 			if (file.exists()) {
 				existingCartList = objectMapper.readValue(file, new TypeReference<List<Cart>>() {
 				});
@@ -244,9 +248,10 @@ public class ComFrontUtilImpl implements ComFrontUtil {
 
 		ObjectMapper objectMapper = new ObjectMapper();
 		List<Cart> existingCartList = new ArrayList<>();
+		String path = "C:\\springBoot\\workspace\\springBootGym\\src\\main\\resources\\static\\gym\\com\\cart";
 		existingCartList = null;
 		try {
-			File file = new File(cartPath + "\\" + userId + ".json");
+			File file = new File(path + "\\" + userId + ".json");
 			if (file.exists()) {
 				existingCartList = objectMapper.readValue(file, new TypeReference<List<Cart>>() {
 				});
@@ -265,9 +270,10 @@ public class ComFrontUtilImpl implements ComFrontUtil {
 
 		ObjectMapper objectMapper = new ObjectMapper();
 		List<Cart> existingCartList = new ArrayList<>();
+		String path = "C:\\springBoot\\workspace\\springBootGym\\src\\main\\resources\\static\\gym\\com\\cart";
 		existingCartList = null;
 		try {
-			File file = new File(cartPath + "\\" + userId + ".json");
+			File file = new File(path + "\\" + userId + ".json");
 			if (file.exists()) {
 				existingCartList = objectMapper.readValue(file, new TypeReference<List<Cart>>() {
 				}); // 讀取json檔案並轉成beanList
@@ -305,10 +311,13 @@ public class ComFrontUtilImpl implements ComFrontUtil {
 	        ordersDTO.setOrderId(order.getOrderId()); //訂單ID
 	        ordersDTO.setUserId(order.getUserId()); //userID
 	        ordersDTO.setOrderTime(order.getOrderTime()); //訂單成立時間
+	        ordersDTO.setOrderStatusTime(order.getOrderStatusTime()); //訂單狀態時間
 	        if (order.getOrderPayment() == 0) {
-	            ordersDTO.setOrderPayment("未付款");
+	            ordersDTO.setOrderPayment("處理中");
 	        } else if (order.getOrderPayment() == 1) {
 	            ordersDTO.setOrderPayment("已付款");
+	        } else if(order.getOrderPayment() == 2) {
+	        	ordersDTO.setOrderPayment("貨物已寄出");
 	        }
 	        ordersDTO.setTotalPrice(order.getOrderTotalPrice()); //總價
 	        ordersDTO.setOrderUuid(order.getOrderUuid()); //訂單的UUID
@@ -338,4 +347,39 @@ public class ComFrontUtilImpl implements ComFrontUtil {
 	    return comDTOList;
 	}
 
+//	@Async
+	@Override
+	public  CompletableFuture<Boolean> sendMail(List<OrdersDTO> orderDtoList) {
+		return null;
+//		
+//        // 邮件主题和内容
+//        int totalPrice=0;	
+//        StringBuilder comNames = new StringBuilder();
+//        for(OrdersDTO odto :orderDtoList) {
+//        	totalPrice= odto.getTotalPrice();
+//        	for(OrdersDetailsDTO odetails:odto.getOrderDetailsList()) {
+//        		comNames.append(odetails.getComName()).append(",");
+//        	}
+//        	comNames.setLength(comNames.length() -2 );
+//        }
+//        String emailSubject = "Hello, World!";
+//        String emailContent = "This is a test email. 您購買的商品: "+ comNames+"已建立訂單請 7 日內結帳"
+//        		+ "; /r 結帳金額為: "+ totalPrice;
+//
+//        MimeMessagePreparator messagePreparator = mimeMessage -> {
+//            MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
+//            messageHelper.setFrom("qqww5576843@gmail.com");
+//            messageHelper.setTo("danny61200@gmail.com");
+//            messageHelper.setSubject("訂單建立");  // set the subject
+//            messageHelper.setText(emailContent);  // set the content
+//        };
+//      
+//        try {
+//            mailSender.send(messagePreparator);
+//            return CompletableFuture.completedFuture(true);
+//        } catch (MailException e) {
+//            return CompletableFuture.completedFuture(false);
+//        }
+//        
+	}
 }

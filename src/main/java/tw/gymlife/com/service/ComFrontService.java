@@ -15,41 +15,50 @@ import tw.gymlife.com.model.Commoditys;
 @Service
 public class ComFrontService {
 
+	
 	@Autowired
 	private ComFrontRepository comFrontRepo;
 
 	@Autowired
 	private ComPicRepository picRepo;
+	
+	private String comStatus ="上架";
 
 	/*------------shopList頁功能開始------------*/
 	// 查詢所有商品
 	public List<Commoditys> getAllComList() {
-		String comStatus = "上架";
+
 		return comFrontRepo.findByComStatus(comStatus);
 	}
 
 	// 關鍵字查詢
 	public List<Commoditys> getKeywordComList(String keyword) {
 
-		String comStatus = "上架";
+
 		return comFrontRepo.findByComStatusAndComNameLike(comStatus, keyword);
 	}
 
 	// 價格高低排序
 	public List<Commoditys> getSortByPrice() {
 
-		String comStatus = "上架";
 		return comFrontRepo.findByComStatusOrderByComPriceDesc(comStatus);
 	}
 
 	// 類別查詢
 	public List<Commoditys> getComTypeList(String comType) {
 
-		String comStatuString = "上架";
-		return comFrontRepo.findByComStatusAndComTypeLike(comStatuString, comType);
+		return comFrontRepo.findByComStatusAndComTypeLike(comStatus, comType);
 
 	}
 
+	public List<Commoditys> getTopThreeCommoditys(){
+		
+		
+		
+		return comFrontRepo.getTopThreeCommoditys(comStatus);
+		
+		
+	}
 	/*------------shop單筆商品頁功能開始------------*/
 	//每次點擊單筆商品 次數+1
 	public boolean updateClickTime(Integer comId) {
@@ -89,6 +98,19 @@ public class ComFrontService {
 	}
 	/*------------shop單筆商品頁功能結束------------*/
 
+	//付款後更新購買數量
+	public void updateComBuyNumber(int comId, int comBuyNumber){
+		
+		Optional<Commoditys> option = comFrontRepo.findById(comId);
+		if(option.isPresent()) {
+			Commoditys comBean = option.get();
+			comBean.setComBuyNumber(comBuyNumber);
+			comFrontRepo.save(comBean);
+		}
+		
+	}
+	
+	
 	// 關鍵字查詢(JS)
 	public List<Commoditys> getKeywordComListJS(String keyword) {
 
@@ -96,4 +118,5 @@ public class ComFrontService {
 		return comFrontRepo.findByComStatusAndComNameLike(comStatus, keyword);
 	}
 
+	
 }

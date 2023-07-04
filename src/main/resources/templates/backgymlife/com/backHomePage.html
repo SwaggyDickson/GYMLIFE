@@ -4,6 +4,12 @@
 <meta charset="UTF-8">
 <title>後臺首頁</title>
 
+
+<!-- BS JS -->
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+
+<!-- MY CSS -->
+  <link rel="stylesheet" th:href="@{gym/com/css/backhome.css}">  
 </head>
 <body class="adminbody">
 
@@ -30,7 +36,7 @@
 					</div>
 
 					<!-- -------------------------內文-------------------------------------------------------------- -->
-
+		<div id="toastContainer"></div>
 
 				</div>
 				<!-- END container-fluid -->
@@ -40,7 +46,17 @@
 
 		</div>
 
+					<button id="back-to-top-btn" class="notifyBtn" title="回到頁面頂端">
+                        <i class="fa fa-bell" aria-hidden="true" style="position: absolute; top: 17px; left: 17px;"></i>
+                        <span class="notif-bullet"></span>
+                    </button>
 <div th:replace="~{layout/footer}"></div>
+
 </div>
+
+
+ <!-- My JS -->
+    <script th:src="@{gym/com/js/backhome.js}"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </body>
 </html>

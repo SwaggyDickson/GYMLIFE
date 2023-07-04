@@ -1,6 +1,7 @@
 package tw.gymlife.com.dao;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import org.springframework.stereotype.Repository;
 
@@ -15,7 +16,6 @@ import tw.gymlife.com.model.OrdersDTO;
 
 @Repository
 public interface ComFrontUtil {
-
 
 
 	// 將Bean轉成DTO
@@ -47,4 +47,8 @@ public interface ComFrontUtil {
 	
 	//轉成訂單DTO
 	public List<OrdersDTO> convertOrderToOrdersDTO(List<Orders> orderList, List<CommodityDTO> returnComList);
+	
+	//發送信件
+	public CompletableFuture<Boolean> sendMail(List<OrdersDTO> orderDtoList);
+		
 }

@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.LinkedHashSet;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,12 +26,19 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import tw.gymlife.com.dao.impl.ComUtilImpl;
 import tw.gymlife.com.model.ComPic;
 import tw.gymlife.com.model.CommodityDTO;
 import tw.gymlife.com.model.Commoditys;
+import tw.gymlife.com.model.OrderDetails;
+import tw.gymlife.com.model.Orders;
+import tw.gymlife.com.model.OrdersDTO;
+import tw.gymlife.com.service.ComFrontService;
+import tw.gymlife.com.service.ComFrontUtilService;
+import tw.gymlife.com.service.ComOrderService;
 import tw.gymlife.com.service.ComService;
 import tw.gymlife.com.service.ComUtilService;
 
@@ -41,6 +49,13 @@ public class ComBackController {
 	private ComService comService; // 利用Spring建立service
 	@Autowired
 	private ComUtilService comUtilService; // 利用Spring建立service
+	
+	@Autowired
+	private ComOrderService orderService;
+	@Autowired
+	private ComFrontService comFService;
+	@Autowired
+	private ComFrontUtilService comFUtilService;
 	
 	@Autowired
 	private ComPic comPicBean; // 利用Spring建立Bean
@@ -373,4 +388,47 @@ public class ComBackController {
 			}
 			return ResponseEntity.notFound().build();
 		}
+		
+		//通知
+		@PostMapping("/orderAnnotation")
+		public ResponseEntity<Object> getOrderAnnotation(){
+			
+			//找出所以未付款的商品
+			List<Orders> returnOrderList = orderService.getAllOrders();
+			System.out.println(returnOrderList);
+
+			List<Commoditys> returnComList= new ArrayList<>();
+			
+			Set<Integer> addedComIds = new HashSet<>(); // 用來記錄已經加入的商品ID
+			for (Orders orders : returnOrderList) {
+			    for (OrderDetails odts : orders.getOrderDetails()) {
+			        int comId = odts.getComId();
+			        // 判斷商品是否已經加入過，如果是則跳過
+			        if (addedComIds.contains(comId)) {
+			            continue; //跳出迴圈
+			        }
+			        Commoditys commodity = comFService.getCommoditys(comId);
+			        returnComList.add(commodity);
+			        addedComIds.add(comId); // 將已經加入的商品ID記錄起來
+			    }
+			}
+			
+			List<CommodityDTO> commodityDTOList = comFUtilService.convertOneCOmPicDTOList(returnComList);
+			System.out.println("所有商品表DTO: "+ commodityDTOList);
+			List<OrdersDTO> ordersDTOList = comFUtilService.convertOrderToOrdersDTO(returnOrderList, commodityDTOList);
+			System.out.println("改造後的訂單DTO: "+ ordersDTOList);
+			
+			// 將資料轉為JSON轉發到商品頁面
+			ObjectMapper objectMapper = new ObjectMapper();
+			try {
+				String jsonDTOList = objectMapper.writeValueAsString(ordersDTOList);
+				return ResponseEntity.ok(jsonDTOList);
+			} catch (JsonProcessingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			return ResponseEntity.notFound().build();
+		}
+		
 }

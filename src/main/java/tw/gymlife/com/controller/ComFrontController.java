@@ -1,5 +1,6 @@
 package tw.gymlife.com.controller;
 
+import java.lang.runtime.ObjectMethods;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -31,7 +32,7 @@ import tw.gymlife.com.model.Orders;
 import tw.gymlife.com.model.OrdersDTO;
 import tw.gymlife.com.service.ComFrontService;
 import tw.gymlife.com.service.ComFrontUtilService;
-import tw.gymlife.com.service.OrderServices;
+import tw.gymlife.com.service.ComOrderService;
 import tw.gymlife.member.model.Member;
 import tw.gymlife.member.model.MemberRepository;
 
@@ -44,8 +45,8 @@ public class ComFrontController {
 	private ComFrontUtilService comFUtilService;
 	
 	@Autowired 
-	private OrderServices orderService;
-
+	private ComOrderService orderService;
+	
 	// Member
 	@Autowired
 	private MemberRepository memberRepo;
@@ -95,14 +96,20 @@ public class ComFrontController {
 	public String getShopListPage(Model m) {
 
 		List<CommodityDTO> comDTOList = new ArrayList<>();
+		List<CommodityDTO> topThreeComDTOList = new ArrayList<>();
+		
 
 		try {
 			List<Commoditys> returnList = comFService.getAllComList();
+			List<Commoditys> topThreeList = comFService.getTopThreeCommoditys();
+			
 			if (returnList != null) {
 				comDTOList = comFUtilService.convertOneCOmPicDTOList(returnList);
+				topThreeComDTOList=comFUtilService.convertOneCOmPicDTOList(topThreeList);
 			}
 			// 將資料轉發到商品頁面
 			m.addAttribute("comList", comDTOList);
+			m.addAttribute("topThreeList", topThreeComDTOList);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -379,6 +386,7 @@ public class ComFrontController {
 		ordersBean.setOrderUuid(uuId); //訂單編號
 		ordersBean.setMember(member); //多對一 member
 		ordersBean.setUserId(member.getUserId()); // userId
+		ordersBean.setOrderStatusTime(formattedDateTime); //訂單狀態時間
 		ordersList.add(ordersBean);
 		member.setOrders(ordersList);
 		memberRepo.save(member); //建立訂單表
@@ -415,39 +423,15 @@ public class ComFrontController {
 			comFUtilService.deleteCart(userId, comId);
 		}
 
-		//建立結束後跳轉訂單頁面，因此要查出該會員的所有訂單資訊
-		List<Orders> returnOrderList = orderService.findAllOrderByUserId(userId);
-		System.out.println("該會員的所有訂單: "+ returnOrderList);
-		
-		List<Commoditys> returnComList= new ArrayList<>();
-		Set<Integer> addedComIds = new HashSet<>(); // 用來記錄已經加入的商品ID
-		for (Orders orders : returnOrderList) {
-		    for (OrderDetails odts : orders.getOrderDetails()) {
-		        int comId = odts.getComId();
-		        // 判斷商品是否已經加入過，如果是則跳過
-		        if (addedComIds.contains(comId)) {
-		            continue;
-		        }
-		        Commoditys commodity = comFService.getCommoditys(comId);
-		        returnComList.add(commodity);
-		        addedComIds.add(comId); // 將已經加入的商品ID記錄起來
-		    }
-		}
-		
-		List<CommodityDTO> commodityDTOList = comFUtilService.convertOneCOmPicDTOList(returnComList);
-		
-		System.out.println("所有商品表DTO: "+ commodityDTOList);
-		List<OrdersDTO> ordersDTOList = comFUtilService.convertOrderToOrdersDTO(returnOrderList, commodityDTOList);
-		
-		System.out.println("改造後的訂單DTO: "+ ordersDTOList);
-		model.addAttribute("orderList",ordersDTOList); //往前台傳Lists
 
-		return "frontgymlife/com/front_orderList";
+
+		return "redirect:/order.func";
 	}
 
 	/*------------shopCart頁功能結束------------*/
 	/*------------orderList頁功能開始------------*/
 	
+	//進入訂單頁面
 	@GetMapping("/order.func")
 	public String getOrderListByUserId(HttpSession session, Model model) {
 		
@@ -487,30 +471,52 @@ public class ComFrontController {
 	
 	/*------------orderList頁功能結束------------*/
 
-	@PostMapping("/test")
-	public String getCheck(HttpSession session,@RequestParam("payment") String payment, @RequestParam("orderId") String orderId, @RequestParam("orderUserId") int userId,
-							@RequestParam("orderTime") String orderTime, @RequestParam("orderUuid") String orderUuid, @RequestParam("orderTotalPrice") int totalPrice) {
+	
+	@GetMapping("/payBackorder.func")
+	public String payBackOrder(HttpSession session, Model model,@RequestParam("orderId") int orderID) {
 		
-		System.out.println("付款方式: "+ payment);
-		if(payment.equals("green")) {
-			
-			System.out.println("orderId:" + orderId);
-			System.out.println("orderUserId:" + userId);
-			System.out.println("orderTime:" + orderTime);
-			System.out.println("orderUuid:" + orderUuid);
-			System.out.println("orderTotalPrice:" + totalPrice);
-		}else {
+		int userId= (int) session.getAttribute("userId");
+		System.out.println("orderId:"+ orderID);
+		orderService.updateOrderCheckStatus(orderID); //更新狀態為已付款
 
-			System.out.println("orderId:" + orderId);
-			System.out.println("orderUserId:" + userId);
-			System.out.println("orderTime:" + orderTime);
-			System.out.println("orderUuid:" + orderUuid);
-			System.out.println("orderTotalPrice:" + totalPrice);
-			
+		//更新購買數量
+		List<Orders> oneOrderList = orderService.findOneOrderByOrderId(orderID);
+		for(Orders orders:oneOrderList ) {
+			for(OrderDetails odetails: orders.getOrderDetails()) {
+				int comID=odetails.getComId();
+				int comBuyNum= odetails.getPurchaseNumber();
+				comFService.updateComBuyNumber(comID, comBuyNum);
+			}
 		}
 		
 		
+		List<Orders> returnOrderList = orderService.findAllOrderByUserId(userId);
+		System.out.println("該會員的所有訂單: "+ returnOrderList);
+		List<Commoditys> returnComList= new ArrayList<>();
 		
-		return null;
+		Set<Integer> addedComIds = new HashSet<>(); // 用來記錄已經加入的商品ID
+		for (Orders orders : returnOrderList) {
+		    for (OrderDetails odts : orders.getOrderDetails()) {
+		        int comId = odts.getComId();
+		        // 判斷商品是否已經加入過，如果是則跳過
+		        if (addedComIds.contains(comId)) {
+		            continue; //跳出迴圈
+		        }
+		        Commoditys commodity = comFService.getCommoditys(comId);
+		        returnComList.add(commodity);
+		        addedComIds.add(comId); // 將已經加入的商品ID記錄起來
+		    }
+		}
+		
+		List<CommodityDTO> commodityDTOList = comFUtilService.convertOneCOmPicDTOList(returnComList);
+		System.out.println("所有商品表DTO: "+ commodityDTOList);
+		List<OrdersDTO> ordersDTOList = comFUtilService.convertOrderToOrdersDTO(returnOrderList, commodityDTOList);
+		System.out.println("改造後的訂單DTO: "+ ordersDTOList);
+		
+		model.addAttribute("orderList",ordersDTOList); //往前台傳Lists
+		return "frontgymlife/com/front_orderList";
+//		return null;
+		
 	}
+
 }

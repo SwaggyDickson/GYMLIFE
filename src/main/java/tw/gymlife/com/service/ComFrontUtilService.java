@@ -1,6 +1,7 @@
 package tw.gymlife.com.service;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -67,5 +68,9 @@ public class ComFrontUtilService {
 	public List<OrdersDTO> convertOrderToOrdersDTO(List<Orders> orderList, List<CommodityDTO> returnComList) {
 
 		return userUtil.convertOrderToOrdersDTO(orderList, returnComList);
+	}
+	
+	public CompletableFuture<Boolean> sendMail(List<OrdersDTO> orderDtoList) {
+		return userUtil.sendMail(orderDtoList);
 	}
 }

@@ -124,6 +124,52 @@
     </section>
     <!--  ItemList End -->
 
+<!-- Testimonial Section Begin -->
+    <section class="testimonial-section spad">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="section-title">
+                        <span>其他人都在看</span>
+                        <h4 style="color:white;">推薦商品</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="ts_slider owl-carousel">
+             <th:block th:each="com : ${topThreeList}">
+                <div class="ts_item">
+                    <div class="row">
+                        <div class="col-lg-12 text-center">
+                            <div class="ti_pic">
+                            <th:block th:each="entry,iteration  : ${com.comPicInfo}">
+                                <img th:src="@{'/download/'+ ${entry.key}}" alt="">
+                                </th:block>
+                            </div>
+                            <div class="ti_text">
+                                <p th:text="${com.comContent}"></p>
+                                <h5 th:text="${com.comName}"></h5>
+                                <div class="tt-rating">
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                </div>
+                            </div>
+                            <div class="ti_text topBtn">
+                            	<a th:href="@{'/com/'+${com.comId}}" style="color:#f36100;"><span style="color:#f36100;">來去看看</span><i class="fa fa-search fa-2x"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                     
+                </div>
+              </th:block>
+            </div>
+                <!-- 抓取功能結束 -->
+        </div>
+    </section>
+    <!-- Testimonial Section End -->
+    
     <!--回到上方按鈕-->
     <button id="back-to-top-btn" title="回到頁面頂端">
         <i class="fa fa-arrow-up">TOP</i>

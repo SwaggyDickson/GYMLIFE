@@ -175,8 +175,10 @@
 	text-align: center;
 }
 
-
-
+/* 前三筆 */
+.topBtn:hover{
+	color:#ffad77;
+}
 
 
 

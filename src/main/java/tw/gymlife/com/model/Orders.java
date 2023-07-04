@@ -35,13 +35,16 @@ public class Orders {
 	private String orderTime;
 
 	@Column(name = "ORDERPAYMENT")
-	private int orderPayment;
+	private int orderPayment;  //0=處理中, 1=已付款, 2=商家確認訂單中, 3=訂單已更新, 4=已發貨
 
 	@Column(name = "ORDERTOTALPRICE")
 	private int orderTotalPrice;
 	
 	@Column(name="ORDERUUID")
 	private String orderUuid;
+	
+	@Column(name="ORDERSTATUSTIME")
+	private String orderStatusTime;
 
 	// 訂單多對一會員
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -59,8 +62,8 @@ public class Orders {
 	@Override
 	public String toString() {
 		return "Orders [orderId=" + orderId + ", userId=" + userId + ", orderTime=" + orderTime + ", orderPayment="
-				+ orderPayment + ", orderTotalPrice=" + orderTotalPrice + ", orderUuid=" + orderUuid + ", orderDetails="
-				+ orderDetails + "]";
+				+ orderPayment + ", orderTotalPrice=" + orderTotalPrice + ", orderUuid=" + orderUuid
+				+ ", orderStatusTime=" + orderStatusTime + ", orderDetails=" + orderDetails + "]";
 	}
 
 	// --------------------------------------------------------------
@@ -125,6 +128,13 @@ public class Orders {
 
 	public void setOrderDetails(List<OrderDetails> orderDetails) {
 		this.orderDetails = orderDetails;
+	}
+	
+	public String getOrderStatusTime() {
+		return orderStatusTime;
+	}
+	public void setOrderStatusTime(String orderStatusTime) {
+		this.orderStatusTime = orderStatusTime;
 	}
 
 }

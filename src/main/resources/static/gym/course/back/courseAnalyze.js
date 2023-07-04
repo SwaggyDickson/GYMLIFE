@@ -1,11 +1,11 @@
 //訂單圖表生成
 $(document).ready(function() {
 	let corderAnalyze = document.getElementById('corderAnalyze');
-			corderAnalyze.innerHTML=`<canvas id="courseView" class="col-md-5"></canvas><canvas id="courseBuyers" class="col-md-5"></canvas>`;
+	corderAnalyze.innerHTML = `<canvas id="courseView"></canvas><canvas id="courseBuyers"></canvas>`;
 	axios({
-		method:'get',
-		url:'http://localhost:8080/gymlife/course/corder/analyze'
-		})
+		method: 'get',
+		url: 'http://localhost:8080/gymlife/course/corder/analyze'
+	})
 		.then(res => {
 			const view = document.getElementById('courseView');
 			let viewName = [];
@@ -32,9 +32,32 @@ $(document).ready(function() {
 					}]
 				},
 				options: {
-					scales: {
-						y: {
-							beginAtZero: true
+					
+//					scales: {
+//						y: {
+//							beginAtZero: true
+//						}
+//					},
+					animation: {
+						//						animateRotate:  false,
+						animateScale: true
+
+					}, plugins: {
+						title: {
+							display: true,
+							text: '觀看人數',
+							font: {
+                        size: 20
+                    }
+						},legend:{
+							position:'bottom',font: {
+                       
+                    },labels: {
+                    // This more specific font property overrides the global property
+                    font: {
+                        size: 18
+                    }
+                }
 						}
 					}
 				}
@@ -64,14 +87,36 @@ $(document).ready(function() {
 					}]
 				},
 				options: {
-					scales: {
-						y: {
-							beginAtZero: true
+//					scales: {
+//						y: {
+//							beginAtZero: true
+//						}
+//					},
+					animation: {
+						//						animateRotate:  false,
+						animateScale: true
+
+					}, plugins: {
+						title: {
+							display: true,
+							text: '購買人數',
+							font: {
+                        size: 20
+                    }
+						},legend:{
+							position:'bottom',font: {
+                       
+                    },labels: {
+                    // This more specific font property overrides the global property
+                    font: {
+                        size: 18
+                    }
+                }
 						}
 					}
 				}
 			});
-			
+
 		})
 });
 

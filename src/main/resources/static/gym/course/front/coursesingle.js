@@ -59,7 +59,7 @@ function findsinglecourse(cbtn) {
                                             <a href="mailto:${Data.coachEmail}" ><i class="fa  fa-envelope-o"></i></a>`;
                                             chphoneemail.innerHTML = chphemhtml;
 //		console.log(Data.coach)
-		coachphoto.innerHTML = `<img width="200px" src="http://localhost:8080/gymlife/coachImage/${Data.coachId}">`;
+		coachphoto.innerHTML = `<img  src="http://localhost:8080/gymlife/coachImage/${Data.coachId}">`;
 		coachName.innerText = Data.coachName;
 		coachBirthday.innerText = getAge(Data.coachBirthday);
 		coachHeight.innerText = Data.coachHeight;

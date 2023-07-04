@@ -36,6 +36,10 @@ public class CourseBean {
 	private String courseIntroduce;
 	@Column(name = "courseCost")
 	private Integer courseCost;
+	@Column(name = "courseViewers")
+	private Integer courseViewers;
+	@Column(name = "courseBuyers")
+	private Integer courseBuyers;
 	@JsonManagedReference
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "course", cascade = CascadeType.ALL)
 	private List<ImageBean> images;
@@ -119,6 +123,30 @@ public class CourseBean {
 
 	public void setCoach(CoachBean coach) {
 		this.coach = coach;
+	}
+
+	public Integer getCourseViewers() {
+		return courseViewers;
+	}
+
+	public void setCourseViewers(Integer courseViewers) {
+		this.courseViewers = courseViewers;
+	}
+
+	public Integer getCourseBuyers() {
+		return courseBuyers;
+	}
+
+	public void setCourseBuyers(Integer courseBuyers) {
+		this.courseBuyers = courseBuyers;
+	}
+
+	public List<CorderBean> getCorder() {
+		return corder;
+	}
+
+	public void setCorder(List<CorderBean> corder) {
+		this.corder = corder;
 	}
 
 }

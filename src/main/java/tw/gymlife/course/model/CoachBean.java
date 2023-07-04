@@ -88,7 +88,8 @@ public class CoachBean {
 	}
 	public int getAge(String birthday) {
         if (birthday != null) {
-            LocalDate birthdate = LocalDate.parse(birthday, DateTimeFormatter.ISO_DATE);
+        	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        	LocalDate birthdate = LocalDate.parse(birthday, formatter);
             LocalDate now = LocalDate.now();
             Period age = Period.between(birthdate, now);
             return age.getYears();

@@ -5,14 +5,20 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -25,7 +31,6 @@ import tw.gymlife.course.model.CorderBean;
 import tw.gymlife.course.model.CourseDTO;
 import tw.gymlife.course.model.ImageBean;
 import tw.gymlife.course.model.convertDTO;
-import tw.gymlife.course.service.CourseOrderService;
 import tw.gymlife.course.service.coachService;
 import tw.gymlife.course.service.corderService;
 import tw.gymlife.course.service.courseService;
@@ -48,9 +53,6 @@ public class CourseController_Front {
 
 	@Autowired
 	private convertDTO converDTO;
-
-	@Autowired
-	CourseOrderService orderService;
 
 //	//前台首頁
 //	@GetMapping("/front")
@@ -77,8 +79,9 @@ public class CourseController_Front {
 	@PostMapping("/ecpayCheckout")
 	public String ecpayCheckout(@RequestParam("userId") Integer userId, @RequestParam("courseId") Integer courseId,
 			@RequestParam("corderPayment") String corderPayment, @RequestParam("corderQuantity") Integer corderQuantity,
-			@RequestParam("corderCost") Integer corderCost,@RequestParam("courseName") String courseName) {
-		String aioCheckOutALLForm = oservice.ecpayCheckout(userId,courseId,corderPayment,corderQuantity,corderCost,courseName);
+			@RequestParam("corderCost") Integer corderCost, @RequestParam("courseName") String courseName) {
+		String aioCheckOutALLForm = oservice.ecpayCheckout(userId, courseId, corderPayment, corderQuantity, corderCost,
+				courseName);
 
 		return aioCheckOutALLForm;
 	}
@@ -91,12 +94,43 @@ public class CourseController_Front {
 
 		m.addAttribute("cbeans", cbeans);
 		m.addAttribute("ibeans", ibeans);
+		return "frontgymlife/course/Course";
+	}
+
+	// 查詢單筆課程
+	@GetMapping("/front/coursesingle/{courseId}")
+	public String findCourseById(@PathVariable Integer courseId, Model m) {
+		CourseBean cbean = cservice.selectCourseById(courseId);
+		cservice.insertCourseViewers(courseId);
+		List<CourseBean> cbeans = cservice.selectAllCourse();
+		CourseDTO cdto = converDTO.convertCourseDTO(cbean);
+		System.out.println(cdto);
+		Collections.sort(cbeans, new CourseBuyersComparator());
+		List<CourseBean> topThreeCourses = cbeans.subList(0, Math.min(cbeans.size(), 3));
+		for (CourseBean ccbean : topThreeCourses) {
+			int ccourseId = ccbean.getCourseId();
+			System.out.println(ccourseId);
+			String courseName = ccbean.getCourseName();
+			System.out.println(courseName);
+		}
+		m.addAttribute("topThreeBuyers", topThreeCourses);
+		m.addAttribute("cbeans", cbeans);
+		m.addAttribute("cbean", cdto);
 		return "frontgymlife/course/coursesingle";
 	}
+
+	// 依照購買課程人數排序
+	public class CourseBuyersComparator implements Comparator<CourseBean> {
+		@Override
+		public int compare(CourseBean bean1, CourseBean bean2) {
+			return Integer.compare(bean2.getCourseBuyers(), bean1.getCourseBuyers());
+		}
+	}
+
 	// 查詢單筆會員 ajax
 	@ResponseBody
 	@GetMapping("/course/cordermember")
-	public Member findmemberById(@RequestParam(name="userId") Integer userId) throws ParseException {
+	public Member findmemberById(@RequestParam(name = "userId") Integer userId) throws ParseException {
 		Member member = oservice.selectMemberByuserId(userId);
 		return member;
 	}
@@ -106,6 +140,7 @@ public class CourseController_Front {
 	@GetMapping("/front/coursesingle/select")
 	public CourseDTO cousesingle(@RequestParam(name = "courseId") Integer courseId) {
 		CourseBean cbean = cservice.selectCourseById(courseId);
+		cservice.insertCourseViewers(courseId);
 		CourseDTO cdto = converDTO.convertCourseDTO(cbean);
 		System.out.println(cdto);
 		return cdto;
@@ -129,22 +164,23 @@ public class CourseController_Front {
 	}
 
 	// 新增訂單
-	/*@PostMapping("/course/order/insert")
-//	@GetMapping("/course/order/insert")
-	public String insertCorder(@RequestParam("userId") Integer userId, @RequestParam("courseId") Integer courseId,
-			@RequestParam("corderPayment") String corderPayment, @RequestParam("corderQuantity") Integer corderQuantity,
-			@RequestParam("corderCost") Integer corderCost, Model model) throws ParseException {
-
-		Member member = oservice.selectMemberByuserId(userId);
-		CourseBean cbean = cservice.selectCourseById(courseId);
-		CorderBean obean = new CorderBean();
-		obean.setMember(member);
-		obean.setCourse(cbean);
-		obean.setCorderPayment(corderPayment);
-		obean.setCorderQuantity(corderQuantity);
-		obean.setCorderCost(corderCost);
-		oservice.insertCorder(obean);
-		return "redirect:/front/coursesingle";
-	}*/
+	/*
+	 * @PostMapping("/course/order/insert") // @GetMapping("/course/order/insert")
+	 * public String insertCorder(@RequestParam("userId") Integer
+	 * userId, @RequestParam("courseId") Integer courseId,
+	 * 
+	 * @RequestParam("corderPayment") String
+	 * corderPayment, @RequestParam("corderQuantity") Integer corderQuantity,
+	 * 
+	 * @RequestParam("corderCost") Integer corderCost, Model model) throws
+	 * ParseException {
+	 * 
+	 * Member member = oservice.selectMemberByuserId(userId); CourseBean cbean =
+	 * cservice.selectCourseById(courseId); CorderBean obean = new CorderBean();
+	 * obean.setMember(member); obean.setCourse(cbean);
+	 * obean.setCorderPayment(corderPayment);
+	 * obean.setCorderQuantity(corderQuantity); obean.setCorderCost(corderCost);
+	 * oservice.insertCorder(obean); return "redirect:/front/coursesingle"; }
+	 */
 
 }

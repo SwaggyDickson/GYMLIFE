@@ -91,6 +91,7 @@ public class corderService {
 		obean.setCorderCost(corderCost);
 		obean.setCorderState(0);
 		oRepo.save(obean);
+		cservice.insertCourseBuyers(courseId);
 		// 結束後跳轉
 		obj.setReturnURL("http://localhost:8080/gymlife/front/coursesingle");
 //		obj.setClientRedirectURL("http://localhost:8080/gymlife/front/course");
@@ -109,6 +110,10 @@ public class corderService {
 			obean.setCorderUpdateTime(corderUpdateTime);
 			obean.setCorderQuantity(corderQuantity);
 		}
+	}
+	//刪除訂單
+	public void deleteCorder(Integer corderId) {
+		oRepo.deleteById(corderId);
 	}
 
 }

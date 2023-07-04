@@ -1,3 +1,4 @@
+//會員Modal
 function memberModal(userId){
 	axios({
 		method:'get',
@@ -34,21 +35,26 @@ function memberModalMaker(data){
 						</div>`;
 						membertable.innerHTML = html;
 }
+//更新數量紐
 function updateCorderBtn(corderId){
 	let updateinput = document.getElementById(corderId);
-	let corderQuantity = document.getElementById('corderQuantity-'+corderId).innerText;
-	console.log(corderQuantity)
-	let html = '';
-	html += `<input type="number" class="form-control input" id="input-${corderId}"name="corderQuantity" value="${corderQuantity}" min="1" step="1" value="1">`;
-	updateinput.innerHTML = html;
-	$('.input').on('change',function(e){
+	updateinput.disabled = false;
+	$(updateinput).on('change',function(e){
 	$('#updatebtn-'+corderId).css('display','none');
 	$('#updateclick-'+corderId).css('display','block');
 })
 }
+//更新訂單數量ajax
 function updateCorder(corderId){
-	let updateQuantity = document.getElementById('input-'+corderId).value
-	console.log(updateQuantity)
+	let updateQuantity = document.getElementById(corderId).value
+	console.log(updateQuantity);
+	Swal.fire({
+		title: '確定要更新數量嗎?',
+		showDenyButton: true,
+		confirmButtonText: '更新',
+		denyButtonText: `取消`,
+	}).then((result) => {
+		if (result.isConfirmed) {
 	axios({
 		method:'put',
 		url:'http://localhost:8080/gymlife/course/corder/update',
@@ -59,5 +65,84 @@ function updateCorder(corderId){
 	})
 	.then(res=>{
 		console.log('res:'+JSON.stringify(res))
+		Swal.fire(
+						'更新成功!',
+						'',
+						'success'
+					)
+		AllCorderHtml(res.data);
+	})
+	} else if (result.isDenied) {
+		}
+	})
+}
+//全部corder html
+function AllCorderHtml(data){
+	let alltable = document.getElementById('alltable');
+	let html = '';
+	for(i=0;i<data.length;i++){
+		console.log(data[i].corderUpdateTime)
+		let corderUpdateTime = (data[i].corderUpdateTime === null ? '' : data[i].corderUpdateTime);
+	html += 
+	`
+	<tr>
+									<td>${data[i].corderId}</td>
+									<td><button class="btn btn-outline-primary btn-sm"
+											onclick="memberModal(${data[i].userId})">
+											<div data-toggle="modal" data-target="#allmember"
+												>${data[i].userId}</div>
+										</button></td>
+									<td >${data[i].courseName}</td>
+									<td >${data[i].corderPayment}</td>
+									<td >${data[i].corderTime}</td>
+									<td >${corderUpdateTime}</td>
+									<td><input id="${data[i].corderId}" class="form-control w-50"type="number" name="corderQuantity" value="${data[i].corderQuantity}" disabled></td>
+									<td >${data[i].corderCost}</td>
+									<td >${data[i].corderState}</td>
+									<td class="updatebtn"><button
+											class="btn btn-outline-primary btn-sm"
+											id="updatebtn-${data[i].corderId}"
+											onclick="updateCorderBtn(${data[i].corderId})">
+											更新</button>
+										<button class="btn btn-outline-primary btn-sm"
+											id="updateclick-${data[i].corderId}" onclick="updateCorder(${data[i].corderId})" style="display:none;">提交</button>
+									</td>
+									<td class="deletebtn">
+										<button type="button"
+											class="btn btn-outline-danger btn-sm deletechbtn"
+											name="coachId"
+											onclick="deletecorder(${data[i].corderId})">刪除</button>
+									</td>
+								</tr>
+	`};
+	alltable.innerHTML=html;
+}
+//刪除訂單
+function deletecorder(corderId){
+	console.log(corderId);
+	Swal.fire({
+		title: '確定要刪除訂單嗎?',
+		showDenyButton: true,
+		confirmButtonText: '刪除',
+		denyButtonText: `取消`,
+	}).then((result) => {
+		if (result.isConfirmed) {
+	axios({
+		method: 'delete',
+		url:'http://localhost:8080/gymlife/course/corder/delete',
+		params:{
+			'corderId':corderId
+		}
+		})
+	.then(res=>{
+		Swal.fire(
+						'刪除成功!',
+						'',
+						'success'
+					)
+		AllCorderHtml(res.data);
+	})
+	} else if (result.isDenied) {
+		}
 	})
 }

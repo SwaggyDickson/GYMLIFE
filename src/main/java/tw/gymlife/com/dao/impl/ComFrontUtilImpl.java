@@ -35,6 +35,7 @@ import tw.gymlife.com.model.OrdersDetailsDTO;
 @Repository
 public class ComFrontUtilImpl implements ComFrontUtil {
 	
+	private String pathAll="C:\\testGym\\gymproject\\src\\main\\resources\\static\\gym\\com\\cart";
 	 
 	
 	// 將Bean轉成DTO
@@ -207,7 +208,7 @@ public class ComFrontUtilImpl implements ComFrontUtil {
 		String path = "C:\\springBoot\\workspace\\springBootGym\\src\\main\\resources\\static\\gym\\com\\cart";
 		existingCartList = null;
 		try {
-			File file = new File(path + "\\" + userId + ".json");
+			File file = new File(pathAll + "\\" + userId + ".json");
 			if (file.exists()) {
 				existingCartList = objectMapper.readValue(file, new TypeReference<List<Cart>>() {
 				});
@@ -251,7 +252,7 @@ public class ComFrontUtilImpl implements ComFrontUtil {
 		String path = "C:\\springBoot\\workspace\\springBootGym\\src\\main\\resources\\static\\gym\\com\\cart";
 		existingCartList = null;
 		try {
-			File file = new File(path + "\\" + userId + ".json");
+			File file = new File(pathAll + "\\" + userId + ".json");
 			if (file.exists()) {
 				existingCartList = objectMapper.readValue(file, new TypeReference<List<Cart>>() {
 				});
@@ -273,7 +274,7 @@ public class ComFrontUtilImpl implements ComFrontUtil {
 		String path = "C:\\springBoot\\workspace\\springBootGym\\src\\main\\resources\\static\\gym\\com\\cart";
 		existingCartList = null;
 		try {
-			File file = new File(path + "\\" + userId + ".json");
+			File file = new File(pathAll + "\\" + userId + ".json");
 			if (file.exists()) {
 				existingCartList = objectMapper.readValue(file, new TypeReference<List<Cart>>() {
 				}); // 讀取json檔案並轉成beanList

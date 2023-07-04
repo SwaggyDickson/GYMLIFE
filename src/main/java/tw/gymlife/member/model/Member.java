@@ -94,10 +94,11 @@ public class Member {
 	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
 	private List<CommentReport> commentReports = new ArrayList<>();
 
-	// 留言檢舉
+	// 文章收藏
 	@JsonIgnore
 	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
 	private List<ArticleSave> articleSaves = new ArrayList<>();
+	
 
 	// 會員一對多商品訂單
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "members", cascade = CascadeType.ALL)

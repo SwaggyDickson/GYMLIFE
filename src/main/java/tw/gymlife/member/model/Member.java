@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.hibernate.internal.build.AllowSysOut;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -102,8 +104,8 @@ public class Member {
 
 	// 會員一對多商品訂單
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "members", cascade = CascadeType.ALL)
-	private List<Orders> orders = new ArrayList<>();
-
+	private List<Orders> orders = new ArrayList<>(); 
+	
 	// 新增課程訂單
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "member", cascade = CascadeType.ALL)
 	private List<CorderBean> corder;

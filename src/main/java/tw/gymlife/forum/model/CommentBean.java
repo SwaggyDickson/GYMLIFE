@@ -31,7 +31,8 @@ import tw.gymlife.member.model.Member;
 @Entity
 @Table(name = "comment")
 public class CommentBean {
-
+	
+	@JsonIgnore
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer commentId;
@@ -42,6 +43,8 @@ public class CommentBean {
 	private byte[] commentImg;
 
 	private int likeCount = 0;
+	
+	private int reportCount;
 
 	private Integer parentCommentId; // new
 
@@ -77,6 +80,9 @@ public class CommentBean {
 
 	@OneToMany(mappedBy = "comment", cascade = CascadeType.ALL)
 	private List<CommentLike> commentLikes = new ArrayList<>();
+	
+	@OneToMany(mappedBy = "comment", cascade = CascadeType.ALL)
+	private List<CommentReport> commentReports = new ArrayList<>();
 
 	@PrePersist // 當物件轉換成persist狀態以前，要做的事情放在方法裡面
 	public void onCreate() {
@@ -93,5 +99,17 @@ public class CommentBean {
 	public boolean isActive() {
 		return "Active".equals(this.status);
 	}
+	
+	@Override
+	public String toString() {
+	    return "CommentBean{" +
+	            "commentId=" + commentId +
+	            ", commentContent='" + commentContent + '\'' +
+	            ", commentTime=" + commentTime +
+	            ", status=" + status +
+	            // Note: Not including 'article' here
+	            '}';
+	}
+
 
 }

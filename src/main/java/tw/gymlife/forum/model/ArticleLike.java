@@ -19,7 +19,7 @@ public class ArticleLike {
   @GeneratedValue(strategy=GenerationType.IDENTITY)
   private Integer articleLikeId;
 
-  private boolean liked;
+  private int liked;
   
   @ManyToOne
   @JoinColumn(name = "userId")
@@ -30,6 +30,5 @@ public class ArticleLike {
   private ArticleBean article;
   
   
-  // 省略 getter 和 setter
 }
 

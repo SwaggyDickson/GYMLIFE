@@ -1,19 +1,10 @@
 package tw.gymlife.forum.controller;
 
-import tw.gymlife.member.model.Member;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import java.io.IOException;
-import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
-import java.util.HashSet;
-
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -30,19 +21,25 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
-import org.thymeleaf.spring6.processor.SpringInputCheckboxFieldTagProcessor;
 
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.http.HttpSession;
 import tw.gymlife.forum.model.ArticleBean;
+import tw.gymlife.forum.model.ArticleLike;
+import tw.gymlife.forum.model.ArticleReport;
+import tw.gymlife.forum.model.ArticleSave;
 import tw.gymlife.forum.model.CommentBean;
 import tw.gymlife.forum.model.CommentLike;
 import tw.gymlife.forum.service.ArticleLikeService;
+import tw.gymlife.forum.service.ArticleReportService;
+import tw.gymlife.forum.service.ArticleSaveService;
 import tw.gymlife.forum.service.ArticleService;
 import tw.gymlife.forum.service.CommentLikeService;
+import tw.gymlife.forum.service.CommentReportService;
 import tw.gymlife.forum.service.CommentService;
+import tw.gymlife.member.model.Member;
+import tw.gymlife.member.service.MailService;
 
 @Controller
 @MultipartConfig
@@ -60,38 +57,194 @@ public class ArticleFrontController {
 	@Autowired
 	private CommentLikeService commentLikeService;
 
+	@Autowired
+	private ArticleReportService articleReportService;
+
+	@Autowired
+	private CommentReportService commentReportService;
+
+	@Autowired
+	private ArticleSaveService articleSaveService;
+
+	@Autowired
+	private MailService mailService;
+
 	// 測試頁面
 //	@GetMapping("/front")
 //	public String testFront() {
 //		return "FrontGYMLIFE/forum/gymlife";
 //	}
 
-	// 文章按讚
-	@ResponseBody
-	@PostMapping("/article/{articleId}/likes")
-	public void toggleLike2(@PathVariable Integer articleId, @RequestParam Integer userId) {
-		articleLikeService.toggleLike(userId, articleId);
+	// 文章收藏
+	@PostMapping("/article/{articleId}/save")
+	public ResponseEntity<Map<String, Object>> toggleArticleSave(@PathVariable Integer articleId, HttpSession session) {
+	    try {
+	        Member member = (Member) session.getAttribute("member");
+	        ArticleBean article = articleService.findById(articleId);
+	        Map<String, Object> response = new HashMap<>();
+	        if (member == null) {
+	            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+	        } else {
+	            ArticleSave isSaved = articleSaveService.findByMemberUserIdAndArticleArticleId(member.getUserId(),
+	                    articleId);
+	            // 已收藏
+	            if (isSaved != null) {
+	                if (isSaved.getSaved() != 0) {
+	                    // 已收藏，取消收藏
+	                    isSaved.setSaved(0);
+	                    articleSaveService.insert(isSaved);
+	                    response.put("isSaved", isSaved.getSaved() == 1);  // 修改這裡
+	                    return new ResponseEntity<>(response, HttpStatus.OK);
+	                } else {
+	                    // 之前取消過收藏，重新收藏
+	                    isSaved.setSaved(1);
+	                    articleSaveService.insert(isSaved);
+	                    response.put("isSaved", isSaved.getSaved() == 1);  // 修改這裡
+	                    return new ResponseEntity<>(response, HttpStatus.OK);
+	                }
+	            } else {
+	                // 從未收藏，添加收藏
+	                ArticleSave save = new ArticleSave();
+	                save.setArticle(article);
+	                save.setMember(member);
+	                save.setSaved(1);
+	                articleSaveService.insert(save);
+	                response.put("isSaved", save.getSaved() == 1);  // 修正這裡，使用 save 而不是 isSaved
+	                return new ResponseEntity<>(response, HttpStatus.OK);
+	            }
+	        }
+	    } catch (Exception e) {
+	        // 输出错误信息
+	        e.printStackTrace();
+	        // 返回500错误
+	        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+	    }
 	}
 
-//	@PostMapping("/front/{articleId}/{commentId}/likes")
-//	public ResponseEntity<Map<String, Object>> toggleLike(@PathVariable Integer commentId, HttpSession session) {
-//	    Member member = (Member) session.getAttribute("member");
-//
-//	    if (member == null) {
-//	        return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-//	    }
-//
-//	    commentLikeService.toggleLike(member.getUserId(), commentId);
-//
-//	    int likeCount = commentLikeService.getLikeCount(commentId);
-//	    boolean liked = commentLikeService.isLiked(member.getUserId(), commentId);
-//
-//	    Map<String, Object> response = new HashMap<>();
-//	    response.put("likeCount", likeCount);
-//	    response.put("liked", liked);
-//
-//	    return new ResponseEntity<>(response, HttpStatus.OK);
-//	}
+
+	// 文章檢舉-ajax
+	@PostMapping("/article/{articleId}/report")
+	public ResponseEntity<Map<String, Object>> reportArticle(@PathVariable Integer articleId,
+			@RequestBody ArticleReport report, HttpSession session) {
+		Map<String, Object> response = new HashMap<>();
+
+		try {
+			Member member = (Member) session.getAttribute("member");
+
+			// 檢查是否已登入
+			if (member == null) {
+				response.put("message", "請先登入再進行檢舉");
+				return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED); // 或者可以改成重定向到登入頁面
+			}
+
+			// 檢查該會員是否已經檢舉過這篇文章
+			ArticleReport existingReport = articleReportService
+					.findByMemberUserIdAndArticleArticleId(member.getUserId(), articleId);
+			if (existingReport != null) {
+				response.put("message", "你已經檢舉過這篇文章，每個會員只能檢舉一次");
+				return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+			}
+
+			ArticleBean article = articleService.findById(articleId);
+
+			// 檢查是否檢舉自己的文章
+			if (member.getUserId() == (article.getMember().getUserId())) {
+				response.put("message", "不能檢舉自己的文章");
+				return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+			}
+
+			// 新的檢舉
+			report.setArticle(article);
+			report.setMember(member);
+			report.setReportTime(new Date());
+			report.setReportStatus("Reported"); // 改變你實際的被檢舉狀態
+			articleReportService.insert(report);
+
+			// 更新檢舉次數
+			articleReportService.updateReportCount(article);
+
+			// 如果檢舉次數達到或超過5次，則發送電子郵件
+			if (article.getReportCount() >= 1) {
+				String recipient = member.getUserEmail(); // 取得會員的電子郵件地址
+				String subject = "您的文章已被檢舉5次"; // 設定郵件主題
+				String message = "您的文章 " + article.getArticleTitle() + " 已被檢舉超過5次。請檢視並改善您的文章。"; // 設定郵件內容
+
+				mailService.prepareAndSend(recipient, subject, message); // 發送電子郵件
+			}
+
+			// 若一切正常，返回一個包含成功訊息的響應
+			response.put("message", "檢舉成功");
+			return new ResponseEntity<>(response, HttpStatus.OK);
+
+		} catch (Exception e) {
+			// 輸出錯誤訊息
+			e.printStackTrace();
+			// 返回500錯誤
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	// 文章按讚
+	@PostMapping("/article/{articleId}/likes")
+	public ResponseEntity<Map<String, Object>> toggleArticleLike(@PathVariable Integer articleId, HttpSession session) {
+		try {
+			Member member = (Member) session.getAttribute("member");
+			ArticleBean article = articleService.findById(articleId);
+			Map<String, Object> response = new HashMap<>();
+			if (member == null) {
+				return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+			} else {
+				ArticleLike isLiked = articleLikeService.findByMemberUserIdAndArticleArticleId(member.getUserId(),
+						articleId);
+				// 按過讚
+				if (isLiked != null) {
+					// 這邊是看按讚狀態去做+-讚數並更改狀態
+					if (isLiked.getLiked() != 0) {
+						// 曾經按過讚
+						int likeCount = article.getLikeCount();
+						article.setLikeCount(likeCount - 1);
+						articleService.insert(article);
+						isLiked.setLiked(0);
+						articleLikeService.insert(isLiked);
+						response.put("likeCount", article.getLikeCount());
+						response.put("isLiked", isLiked.getLiked());
+						return new ResponseEntity<>(response, HttpStatus.OK);
+					} else {
+						// 可能曾經按過卻收回讚
+						int likeCount = article.getLikeCount();
+						article.setLikeCount(likeCount + 1);
+						articleService.insert(article);
+						isLiked.setArticle(article);
+						isLiked.setMember(member);
+						isLiked.setLiked(1);
+						articleLikeService.insert(isLiked);
+						likeCount = article.getLikeCount();
+						response.put("likeCount", article.getLikeCount());
+						response.put("isLiked", isLiked.getLiked());
+						return new ResponseEntity<>(response, HttpStatus.OK);
+					}
+				} else {
+					// 從沒按過讚
+					int likeCount = article.getLikeCount();
+					article.setLikeCount(likeCount + 1);
+					articleService.insert(article);
+					ArticleLike like = new ArticleLike();
+					like.setArticle(article);
+					like.setMember(member);
+					like.setLiked(1);
+					articleLikeService.insert(like);
+					response.put("likeCount", article.getLikeCount());
+					response.put("isLiked", like.getLiked());
+					return new ResponseEntity<>(response, HttpStatus.OK);
+				}
+			}
+		} catch (Exception e) {
+			// 输出错误信息
+			e.printStackTrace();
+			// 返回500错误
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 
 	// ------------------------------首頁----------------------------------
 
@@ -102,7 +255,6 @@ public class ArticleFrontController {
 			@RequestParam(value = "pageSize", defaultValue = "3") int pageSize, Model model) {
 		Page<ArticleBean> articleBeans = articleService.findActiveArticlesByType(articleType, pageNumber, pageSize);
 		model.addAttribute("articleBeans", articleBeans);
-//		model.addAttribute("totalPages", articleBeans.getTotalPages()); // 新添加的代码
 		return "frontgymlife/forum/articleFrontPage";
 	}
 
@@ -121,34 +273,59 @@ public class ArticleFrontController {
 	public String showArticleDetail(@PathVariable Integer articleId,
 			@RequestParam(name = "p", defaultValue = "1") Integer pageNumber,
 			@RequestParam(value = "pageSize", defaultValue = "3") int pageSize, Model model, HttpSession session) {
-		Integer userId = (Integer) session.getAttribute("userId");
+		Integer loggedInUserId = (Integer) session.getAttribute("userId");
 		ArticleBean article = articleService.findById(articleId);
-		boolean isLoggedIn = userId != null;
+		Integer articleUserId = article.getMember().getUserId(); // 獲取文章作者的ID
+
+		boolean isLoggedIn = loggedInUserId != null; // 還沒設定model，但是用戶未登入時候能看到他人按過的總讚數
+
+		// 獲取文章的當前瀏覽次數
+		Integer viewCount = article.getViewCount();
+
+		// 將瀏覽次數加一
+		viewCount++;
+
+		// 更新瀏覽次數到文章物件
+		article.setViewCount(viewCount);
+
+		// 將更新後的瀏覽次數保存回資料庫
+		articleService.insert(article);
+
 		Page<CommentBean> comments = commentService.findActiveCommentsByArticleId(articleId, pageNumber, pageSize);
-	
+
 		Map<Integer, List<CommentBean>> commentReplies = new HashMap<>();
-		// 按讚-新版
+		// 留言按讚-新版
 		Map<Integer, Boolean> userLikedComments = new HashMap<>();
-	    Map<Integer, Integer> likeCounts = new HashMap<>();  // New Map to store like counts
+		Map<Integer, Integer> likeCounts = new HashMap<>(); // New Map to store like counts
 
 		for (CommentBean comment : comments.getContent()) {
 			// Check if the comment is liked by the current user
-			CommentLike liked = commentLikeService.findByMemberUserIdAndCommentCommentId(userId,
+			CommentLike liked = commentLikeService.findByMemberUserIdAndCommentCommentId(loggedInUserId,
 					comment.getCommentId());
 			// If the CommentLike object exists and the liked field is 1, then the user has
 			// liked this comment
 			boolean userLikedThisComment = liked != null && liked.getLiked() == 1;
 			userLikedComments.put(comment.getCommentId(), userLikedThisComment);
 
-			 // Get like count for each comment
-	        int likeCount = commentLikeService.getLikeCount(comment.getCommentId());
-	        likeCounts.put(comment.getCommentId(), likeCount);
-			
-			
-			//回復
+			// Get like count for each comment
+			int likeCount = commentLikeService.getLikeCount(comment.getCommentId());
+			likeCounts.put(comment.getCommentId(), likeCount);
+
+			// 回復
 			List<CommentBean> replies = commentService.findRepliesByCommentId(comment.getCommentId());
 			commentReplies.put(comment.getCommentId(), replies);
 		}
+
+		// Article like
+		ArticleLike articleLiked = articleLikeService.findByMemberUserIdAndArticleArticleId(loggedInUserId, articleId);
+		boolean userLikedThisArticle = articleLiked != null && articleLiked.getLiked() == 1;
+		int articleLikeCount = articleLikeService.getLikeCount(articleId);
+		
+		// 文章收藏
+		ArticleSave articleSaved = articleSaveService.findByMemberUserIdAndArticleArticleId(loggedInUserId, articleId);
+		boolean userSavedThisArticle = articleSaved != null && articleSaved.getSaved() == 1;
+
+
 		model.addAttribute("article", article);
 		model.addAttribute("comments", comments);
 		model.addAttribute("currentPage", pageNumber);
@@ -156,11 +333,21 @@ public class ArticleFrontController {
 		model.addAttribute("totalComments", comments.getTotalElements());
 		model.addAttribute("commentReplies", commentReplies);
 
-		// Add userLikedComments to the model
-	    model.addAttribute("userLikedComments", userLikedComments);
-	    model.addAttribute("likeCounts", likeCounts);  // Add likeCounts to the model
+		// Add userLikedComments to the model 留言按讚
+		model.addAttribute("userLikedComments", userLikedComments);
+		model.addAttribute("likeCounts", likeCounts); // Add likeCounts to the model
 
-	    
+		// Add article like info to the model 文章按讚
+		model.addAttribute("userLikedArticle", userLikedThisArticle);
+		model.addAttribute("articleLikeCount", articleLikeCount);
+
+		// 不能檢舉自己
+		model.addAttribute("loggedInUserId", loggedInUserId);
+		model.addAttribute("articleUserId", articleUserId);
+		
+		// 文章收藏
+		model.addAttribute("userSavedArticle", userSavedThisArticle);
+
 		return "frontgymlife/forum/articleInnerPage";
 	}
 
@@ -242,9 +429,10 @@ public class ArticleFrontController {
 
 	// 新增留言頁面-查詢
 	@GetMapping("/front/{articleId}/insertCommentPage")
-	public String insertCommentPage(Model model, @PathVariable Integer articleId
+	public String insertCommentPage(Model model, @PathVariable Integer articleId, HttpSession session
 	// , @RequestParam("commentId")Integer commentId
 	) {
+		Member member = (Member) session.getAttribute("member");
 		ArticleBean article = articleService.findById(articleId);
 		// List<CommentBean> comment = article.getComments();
 		model.addAttribute("article", article);
@@ -255,23 +443,25 @@ public class ArticleFrontController {
 	// 新增留言-跳頁
 	@PostMapping("/front/article/{articleId}/comment")
 	public String addComment(@PathVariable Integer articleId, @RequestParam String commentContent,
-			@RequestParam("commentImg") MultipartFile commentImg, Model model) {
+			@RequestParam("commentImg") MultipartFile commentImg, Model model, HttpSession session) {
+		Member member = (Member) session.getAttribute("member");
 		ArticleBean article = articleService.findById(articleId);
 		CommentBean comment = new CommentBean();
 		comment.setCommentContent(commentContent);
 		try {
-			// 轉換並設定圖片
+			// 转换并设置图片
 			byte[] byteArr = commentImg.getBytes();
 			comment.setCommentImg(byteArr);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		comment.setArticle(article);
+		comment.setMember(member); // 设置评论所属的会员
 		commentService.insert(comment);
 		System.out.println(articleId);
 		model.addAttribute("article", article);
 		model.addAttribute("comment", comment);
-		return "redirect:/front/" + articleId; // 回到文章內頁
+		return "redirect:/front/" + articleId; // 返回文章内页
 	}
 
 	// ------------------------------刪除留言----------------------------------
@@ -293,99 +483,6 @@ public class ArticleFrontController {
 	}
 
 	// ------------------------------刪除留言----------------------------------
-
-	// 新增留言-aJax
-//	@PostMapping("/front/article/{articleId}/comment")
-//	@ResponseBody
-//	public Map<String, Object> addComment3(@PathVariable Integer articleId, 
-//			@RequestParam String commentContent, Model model) {
-//	    ArticleBean article = articleService.findById(articleId);
-//	    CommentBean comment = new CommentBean();
-//	    comment.setCommentContent(commentContent);
-//	    comment.setArticle(article);
-//	    commentService.insert(comment);
-//
-//	    Map<String, Object> result = new HashMap();
-//	    result.put("commentId", comment.getCommentId());
-//	    result.put("commentContent", comment.getCommentContent());
-//	    result.put("commentTime", comment.getCommentTimeString());
-//
-//	    return result;  // return the newly created comment
-//	}
-
-	// ------------------------------更新----------------------------------
-
-	// 實際更新留言 (old)
-//	@ResponseBody
-//	@PutMapping("/front/comments/{commentId}")
-//	public ResponseEntity<CommentBean> updateComment(@PathVariable Integer commentId, @RequestBody CommentBean updatedComment) {
-//	    System.out.println("Received commentId: " + commentId); // 查看接收到的评论 ID
-//	    System.out.println("Received updatedComment: " + updatedComment); // 查看接收到的更新评论
-//
-//	    CommentBean Comment = commentService.findById(commentId);
-//
-//	    if (Comment == null) {
-//	        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-//	    }
-//
-//	    Comment.setCommentContent(updatedComment.getCommentContent());
-//	    Comment.setCommentImg(Base64.getDecoder().decode(updatedComment.getCommentImg()));
-//	    Comment.setCommentUpdateTime(new Date());
-//
-//	    commentService.updateCommentById(commentId, Comment.getCommentContent(), Comment.getCommentImg(), Comment.getCommentUpdateTime());
-//
-//	    return new ResponseEntity<>(Comment, HttpStatus.OK);
-//	}
-
-	// 實際更新留言 (now)
-//	@ResponseBody
-//	@PutMapping("/front/comments/{commentId}")
-//	public CommentBean updateComment( @RequestParam("commentId")Integer commentId,
-//			@PathVariable Integer commentId,
-////			@RequestBody CommentBean updatedComment
-//			@RequestParam ("commentContent")String commentContent,@RequestParam(name="commentImg",required = false) MultipartFile commentImg ) {
-////	    System.out.println("Received commentId: " + commentId); // 查看接收到的评论 ID
-////	    System.out.println("Received updatedComment: " + updatedComment); // 查看接收到的更新评论
-//
-//	    CommentBean Comment = commentService.findById(commentId);
-//
-//	    if (Comment == null) {
-//	        return null;
-//	    }
-//
-//	  // Comment.setCommentContent(commentContent);
-//	   byte[] byteArr = null;
-//		try {
-//			byteArr = commentImg.getBytes(); // 将MultipartFile转换为byte[]
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
-//	    Comment.setCommentUpdateTime(new Date());
-//
-//	     commentService.updateCommentById(commentId, commentContent, commentImg);
-//
-//	    return Comment;
-//	}
-
-	// 實際更新留言-aJax
-//	@ResponseBody
-//	@PutMapping("/front/comments/{commentId}")
-//	public CommentBean updateComment(
-//	    @PathVariable Integer commentId,
-//	    @RequestParam("commentContent") String commentContent,
-//	    @RequestParam(name="commentImg",required = false) MultipartFile commentImg
-//	) {
-//	    byte[] byteArr = null;
-//	    if (commentImg != null) {
-//	        try {
-//	            byteArr = commentImg.getBytes(); // 将MultipartFile转换为byte[]
-//	        } catch (IOException e) {
-//	            e.printStackTrace();
-//	        }
-//	    }
-//	    CommentBean updatedComment = commentService.updateCommentById(commentId, commentContent, byteArr);
-//	    return updatedComment;
-//	}
 
 	// ------------------------------更新----------------------------------
 

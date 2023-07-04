@@ -17,9 +17,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import jakarta.servlet.annotation.MultipartConfig;
+import jakarta.servlet.http.HttpSession;
 import tw.gymlife.forum.model.ArticleBean;
 import tw.gymlife.forum.service.ArticleService;
 import tw.gymlife.forum.service.CommentService;
+import tw.gymlife.member.model.Member;
 
 @Controller
 @MultipartConfig
@@ -32,13 +34,29 @@ public class ArticleBackController {
 	@Autowired
 	private CommentService commentService;
 
-	// 查全部 /forum/article/backPage
+
+	//文章後台
 	@GetMapping("/forum/page")
-	public String forumManagePage(Model m) {
-		List<ArticleBean> articleBeans = articleService.findAll();
-		m.addAttribute("articleBeans", articleBeans);
-		return "backgymlife/forum/articleManagePage";
+	public String forumManagePage(Model m, HttpSession session) {
+	    Member member = (Member) session.getAttribute("member");
+	    List<ArticleBean> articleBeans;
+
+	    if (member != null) {
+	        if (member.getUserPermission().equals("1")) {
+	            articleBeans = articleService.findAll();
+	        } else {
+	            articleBeans = articleService.findAllByMemberUserId(member.getUserId());
+	        }
+
+	        m.addAttribute("articleBeans", articleBeans);
+	        m.addAttribute("member", member);  // Add member to the model
+
+	        return "backgymlife/forum/articleManagePage";
+	    } else {
+	        return "redirect:/Login";
+	    }
 	}
+
 	// ------------------------------更新----------------------------------
 
 	// 文章更新的查詢
@@ -92,9 +110,6 @@ public class ArticleBackController {
 	@PostMapping("/forum/delete/{articleId}")
 	public String deleteArticle(@PathVariable Integer articleId) {
 		articleService.disableArticle(articleId);
-		System.out.println(666);
-		System.out.println(666);
-		System.out.println(666);
 		return "redirect:/forum/page";
 	}
 

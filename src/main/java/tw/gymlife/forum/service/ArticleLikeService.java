@@ -1,15 +1,13 @@
 package tw.gymlife.forum.service;
 
-import java.util.Optional;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import tw.gymlife.forum.model.ArticleBean;
 import tw.gymlife.forum.model.ArticleLike;
 import tw.gymlife.forum.model.ArticleLikeRepository;
 import tw.gymlife.forum.model.ArticleRepository;
-import tw.gymlife.member.model.Member;
 import tw.gymlife.member.model.MemberRepository;
 
 @Service
@@ -24,25 +22,31 @@ public class ArticleLikeService {
 	@Autowired
 	private ArticleLikeRepository articleLikeRepository;
 
-	public void toggleLike(Integer userId, Integer articleId) {
-	    Optional<Member> memberOptional = memberRepository.findById(userId);
-	    Optional<ArticleBean> articleOptional = articleRepository.findById(articleId);
+	// 新增
+	public void insert(ArticleLike articleLike) {
+		articleLikeRepository.save(articleLike);
+	}
+	
+	// 按讚查詢
+	public ArticleLike findByMemberUserIdAndArticleArticleId(Integer userId, Integer articleId) {
+		ArticleLike liked = articleLikeRepository.findByMemberUserIdAndArticleArticleId(userId, articleId);
+		return liked;
+	}
 
-	    if(memberOptional.isPresent() && articleOptional.isPresent()) {
-	        Member member = memberOptional.get();
-	        ArticleBean article = articleOptional.get();
+	public List<ArticleLike> findById(Integer articleId) {
+		List<ArticleLike> articleLikeList = articleLikeRepository.findByArticleArticleId(articleId);
+		return articleLikeList;
+	}
 
-	        ArticleLike like = articleLikeRepository.findByMemberAndArticle(member, article);
-	        if (like == null) {
-	            like = new ArticleLike();
-	            like.setMember(member);
-	            like.setArticle(article);
-	        }
-	        like.setLiked(!like.isLiked());
-	        articleLikeRepository.save(like);
-	    } else {
-	        // 在這裡處理找不到 Member 或 ArticleBean 的情況
-	    }
+	public int getLikeCount(Integer articleId) {
+		List<ArticleLike> articleLikes = articleLikeRepository.findByArticleArticleId(articleId);
+		int likeCount = 0;
+		for (ArticleLike like : articleLikes) {
+			if (like.getLiked() == 1) {
+				likeCount++;
+			}
+		}
+		return likeCount;
 	}
 
 }

@@ -15,10 +15,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import jakarta.servlet.annotation.MultipartConfig;
+import jakarta.servlet.http.HttpSession;
 import tw.gymlife.forum.model.ArticleBean;
 import tw.gymlife.forum.model.CommentBean;
 import tw.gymlife.forum.service.ArticleService;
 import tw.gymlife.forum.service.CommentService;
+import tw.gymlife.member.model.Member;
 
 @Controller
 @MultipartConfig
@@ -32,11 +34,26 @@ public class CommentBackController {
 
 	// 查全部-留言管理頁面
 	@GetMapping("/comment/page")
-	public String commentManagePage(Model m) {
-		List<CommentBean> commentBeans = commentService.findAll();
-		m.addAttribute("commentBeans", commentBeans);
-		return "backgymlife/forum/commentManagePage";
+	public String commentManagePage(Model m, HttpSession session) {
+	    Member member = (Member) session.getAttribute("member");
+	    List<CommentBean> commentBeans;
+	    if (member != null) {
+	        if (member.getUserPermission().equals("1")) {
+	            commentBeans = commentService.findAll();
+	            m.addAttribute("commentBeans", commentBeans);
+	            m.addAttribute("member", member);  // Add member to the model
+	            return "backgymlife/forum/commentManagePage";
+	        } else {
+	            commentBeans = commentService.findAllByMemberUserId(member.getUserId());
+	            m.addAttribute("commentBeans", commentBeans);
+	            m.addAttribute("member", member);  // Add member to the model
+	            return "backgymlife/forum/commentManagePage";
+	        }
+	    } else {
+	        return "redirect:/Login";
+	    }
 	}
+
 
 	// ------------------------------更新----------------------------------
 
@@ -51,7 +68,7 @@ public class CommentBackController {
 //	// 留言實際更新 (後台更新)
 	@PutMapping("/comment/edit")
 	public String editComment2(@RequestParam("commentId") Integer commentId,
-			 @RequestParam("commentContent") String commentContent,Model model,
+			@RequestParam("commentContent") String commentContent, Model model,
 			@RequestParam("commentImg") MultipartFile commentImg) {
 		byte[] byteArr = null;
 		try {
@@ -59,8 +76,7 @@ public class CommentBackController {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		CommentBean comment = commentService.updateCommentById(commentId, commentContent,
-				byteArr);
+		CommentBean comment = commentService.updateCommentById(commentId, commentContent, byteArr);
 		model.addAttribute("comment", comment);
 		return "redirect:/comment/page";
 	}
@@ -69,8 +85,8 @@ public class CommentBackController {
 //
 //	// 修改留言狀態
 	@PutMapping("/comment/status")
-	public String updateCommentStatus(@RequestParam("commentId") Integer commentId, @RequestParam("status") String status,
-			Model model) {
+	public String updateCommentStatus(@RequestParam("commentId") Integer commentId,
+			@RequestParam("status") String status, Model model) {
 		CommentBean comment = commentService.updateCommentStatus(commentId, status);
 		model.addAttribute("comment", comment);
 		return "redirect:/comment/page";

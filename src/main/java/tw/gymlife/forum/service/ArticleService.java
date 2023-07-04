@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import tw.gymlife.forum.model.ArticleBean;
 import tw.gymlife.forum.model.ArticleRepository;
+import tw.gymlife.forum.model.CommentBean;
 
 @Service
 public class ArticleService {
@@ -21,6 +22,10 @@ public class ArticleService {
 	@Autowired
 	private ArticleRepository articleRepository;
 
+	public List<ArticleBean> findAllByMemberUserId(int userId) {
+	    return articleRepository.findAllByMemberUserId(userId);
+	}
+	
 	// 新增
 	public void insert(ArticleBean articleBean) {
 		articleRepository.save(articleBean);

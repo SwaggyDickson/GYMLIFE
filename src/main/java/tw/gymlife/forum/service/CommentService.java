@@ -24,7 +24,9 @@ public class CommentService {
 	private CommentRepository commentRepository;
 	
 	
-	
+	public List<CommentBean> findAllByMemberUserId(int userId) {
+	    return commentRepository.findAllByMemberUserId(userId);
+	}
 
 	// ------------------------------巢狀留言----------------------------------
 

@@ -22,26 +22,35 @@ import java.util.List;
 
 import tw.gymlife.forum.model.CommentBean;
 import tw.gymlife.forum.model.CommentLike;
+import tw.gymlife.forum.service.ArticleReportService;
 import tw.gymlife.forum.service.ArticleService;
 import tw.gymlife.forum.service.CommentLikeService;
+import tw.gymlife.forum.service.CommentReportService;
 import tw.gymlife.forum.service.CommentService;
 import tw.gymlife.member.model.Member;
 
 @Controller
 public class CommentFrontController {
 
-	@Autowired
-	private CommentLikeService commentLikeService;
 
 	@Autowired
 	private ArticleService articleService;
 
 	@Autowired
 	private CommentService commentService;
+	
+	@Autowired
+	private CommentLikeService commentLikeService;
+	
+	@Autowired
+	private ArticleReportService articleReportService;
+	
+	@Autowired
+	private CommentReportService commentReportService;
 
-	// 留言按讚 //按讚-新版
+	// 留言按讚
 	@PostMapping("/comment/{commentId}/likes")
-	public ResponseEntity<Map<String, Object>> toggleLike(@PathVariable Integer commentId, HttpSession session) {
+	public ResponseEntity<Map<String, Object>> toggleCommentLike(@PathVariable Integer commentId, HttpSession session) {
 		try {
 			Member member = (Member) session.getAttribute("member");
 			CommentBean comment = commentService.findById(commentId);
@@ -64,7 +73,6 @@ public class CommentFrontController {
 					}else {
 						int likeCount = comment.getLikeCount();
 						comment.setLikeCount(likeCount + 1);
-//						System.out.println("adsadasd"+comment.getLikeCount());
 						commentService.insert(comment);
 						isLiked.setComment(comment);
 						isLiked.setMember(member);
@@ -112,20 +120,6 @@ public class CommentFrontController {
 		model.addAttribute("reply", reply);
 		return "redirect:/front/" + articleId; // returns reply view
 	}
-
-	// Update a reply
-//	@PutMapping("/parent/update/{replyId}")
-//	public String updateReply(@RequestParam("articleId") Integer articleId,
-//	                          @PathVariable Integer replyId,
-//	                          @RequestParam("commentContent") String commentContent,
-//	                          Model model) {
-//	    CommentBean updatedReply = new CommentBean();
-//	    updatedReply.setCommentContent(commentContent);
-//	    // Set other properties as needed...
-//	    CommentBean reply = commentService.updateReply(replyId, updatedReply);
-//	    model.addAttribute("reply", reply);
-//	    return "redirect:/front/" + articleId; // returns reply view
-//	}
 
 	// Update a reply --ajax
 	@PutMapping("/parent/update/{replyId}")

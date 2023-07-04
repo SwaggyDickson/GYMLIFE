@@ -26,24 +26,27 @@ import tw.gymlife.forum.model.ArticleBean;
 import tw.gymlife.forum.model.ArticleLike;
 import tw.gymlife.forum.model.CommentLike;
 import tw.gymlife.forum.model.CommentBean;
+import tw.gymlife.forum.model.ArticleReport;
+import tw.gymlife.forum.model.CommentReport;
+import tw.gymlife.forum.model.ArticleSave;
 
 @Data
 @Entity
 @Table(name = "members")
 public class Member {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int userId;
-	
+
 	@Size(min = 8, max = 20, message = "帳號必須在8到20個英數字之內")
 	@Pattern(regexp = "^[a-zA-Z0-9]*$", message = "帳號只能使用英文數字及字母")
-	private String userAccount; 
+	private String userAccount;
 	private String userPassword;
 	private String userName;
 	private String userNickName;
 	private String userGender;
-	private String userAddress;	
+	private String userAddress;
 	private String userTel;
 	private String userEmail;
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
@@ -54,45 +57,59 @@ public class Member {
 	private BigDecimal userRewardPoint = BigDecimal.ZERO;
 	private String userPermission = "0";
 	private int userStatus;
-	
-	
-	   public boolean isVerified() {
-		   return userStatus == 1;
-	    }
-		// 跟文章關聯
-		@JsonIgnore
-		@JsonManagedReference
-		@OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
-		private List<ArticleBean> articles = new ArrayList<>(0);
 
-		// 跟留言關聯
-		@JsonIgnore
-		@JsonManagedReference
-		@OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
-		private List<CommentBean> comments = new ArrayList<>(0);
+	public boolean isVerified() {
+		return userStatus == 1;
+	}
 
-		@OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
-		private List<ArticleLike> articleLikes = new ArrayList<>();
+	// 跟文章關聯
+	@JsonIgnore
+	@JsonManagedReference
+	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+	private List<ArticleBean> articles = new ArrayList<>(0);
 
-		@OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
-		private List<CommentLike> commentLikes = new ArrayList<>();
+	// 跟留言關聯
+	@JsonIgnore
+	@JsonManagedReference
+	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+	private List<CommentBean> comments = new ArrayList<>(0);
 
+	// 文章按讚
+	@JsonIgnore
+	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+	private List<ArticleLike> articleLikes = new ArrayList<>();
 
-		//會員一對多商品訂單
-		@OneToMany(fetch = FetchType.LAZY, mappedBy ="members",cascade = CascadeType.ALL )
-		private List<Orders> orders = new ArrayList<>(); 
-	
-	//新增課程訂單
+	// 留言按讚
+	@JsonIgnore
+	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+	private List<CommentLike> commentLikes = new ArrayList<>();
+
+	// 文章檢舉
+	@JsonIgnore
+	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+	private List<ArticleReport> articleReports = new ArrayList<>();
+
+	// 留言檢舉
+	@JsonIgnore
+	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+	private List<CommentReport> commentReports = new ArrayList<>();
+
+	// 留言檢舉
+	@JsonIgnore
+	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+	private List<ArticleSave> articleSaves = new ArrayList<>();
+
+	// 會員一對多商品訂單
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "members", cascade = CascadeType.ALL)
+	private List<Orders> orders = new ArrayList<>();
+
+	// 新增課程訂單
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "member", cascade = CascadeType.ALL)
 	private List<CorderBean> corder;
-	
-	
+
 }
-	//接收登入資料
+// 接收登入資料
 //	public Member(String userAccount, String userPassword) {
 //        this.userAccount = userAccount;
 //        this.userPassword = userPassword;
 //    }
-	
-
-	

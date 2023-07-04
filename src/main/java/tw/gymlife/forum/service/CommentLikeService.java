@@ -39,14 +39,16 @@ public class CommentLikeService {
 	@Autowired
 	private EntityManager entityManager;
 
-	// 按讚-新版
+	//新增
+	public void insert(CommentLike commentLike) {
+		commentLikeRepository.save(commentLike);
+	}
+	
+	
+	// 按讚
 	public CommentLike findByMemberUserIdAndCommentCommentId(Integer userId, Integer commentId) {
 		CommentLike liked = commentLikeRepository.findByMemberUserIdAndCommentCommentId(userId, commentId);
 		return liked;
-	}
-
-	public void insert(CommentLike commentLike) {
-		commentLikeRepository.save(commentLike);
 	}
 
 	public List<CommentLike> findById(Integer commentId) {

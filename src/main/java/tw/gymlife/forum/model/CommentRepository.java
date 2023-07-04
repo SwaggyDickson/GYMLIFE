@@ -29,5 +29,7 @@ public interface CommentRepository extends JpaRepository<CommentBean, Integer> {
 	Page<CommentBean> findByArticleArticleTypeAndStatus(String articleType, String status, Pageable pageable);
 	
     List<CommentBean> findByParentCommentId(Integer parentCommentId);
-
+    
+    
+    List<CommentBean> findAllByMemberUserId(int userId);
 }

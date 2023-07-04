@@ -1,7 +1,7 @@
 package tw.gymlife.forum.model;
 
 import java.util.ArrayList;
-
+import java.util.Arrays;
 import java.util.List;
 import java.util.Date;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -50,6 +50,12 @@ public class ArticleBean {
 	@Lob
 	@Column(name = "articleImg")
 	private byte[] articleImg; // 待修正 byte[]
+	
+	private int likeCount = 0;
+	
+	private int reportCount;
+	
+	private int viewCount; //文章瀏覽次數
 
 //	@Column(name="photoName")
 //	private String photoName;
@@ -87,6 +93,9 @@ public class ArticleBean {
 	@OneToMany(mappedBy = "article", cascade = CascadeType.ALL)
 	private List<ArticleLike> articleLikes = new ArrayList<>();
 
+	@OneToMany(mappedBy = "article", cascade = CascadeType.ALL)
+	private List<ArticleReport> articleReports = new ArrayList<>();
+	
 	@PrePersist // 當物件轉換成persist狀態以前，要做的事情放在方法裡面
 	public void onCreate() {
 		if (articleTime == null) {
@@ -94,5 +103,26 @@ public class ArticleBean {
 		}
 
 	}
+
+	@Override
+	public String toString() {
+		return "ArticleBean [articleId=" + articleId + ", articleTitle=" + articleTitle + ", articleType=" + articleType
+				+ ", articleContent=" + articleContent + ", articleImg=" + Arrays.toString(articleImg) + ", likeCount="
+				+ likeCount + ", articleTime=" + articleTime + ", articleUpdateTime=" + articleUpdateTime + ", status="
+				+ status + ", comments=" + comments + ", member=" + member + ", articleLikes=" + articleLikes + "]";
+	}
+	
+//	@Override
+//	public String toString() {
+//	    return "ArticleBean [articleId=" + articleId + ", articleTitle=" + articleTitle + ", articleType=" + articleType
+//	            + ", articleContent=" + articleContent + ", articleImg=" + Arrays.toString(articleImg) + ", likeCount="
+//	            + likeCount + ", articleTime=" + articleTime + ", articleUpdateTime=" + articleUpdateTime + ", status="
+//	            + status + ", memberId=" + (member != null ? member.getUserId() : null)
+//	            // Note: Not including 'comments', 'articleLikes' here
+//	            + "]";
+//	}
+
+	
+	
 
 }

@@ -17,6 +17,7 @@ import java.util.TreeSet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,6 +30,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import ecpay.payment.integration.AllInOne;
 import ecpay.payment.integration.domain.AioCheckOutALL;
 import ecpay.payment.integration.domain.QueryTradeInfoObj;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import jakarta.servlet.http.HttpSession;
 import tw.gymlife.course.model.CourseBean;
 import tw.gymlife.course.model.CorderBean;
@@ -59,6 +62,7 @@ public class CourseController_Front {
 	private JavaMailSender javaMailSender;
 	@Autowired
 	private convertDTO converDTO;
+	
 
 //	//前台首頁
 //	@GetMapping("/front")
@@ -94,7 +98,10 @@ public class CourseController_Front {
 	
 
 	// 查詢訂單結果
-	public void findCorderEnter(String MerchantTradeNo,String userEmail) {
+	@GetMapping("/front/coursecoder/complete")
+	public String findCorderEnter(@RequestParam("MerchantTradeNo") String MerchantTradeNo ,HttpSession session,@RequestParam("userId") Integer userId, @RequestParam("courseId") Integer courseId,
+			@RequestParam("corderPayment") String corderPayment, @RequestParam("corderQuantity") Integer corderQuantity,
+			@RequestParam("corderCost") Integer corderCost) throws MessagingException {
 		AllInOne all = new AllInOne("");
 		QueryTradeInfoObj obj = new QueryTradeInfoObj();
 		obj.setMerchantTradeNo(MerchantTradeNo);
@@ -118,25 +125,87 @@ public class CourseController_Front {
 		} else if (tradeStatusValue.equals("1")) {
 			//TradeStatus=1
 			System.out.println("購買成功!");
+			// 新增到訂單
+			Member member = oservice.selectMemberByuserId(userId);
+			CourseBean cbean = cservice.selectCourseById(courseId);
+			CorderBean obean = new CorderBean();
+			obean.setMember(member);
+			obean.setCourse(cbean);
+			obean.setCorderPayment(corderPayment);
+			obean.setCorderQuantity(corderQuantity);
+			obean.setCorderCost(corderCost);
+			obean.setCorderState(0);
+			oservice.insertCorder(obean);
+			cservice.insertCourseBuyers(courseId);
 			//成功寄送e-mail
-			SimpleMailMessage message = new SimpleMailMessage();
-			message.setTo(userEmail);
-			message.setSubject("GYMLIFE");
-			message.setText("謝謝您的購買");
+			String userEmail = session.getAttribute("userEmail").toString();
+		    String userName = session.getAttribute("userName").toString();
+		    String userTel = session.getAttribute("userTel").toString();
+		    String userAddress = session.getAttribute("userAddress").toString();
+		    MimeMessage message = javaMailSender.createMimeMessage();
+		    MimeMessageHelper helper = new MimeMessageHelper(message, true);
+		    helper.setTo(userEmail);
+		    helper.setSubject("GYMLIFE");
+		    helper.setText("<html>\r\n"
+		    		+ "<head>\r\n"
+		    		+ "  <meta charset=\"UTF-8\">\r\n"
+		    		+ "  <title>健身課程訂單確認</title>\r\n"
+		    		+ "</head>\r\n"
+		    		+ "<body>\r\n"
+		    		+ "  <h2>健身課程訂單確認</h2>\r\n"
+		    		+ "\r\n"
+		    		+ "  <p>親愛的 "+userName+"，</p>\r\n"
+		    		+ "  <p>感謝您選擇我們的健身課程！我們非常期待能與您一同開展這個健康旅程。以下是您的訂單詳細資訊：</p>\r\n"
+		    		+ "\r\n"
+		    		+"<table border=\"1\">\r\n"
+		    		+ "    <thead>\r\n"
+		    		+ "      <tr>\r\n"
+		    		+ "        <th>課程名稱</th>\r\n"
+		    		+ "        <th>數量</th>\r\n"
+		    		+ "        <th>價格</th>\r\n"
+		    		+ "      </tr>\r\n"
+		    		+ "    </thead>\r\n"
+		    		+ "    <tbody>\r\n"
+		    		+ "      <tr>\r\n"
+		    		+ "        <td>"+cbean.getCourseName()+"</td>\r\n"
+		    		+ "        <td>"+corderQuantity+"</td>\r\n"
+		    		+ "        <td>"+cbean.getCourseCost()+"</td>\r\n"
+		    		+ "      </tr>\r\n"
+		    		+ "    </tbody>\r\n"
+		    		+ "    <tfoot>\r\n"
+		    		+ "      <tr>\r\n"
+		    		+ "        <td colspan=\"2\">總金額：</td>\r\n"
+		    		+ "        <td>"+corderCost+"</td>\r\n"
+		    		+ "      </tr>\r\n"
+		    		+ "    </tfoot>\r\n"
+		    		+ "  </table>\r\n"
+		    		+ "\r\n"
+		    		+ "  <p>付款方式： 信用卡付款</p>\r\n"
+		    		+ "  <p>收件人姓名： "+userName+"</p>\r\n"
+		    		+ "  <p>聯絡電話： "+userTel+"</p>\r\n"
+		    		+ "  <p>郵寄地址： "+userAddress+"</p>\r\n"
+		    		+ "\r\n"
+//		    		+ "  <p>付款資訊：</p>\r\n"
+//		    		+ "  <p>[付款資訊詳情]</p>\r\n"
+		    		+ "\r\n"
+		    		+ "  <p>如有任何問題或需要進一步的協助，請隨時與我們聯繫。我們的客戶服務團隊將竭誠為您服務。</p>\r\n"
+		    		+ "\r\n"
+		    		+ "  <p>再次感謝您的選擇和支持！</p>\r\n"
+		    		+ "\r\n"
+		    		+ "  <p>祝您健康愉快！</p>\r\n"
+		    		+ "\r\n"
+		    		+ "  <p>GYMLIFE</p>\r\n"
+		    		+ "</body>\r\n"
+		    		+ "</html>", true);
 
-			javaMailSender.send(message);
+		    javaMailSender.send(message);
 		} 	
+		return "redirect:/front/coursesingle";
 	}
 
 	// 教練課程(查詢所有課程)
 	@GetMapping("/front/coursesingle")
-	public String findAllsingle(@RequestParam(required = false) String MerchantTradeNo,HttpSession session, Model m) throws ParseException {
-		if (MerchantTradeNo != null) {
-			String userEmail = session.getAttribute("userEmail").toString();
-			// 訂單頁面導來
-			findCorderEnter(MerchantTradeNo,userEmail);
-		}
-		// 普通跳轉
+	public String findAllsingle( Model m) throws ParseException {
 		List<CourseBean> cbeans = cservice.selectAllCourse();
 		List<ImageBean> ibeans = iservice.selectAllCourseImage();
 
@@ -212,24 +281,18 @@ public class CourseController_Front {
 		}
 	}
 
-	// 新增訂單
-	/*
-	 * @PostMapping("/course/order/insert") // @GetMapping("/course/order/insert")
-	 * public String insertCorder(@RequestParam("userId") Integer
-	 * userId, @RequestParam("courseId") Integer courseId,
-	 * 
-	 * @RequestParam("corderPayment") String
-	 * corderPayment, @RequestParam("corderQuantity") Integer corderQuantity,
-	 * 
-	 * @RequestParam("corderCost") Integer corderCost, Model model) throws
-	 * ParseException {
-	 * 
-	 * Member member = oservice.selectMemberByuserId(userId); CourseBean cbean =
-	 * cservice.selectCourseById(courseId); CorderBean obean = new CorderBean();
-	 * obean.setMember(member); obean.setCourse(cbean);
-	 * obean.setCorderPayment(corderPayment);
-	 * obean.setCorderQuantity(corderQuantity); obean.setCorderCost(corderCost);
-	 * oservice.insertCorder(obean); return "redirect:/front/coursesingle"; }
-	 */
+	// 會員訂單查詢
+	@GetMapping("/course/membercorder")
+	public String selectMemberCorder(HttpSession session,Model model) {
+		if (session.getAttribute("userId") != null) {
+			int userId = Integer.parseInt(session.getAttribute("userId").toString());
+			Member member = oservice.selectMemberByuserId(userId);
+			model.addAttribute("member", member);
+			return "frontgymlife/course/membercorder";
+		} else {
+			return "redirect:/Login";
+		}
+	}
+	
 
 }

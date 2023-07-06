@@ -4,6 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <title>GYMLIFE-課程訂單</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 </head>
 
 <body>
@@ -55,13 +57,18 @@
 									<td th:text="${mb.course.courseName}"></td>
 									<td th:text="${mb.corderPayment}"></td>
 									<td th:text="${mb.corderTime}"></td>
-									<td th:text="${mb.corderQuantity}"></td>
-									<td th:text="${mb.corderCost}"></td>
-									
-									<td class="updatebtn"><button class="btn btn-outline-primary btn-sm"
-											th:onclick="updateCoach([[${mb.corderId}]])">
-											<div data-toggle="modal" data-target="#staticBackdrop">更新</div>
-										</button></td>
+									<td><input th:id="${mb.corderId}" class="form-control w-60"type="number" name="corderQuantity" th:value="${mb.corderQuantity}" disabled style="background-color:white"></td>
+<!-- 									<td th:text="${mb.corderQuantity}"></td> -->
+									<td ><input th:id="'corderCost-'+${mb.corderId}"class="form-control w-60" th:value="${mb.corderCost}" disabled style="background-color:white"></td>
+									<td class="updatebtn"><button
+											class="btn btn-outline-primary btn-sm"
+											th:id="'updatebtn-'+${mb.corderId}"
+											th:onclick="updateCorderBtn([[${mb.corderId}]])">
+											更新</button>
+										<input type="hidden" th:id="'courseCost-'+${mb.corderId}" th:value="${mb.course.courseCost}">
+										<button class="btn btn-outline-primary btn-sm"
+											th:id="'updateclick-'+${mb.corderId}" th:onclick="updateCorder([[${mb.corderId}]])" style="display:none;">提交</button>
+									</td>
 									<td class="deletebtn">
 											<button type="button" class="btn btn-outline-danger btn-sm deletechbtn" name="coachId" th:data-deleteid="${mb.corderId}"
 											th:onclick="deletecoach([[${mb.corderId}]])">刪除</button>
@@ -74,7 +81,6 @@
         </div>
     </section>
     <!-- ChoseUs Section End -->
-    
     
     
     <div th:replace="~{layout/front_footer}"></div>

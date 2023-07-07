@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>所有活動</title>
+<link
+	th:href="@{http://localhost:8080/gymlife/gym/activity/fontawesome/css/all.css}"
+	rel="stylesheet">
+<link
+	th:href="@{http://localhost:8080/gymlife/gym/activity/fontawesome/css/brands.css}"
+	rel="stylesheet">
+<link
+	th:href="@{http://localhost:8080/gymlife/gym/activity/fontawesome/css/solid.css}"
+	rel="stylesheet">
+</head>
+<body style="background-color: black;">
+	<div th:replace="~{layout/front_nav}"></div>
+
+	<!-- Breadcrumb Section Begin -->
+	<section class="breadcrumb-section set-bg"
+		th:data-setbg="@{http://localhost:8080/gymlife/gym/activity/img/home2.jpg}">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-12 text-center">
+					<div class="breadcrumb-text">
+						<h2>All Activity</h2>
+						<div class="bt-option">
+							<a th:href="@{/}">Home</a> <span>Activity</span>
+				</div>
+				</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	<!-- Breadcrumb Section End -->
+
+	<!-- Add a space with margin -->
+	<div style="margin-top: 40px; margin-bottom: 50px;"></div>
+
+	<!-- Search Form Begin -->
+	<section class="search-section">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-12">
+					<form action="/search" method="GET">
+						<div class="form-row">
+							<div class="col-md-3 mb-3">
+								<select class="custom-select" name="status">
+									<option value="">報名狀態</option>
+									<option value="registered">全部</option>
+									<option value="confirmed">報名中</option>
+									<option value="cancelled">報名截止</option>
+								</select>
+							</div>
+							<div class="col-md-3 mb-3">
+								<select class="custom-select" name="year">
+									<option value="">年份</option>
+									<option value="">全年度</option>
+									<option value="2023">2023</option>
+									<option value="2022">2022</option>
+									<option value="2021">2021</option>
+									<option value="2020">2020</option>
+								</select>
+							</div>
+							<div class="col-md-3 mb-3">
+								<select class="custom-select" name="month">
+									<option value="">月份</option>
+									<option value="01">01</option>
+									<option value="02">02</option>
+									<option value="03">03</option>
+									<option value="04">04</option>
+									<option value="05">05</option>
+									<option value="06">06</option>
+									<option value="07">07</option>
+									<option value="08">08</option>
+									<option value="09">09</option>
+									<option value="10">10</option>
+									<option value="11">11</option>
+									<option value="12">12</option>
+									<!-- Add more months as needed -->
+								</select>
+							</div>
+							<div class="col-md-3 mb-3">
+								<input type="text" class="form-control" name="searchQuery"
+									placeholder="名稱搜尋">
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</section>
+	<!-- Search Form End -->
+	<!-- card Begin-->
+
+	<div class="container">
+		<div class="row">
+			<th:block th:each="oneActivity : ${allActivity}">
+				<div class="col-xs-12 col-sm-6 col-md-4 col-lg-3 mb-4">
+					<div class="card"
+						style="background-color: black; border: 1px solid white;">
+                    <a th:href="@{/activityDetails(activityId=${oneActivity.activityId})}">
+                        <img class="card-img-top" width="300px" height="200px"
+                             th:src="@{'/dowloadImageActivity/' + ${oneActivity.activityId}}">
+                    </a>
+						<div class="card-body">
+							<h4 class="card-title" th:text="${oneActivity.activityName}"
+								style="color: white;"></h4>
+							<h5 class="card-text"
+								    th:text="${#dates.format(oneActivity.activityDate, 'yyyy/MM/dd')} + ' (' + ${#dates.format(oneActivity.activityDate, 'EEEE')} + ')'"
+								style="color: white;"></h5>
+							<h5 class="card-text" th:text="${oneActivity.activityLocation}"
+								style="color: white;"></h5>
+						</div>
+					</div>
+				</div>
+			</th:block>
+		</div>
+	</div>
+	<!-- end card-->
+
+	<div th:replace="~{layout/front_footer}"
+		style="background-color: black;"></div>
+<script>
+  function filterCards() {
+    var status = document.querySelector('select[name="status"]').value;
+    var year = document.querySelector('select[name="year"]').value;
+    var month = document.querySelector('select[name="month"]').value;
+    var searchQuery = document.querySelector('input[name="searchQuery"]').value.toLowerCase();
+    
+    var cards = document.getElementsByClassName("card");
+    
+    // 遍歷所有卡片
+    for (var i = 0; i < cards.length; i++) {
+      var card = cards[i];
+      var cardTitle = card.getElementsByClassName("card-title")[0].textContent.toLowerCase();
+      var cardDate = card.getElementsByClassName("card-text")[0].textContent.toLowerCase();
+      
+      var statusMatch = status === "" || cardDate.includes(status.toLowerCase());
+      var yearMatch = year === "" || cardDate.includes(year);
+      var monthMatch = month === "" || cardDate.includes(month);
+      var searchMatch = cardTitle.includes(searchQuery);
+      
+      // 將卡片隱藏或顯示，根據條件是否匹配
+      if (statusMatch && yearMatch && monthMatch && searchMatch) {
+        card.style.display = "block";
+      } else {
+        card.style.display = "none";
+      }
+    }
+  }
+  
+  // 監聽下拉選單和輸入框的變化，當有變化時觸發篩選功能
+  document.querySelectorAll('select[name="status"], select[name="year"], select[name="month"], input[name="searchQuery"]').forEach(function(element) {
+    element.addEventListener('change', function() {
+      filterCards();
+    });
+    element.addEventListener('input', function() {
+      filterCards();
+    });
+  });
+  
+  // 在頁面載入時執行一次篩選功能，以便根據初始值顯示卡片
+  filterCards();
+</script>
+
+
+</body>
+</html>

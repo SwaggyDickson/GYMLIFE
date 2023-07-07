@@ -2,14 +2,16 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head>
-	<meta charset="UTF-8">
-	<title>所有活動</title>
-	<style>
-		.dataTables_wrapper .dataTables_filter {
-			text-align: right;
-			margin-right: 10px;
-		}
-	</style>
+<meta charset="UTF-8">
+<title>所有活動</title>
+<!-- SweetAlert -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<style>
+.dataTables_wrapper .dataTables_filter {
+	text-align: right;
+	margin-right: 10px;
+}
+</style>
 </head>
 
 <body>
@@ -32,11 +34,11 @@
 						</div>
 					</div>
 					<!-- table-->
-					
+
 					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
 						<div class="card mb-3">
 							<div style="margin-left: 35px; margin-top: 20px;">
-								<form th:action="@{/activity/add}">
+								<form th:action="@{/activity/insert}">
 									<button class="btn btn-primary" type="submit" value="新增">
 										<i class="fa-solid fa-plus"></i> 新增
 									</button>
@@ -44,53 +46,52 @@
 							</div>
 							<div class="card-body">
 								<div class="table-responsive">
-									<table id="example1" class="table table-bordered table-hover display">
+									<table id="example1"
+										class="table table-bordered table-hover display">
 										<thead>
 											<tr>
-												<th>活動編號 <i class="fa-solid fa-sort"></i></th>
 												<th>活動名稱 <i class="fa-solid fa-sort"></i></th>
-												<th>活動內容 <i class="fa-solid fa-sort"></i></th>
-												<th>活動封面圖片 <i class="fa-solid fa-sort"></i></th>
+												<th>活動封面 <i class="fa-solid fa-sort"></i></th>
+												<th>活動類型 <i class="fa-solid fa-sort"></i></th>
 												<th>活動日期 <i class="fa-solid fa-sort"></i></th>
 												<th>活動地點 <i class="fa-solid fa-sort"></i></th>
-												<th>活動狀態 <i class="fa-solid fa-sort"></i></th>
+												<th>主辦單位 <i class="fa-solid fa-sort"></i></th>
+												<th>最後修改時間 <i class="fa-solid fa-sort"></i></th>
 												<th>操作</th>
 											</tr>
 										</thead>
 										<tbody>
-											<th:block th:each=" oneActivity : ${activityList}">
+											<th:block th:each=" oneActivity : ${allActivity}">
 												<tr>
-													<td th:text="${oneActivity.activityId}"></td>
 													<td th:text="${oneActivity.activityName}"></td>
-													<td style="max-width: 200px"
-														th:text="${oneActivity.activityContent}"></td>
 													<td><img width="300px" height="200px"
-															th:src="@{'/dowloadImage/' + ${oneActivity.activityId}}">
+														th:src="@{'/dowloadImageActivity/' + ${oneActivity.activityId}}">
 													</td>
+													<td th:text="${oneActivity.activityCategory}"></td>
 													<td
-														th:text="${#dates.format(oneActivity.activityDate,'yyyy-MM-dd')}">
+														th:text="${#dates.format(oneActivity.activityDate,'yyyy/MM/dd')}">
 													</td>
 													<td th:text="${oneActivity.activityLocation}"></td>
-													<td th:text="${oneActivity.activityStatus}"></td>
+													<td th:text="${oneActivity.organizer}"></td>
+													<td
+														th:text="${#dates.format(oneActivity.updateTime,'yyyy/MM/dd HH:mm:ss')}"></td>
 													<td>
 														<div style="display: flex;">
 															<form th:action="@{/activity/update}" method="get">
 																<input name="activityId"
-																	th:value="${oneActivity.activityId}"
-																	type="hidden" />
+																	th:value="${oneActivity.activityId}" type="hidden" />
 																<button
 																	class="btn btn-outline-primary update-btn-activity">修改</button>
 															</form>
 															<div style="margin-left: 10px;"></div>
-															<form th:action="@{/activity/delete}" method="post">
+															<form th:action="@{/activity/delete}" method="post"
+																id="deleteForm">
 																<input name="_method" value="delete" type="hidden">
 																<input name="activityId"
-																	th:value="${oneActivity.activityId}"
-																	type="hidden" />
+																	th:value="${oneActivity.activityId}" type="hidden" />
 																<button
 																	class="btn btn-outline-secondary delete-btn-activity"
-																	type="submit"
-																	onclick="return confirm('您確定要刪除這個活動嗎？')">刪除</button>
+																	onclick="submitTest(event)" id="deleteBtn">刪除</button>
 															</form>
 														</div>
 													</td>
@@ -112,19 +113,51 @@
 	<!-- END content-page -->
 	<div th:replace="~{layout/footer}"></div>
 	<!-- BEGIN Java Script for this page -->
-	<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 	<script>
 		// START CODE FOR BASIC DATA TABLE 
 		$(document).ready(function () {
 			$('#example1').DataTable();
-		});
-				// END CODE FOR BASIC DATA TABLE
+});
+		// END CODE FOR BASIC DATA TABLE
 
+function submitTest(event) {
+  event.preventDefault(); // 阻止表單提交
+
+  Swal.fire({
+    title: "確定要刪除嗎？",
+    text: "刪除後將無法恢復！！",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "刪除",
+    cancelButtonText: "取消"
+  }).then(function(result) {
+    if (result.isConfirmed) {
+      // 延遲執行表單提交
+      setTimeout(function() {
+        document.getElementById('deleteForm').submit();
+      }, 2000); // 2秒延遲
+      // 顯示打勾圖示及成功
+      Swal.fire({
+        title: "刪除成功",
+        icon: "success",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+    } else if (result.isDismissed) {
+      // 顯示取消提示
+      Swal.fire("取消刪除", "", "info");
+    }
+  });
+}
+
+$('#deleteBtn').click(submitTest);
 	</script>
-		<script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
-	<script src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap4.min.js"></script>
+	<script
+		src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+	<script
+		src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap4.min.js"></script>
 
-	
+
 </body>
 
 </html>

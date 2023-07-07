@@ -9,6 +9,17 @@
  	  max-width: 100%;  /* 最大寬度為視窗寬度 */
     overflow-x: auto; /* 如果內容超出容器寬度，則可以橫向滾動 */
 	}
+
+	div  > .small-chart {
+    width: 50px;
+    height: 50px;
+}
+	.small-div {
+    width: 200px;
+    height: 200px;
+}
+
+
 	
 	</style>
 	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -34,7 +45,9 @@
 						</div>
 					</div>
 <!---------------------------內文---------------------------------------------------------------->
-					<canvas id="genderChart"></canvas>
+					<div class="small-div">
+						<canvas id="genderChart" class="small-chart"></canvas>
+					</div>
 				
 
 				</div>

@@ -59,7 +59,6 @@ import tw.gymlife.member.service.MemberService;
 		            Member member = memberService.memberUpdate(
 		                body.getUserId(),
 		                body.getUserAccount(),
-		                body.getUserPassword(),
 		                body.getUserName(),
 		                body.getUserGender(),
 		                body.getUserAddress(),
@@ -74,5 +73,15 @@ import tw.gymlife.member.service.MemberService;
 		        }
 		    }
 		    
+		    @GetMapping("/memberAnalyze")
+		    public String memberAnalyze() {
+				return "backgymlife/member/memberAnalyze";
+			}
+		    
+		    @GetMapping("/api/genderCountData")
+		    @ResponseBody
+		    public Map<String, Integer> getGenderCountData() {
+		        return memberService.getGenderCount();
+		    }
 		
 	}

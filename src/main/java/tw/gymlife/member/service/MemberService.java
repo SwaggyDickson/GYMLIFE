@@ -1,10 +1,13 @@
 package tw.gymlife.member.service;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.crossstore.HashMapChangeSet;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -58,12 +61,11 @@ public class MemberService {
 		memberRepo.deleteById(userId);
     }
 	
-	  public Member memberUpdate(int userId, String userAccount, String userPassword, String userName, String userGender,
+	  public Member memberUpdate(int userId, String userAccount, String userName, String userGender,
 	            String userAddress, String userTel, String userEmail, Date userBirthDay){
 	        Member member = memberRepo.findById(userId).orElse(null);
 	        if(member != null){
 	            member.setUserAccount(userAccount);
-	            member.setUserPassword(userPassword);
 	            member.setUserName(userName);
 	            member.setUserGender(userGender);
 	            member.setUserAddress(userAddress);
@@ -132,5 +134,39 @@ public class MemberService {
 	 public Member seveUserPassword(Member member) {
 		 return memberRepo.save(member);
 	 }
+	 
+	 
+	 public Map<String, Integer> getGenderCount(){
+		 List<Member> members = memberRepo.findAll();
+		 
+		
+		 int male = 0;
+		 int female =0;
+		 
+		 for(Member member: members) {
+			 String gender = member.getUserGender().trim();
+			 
+			 System.out.println("Member gender: " + member.getUserGender());
+			  if ("male".equalsIgnoreCase(gender)) {
+		            male++;
+		            System.out.println("Incrementing male count");
+		        } else if ("female".equalsIgnoreCase(gender)) {
+		            female++;
+		            System.out.println("Incrementing female count");
+		        }
+			  System.out.println("Original gender value: '" + member.getUserGender() + "'");
+		 }
+		 
+		 
+		 Map<String, Integer> genderCount = new HashMap<>();
+		 genderCount.put("male", male);
+		 genderCount.put("female", female);
+		 System.out.println("Male: " + male);  // 打印男性数量
+		 System.out.println("Female: " + female);  // 打印女性数量
+		 
+		 
+		 return genderCount;
+	 }
+	 
 	 
 }

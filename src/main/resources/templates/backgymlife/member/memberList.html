@@ -182,61 +182,61 @@
 <div th:replace="~{layout/footer}"></div>
 
 <script>
-   $(document).ready(function() {
-    function refreshMemberData() {
-        $.ajax({
-            url: "gymlife/api/MemberQuery",
-            type: "GET",
-            success: function(data) {
-                $("tbody").empty();
-                data.forEach(function(member, index) {
-                    let row = $("<tr>");
-                        //append 在選定元素的內部結尾處插入內容
-                    row.append($("<td>").text(member.userId));
-                    row.append($("<td>").text(member.userAccount));
-                    row.append($("<td>").text(member.userName));
-                    row.append($("<td>").text(member.userGender));
-                    row.append($("<td>").text(member.userBirthDay));
-                    row.append($("<td>").text(member.userAddress));
-                    row.append($("<td>").text(member.userTel));
-                    row.append($("<td>").text(member.userEmail));
-                    row.append($("<td>").text(member.userNickName));
-                    row.append($("<td>").text(member.userRegisterDate));
-                    row.append($("<td>").text(member.userTotalSpend));
-                    row.append($("<td>").text(member.userRewardPoint));
-                    row.append($("<td>").text(member.userPermission));
-						let updateButton = $("<button>")
-                        .addClass("btn btn-primary")
-                        .attr("data-bs-toggle", "modal")
-                        .attr("data-bs-target", "#updateModal")
-                        .text("更新")
-                        .click(function() {
-                            storeData(index); // 當更新按鈕被點擊時，呼叫 storeData 函數並傳入當前行的索引
-                        });
-                    row.append($("<td>").append(updateButton));
+//    $(document).ready(function() {
+//     function refreshMemberData() {
+//         $.ajax({
+//             url: "gymlife/api/MemberQuery",
+//             type: "GET",
+//             success: function(data) {
+//                 $("tbody").empty();
+//                 data.forEach(function(member, index) {
+//                     let row = $("<tr>");
+//                         //append 在選定元素的內部結尾處插入內容
+//                     row.append($("<td>").text(member.userId));
+//                     row.append($("<td>").text(member.userAccount));
+//                     row.append($("<td>").text(member.userName));
+//                     row.append($("<td>").text(member.userGender));
+//                     row.append($("<td>").text(member.userBirthDay));
+//                     row.append($("<td>").text(member.userAddress));
+//                     row.append($("<td>").text(member.userTel));
+//                     row.append($("<td>").text(member.userEmail));
+//                     row.append($("<td>").text(member.userNickName));
+//                     row.append($("<td>").text(member.userRegisterDate));
+//                     row.append($("<td>").text(member.userTotalSpend));
+//                     row.append($("<td>").text(member.userRewardPoint));
+//                     row.append($("<td>").text(member.userPermission));
+// 						let updateButton = $("<button>")
+//                         .addClass("btn btn-primary")
+//                         .attr("data-bs-toggle", "modal")
+//                         .attr("data-bs-target", "#updateModal")
+//                         .text("更新")
+//                         .click(function() {
+//                             storeData(index); // 當更新按鈕被點擊時，呼叫 storeData 函數並傳入當前行的索引
+//                         });
+//                     row.append($("<td>").append(updateButton));
 
-                    let deleteButton = $("<button>")
-                        .addClass("btn btn-danger")
-                        .attr("data-bs-toggle", "modal")
-                        .attr("data-bs-target", "#deleteModal")
-                        .text("刪除")
-                        .click(function() {
-                            userIdToDelete = member.userId;
-                            console.log("Stored User ID: ", userIdToDelete);
-                        });
-                    row.append($("<td>").append(deleteButton));
+//                     let deleteButton = $("<button>")
+//                         .addClass("btn btn-danger")
+//                         .attr("data-bs-toggle", "modal")
+//                         .attr("data-bs-target", "#deleteModal")
+//                         .text("刪除")
+//                         .click(function() {
+//                             userIdToDelete = member.userId;
+//                             console.log("Stored User ID: ", userIdToDelete);
+//                         });
+//                     row.append($("<td>").append(deleteButton));
 
-                    $("tbody").append(row);
-                });
-            },
-            error: function(jqXHR, textStatus, errorThrown) {
-                console.error(textStatus, errorThrown);
-            }
-        });
-    }
+//                     $("tbody").append(row);
+//                 });
+//             },
+//             error: function(jqXHR, textStatus, errorThrown) {
+//                 console.error(textStatus, errorThrown);
+//             }
+//         });
+//     }
 
-    setInterval(refreshMemberData, 1000);
-});
+//     setInterval(refreshMemberData, 1000);
+// });
             document.getElementById("searchInput").addEventListener("keyup", function () {
                 let searchInput = document.getElementById("searchInput");
                 let filter = searchInput.value.toUpperCase();

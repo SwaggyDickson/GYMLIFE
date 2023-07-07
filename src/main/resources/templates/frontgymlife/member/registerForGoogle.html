@@ -16,14 +16,13 @@
 
 <header th:replace="~{layout/front_nav}"></header>
 
- <main  >
+ <main  >	 
         <!-- 主要内容 -->
            
     <div style="padding-top: 60px;" class="container">
     <form id="registerForm" th:action="@{/Register}" method="POST" onsubmit="return validatePasswordMatch()">
         <fieldset>
-            <legend>註冊資訊</legend>
-
+            <legend>註冊資訊:請輸入剩餘資訊</legend>
             <label  for="userAccount">帳號：<span id="usernameCheckResult"></span><span class="error" th:text="${errorMsg} ? ${errorMsg} : ''"></span></label >
             <input class=centered-item type="text" id="userAccount" name="userAccount"  required><br>
                 
@@ -240,14 +239,10 @@
             document.getElementById('userAccount').value = 'TestAccount2';
             document.getElementById('userPassword').value = 'TestPassword';
             document.getElementById('userPasswordCheck').value = 'TestPassword';
-            document.getElementById('userName').value = '王大槌';
             document.getElementById('userNickName').value = '大槌';
-            document.getElementById('userGender').value = 'male';
             document.getElementById('userAddressFirst').value = '台北市';
             document.getElementById('userAddressDetail').value = '大安區有錢路沒命花巷';
             document.getElementById('userTel').value = '0912345678';
-            document.getElementById('userEmail').value = 'zzxx5576843@gmail.com';
-            document.getElementById('userBirthDay').value = '1998-03-14';
     });
 
     //------------------------使用ajax傳送註冊資訊--------------------------

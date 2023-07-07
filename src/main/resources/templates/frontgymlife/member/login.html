@@ -30,14 +30,21 @@
                     <div class="login">
                         <button id="autoFill" type="button" class="btn btn-primary btn-auto">一鍵輸入</button>
                         <button id="loginBtn" type="submit" value="Login"class="btn btn-primary btn-login">登入</button>
-                        <button type="button" id="google_login" class="btn btn-large btn-primary">GOOGLE 登入</button>
                     </div>
-                    
+
                     <div class="mt-2 registration-link">
                         沒有帳號嗎? <a th:href="@{/Register}">註冊</a>
                     </div>
+
                     <div class="login">
                         <a id="forgotPwdBtn" th:href="@{/loginProblem}" class="btn btn-primary btn-login">忘記密碼</a>
+                    </div>
+                    <hr>
+                    <div class="g-signin2" data-onsuccess="onSignIn">
+                        <button type="button" id="google_login" class="btn btn-large btn-primary google-button">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" alt="Google logo" class="google-logo">
+                            
+                          </button>
                     </div>
                 </form>
             </div>
@@ -227,67 +234,85 @@
 			});
 		});
 
-		// 登入後 callback
-		function signIn_callback(res) {
-			// 登入失敗時
-			if (res.error !== undefined) {
-				console.log(res.error);
-				$persoanl_info.html(res.error);
-			}
+            // 登入後 callback
+            function signIn_callback(res) {
+                // 登入失敗時
+                if (res.error !== undefined) {
+                    console.log(res.error);
+                    $persoanl_info.html(res.error);
+                }
 
-			// 登入成功後
-			if (res && res.access_token) {
-				// 顯示帳號資訊
-				listAccountInfo();
-			}
-		}
+                // 登入成功後
+                if (res && res.access_token) {
+                    // 顯示帳號資訊
+                    listAccountInfo();
+                    setTimeout(function() {
+        window.location.href = "http://localhost:8080/gymlife/RegisterForGoogle";
+    }, 200);
+                }
+            }
 
-		// 捕捉非 OAuth 錯誤 或是在傳回 OAuth 回應前遭到關閉
-		function error_callback(res) {
-			console.log(res);
-			$persoanl_info.html(res.message);
-		}
+            // 捕捉非 OAuth 錯誤 或是在傳回 OAuth 回應前遭到關閉
+            function error_callback(res) {
+                console.log(res);
+                $persoanl_info.html(res.message);
+            }
 
-		// 顯示帳號資訊
-		function listAccountInfo() {
-			// 呼叫 people api 取得資料
-			gapi.client.people.people.get({
-				"resourceName": resourceName,
-				"personFields": personFields,
-			}).then(function(res) {
-                console.log(res.result);
-				// 顯示資料
-				var result = res.result,
-					errorMessage = "請重新登入, 並勾選生日及性別!",
-					html = "",
-					id, name, imgUrl, email, gender, birthday, birthdayStr;
+            // 顯示帳號資訊
+            function listAccountInfo() {
+                // 呼叫 people api 取得資料
+                gapi.client.people.people.get({
+                    "resourceName": resourceName,
+                    "personFields": personFields,
+                }).then(function(res) {
+                    console.log(res.result);
+                    // 顯示資料
+                    var result = res.result,
+                        errorMessage = "請重新登入, 並勾選生日及性別!",
+                        html = "",
+                        id, name, imgUrl, email, gender, birthday, birthdayStr;
 
-				// 沒有勾選生日、性別時
-				if (!result.genders || !result.birthdays) {
-					alert(errorMessage);
-					$persoanl_info.html(errorMessage);
-					return;
-				}
+                    // 沒有勾選生日、性別時
+                    if (!result.genders || !result.birthdays) {
+                        alert(errorMessage);
+                        $persoanl_info.html(errorMessage);
+                        return;
+                    }
 
-				id = result.resourceName.split("/")[1];
-  				name = result.names[0].displayName;
-				imgUrl = result.photos[0].url;
-				email = result.emailAddresses[0].value;
-				gender = result.genders[0].formattedValue;
-				birthday = result.birthdays[0].date;
-				birthdayStr = birthday.year + "-" + birthday.month + "-" + birthday.day;
+                    id = result.resourceName.split("/")[1];
+                    name = result.names[0].displayName;
+                    imgUrl = result.photos[0].url;
+                    email = result.emailAddresses[0].value;
+                    gender = result.genders[0].formattedValue;
+                    birthday = result.birthdays[0].date;
+                    birthdayStr = birthday.year + "-" + String(birthday.month).padStart(2, '0') + "-" + String(birthday.day).padStart(2, '0');
 
-				html += "ID： " + id + "<br/>";
-  				html += "暱稱： " + name + "<br/>";
-				html += "頭像：<img style='width: 40 px;' src='" + imgUrl + "'/><br/>";
-				html += "email：" + email + "<br/>";
-				html += "性別：" + gender + "<br/>";
-				html += "生日：" + birthdayStr + "<br/>";
 
-				$persoanl_info.html(html);
-			});
-		}
-	}
+                    html += "ID： " + id + "<br/>";
+                    html += "暱稱： " + name + "<br/>";
+                    html += "頭像：<img style='width: 40 px;' src='" + imgUrl + "'/><br/>";
+                    html += "email：" + email + "<br/>";
+                    html += "性別：" + gender + "<br/>";
+                    html += "生日：" + birthdayStr + "<br/>";
+
+
+                    let googleData = {
+                            id: id,
+                            name: name,
+                            imgUrl: imgUrl,
+                            email: email,
+                            gender: gender,
+                            birthday: birthdayStr
+                    }
+
+                    localStorage.setItem('googleData', JSON.stringify(googleData));
+                    console.log(localStorage.getItem('googleData'))
+
+
+                    $persoanl_info.html(html);
+                });
+            }
+        }
 
 	// 點擊登入按鈕
 	$("#google_login").click(function() {

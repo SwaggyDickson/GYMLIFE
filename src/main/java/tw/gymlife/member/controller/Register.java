@@ -49,6 +49,11 @@ public class Register {
 	        return "frontgymlife/member/register";
 	    }	
 	
+	@GetMapping("/RegisterForGoogle")
+	 public String showRegisterForGoogle(Model model) {
+	        return "frontgymlife/member/registerForGoogle";
+	    }
+	
 	@InitBinder
 	public void initBinder(WebDataBinder binder) {
 		binder.registerCustomEditor(Date.class, new PropertyEditorSupport() {

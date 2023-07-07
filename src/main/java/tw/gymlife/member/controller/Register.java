@@ -170,6 +170,7 @@ public class Register {
 	    	return "frontgymlife/member/firstPage"; 
 	    }
 	}
+	
 
 
 

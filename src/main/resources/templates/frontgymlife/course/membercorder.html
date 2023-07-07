@@ -28,26 +28,26 @@
     </section>
     
     <!-- Classes Section Begin -->
-    <section class="classes-section spad">
-        <div class="container">
+    <section class="classes-section spad d-flex"style="justify-content: center">
+        <div style="width:75%">
         <table class="table table-hover" style="text-align: center" id="alltable">
 						<thead>
 							<tr class="table-light">
-								<th scope="col">訂單編號</th>
-								<th scope="col">會員編號</th>
-								<th scope="col">姓名</th>
+								<th scope="col"style="width:90px">訂單編號</th>
+								<th scope="col"style="width:90px">會員編號</th>
+								<th scope="col"style="width:100px">姓名</th>
 								<th scope="col">電話</th>
 								<th scope="col">E-mail</th>
 								<th scope="col">課程名稱</th>
-								<th scope="col">付款狀態</th>
+								<th scope="col"style="width:90px">付款狀態</th>
 								<th scope="col">購買時間</th>
-								<th scope="col">購買數量</th>
-								<th scope="col">訂單總金額</th>
-								<th class="editth" colspan="2">編輯</th>
+								<th scope="col" style="width:90px">購買數量</th>
+								<th scope="col" style="width:110px">訂單總金額</th>
+								<th class="editth " colspan="2">編輯</th>
 							</tr>
 						</thead>
 						<tbody>
-							<th:block th:each="mb :${member.corder}">
+							<th:block th:each="mb :${member.corder}"th:with="i=${mb.corderState}">
 								<tr class="table-light">
 									<th scope="row" th:text="${mb.corderId}"></th>
 									<td th:text="${member.userId}"></td>
@@ -57,19 +57,20 @@
 									<td th:text="${mb.course.courseName}"></td>
 									<td th:text="${mb.corderPayment}"></td>
 									<td th:text="${mb.corderTime}"></td>
-									<td><input th:id="${mb.corderId}" class="form-control w-60"type="number" name="corderQuantity" th:value="${mb.corderQuantity}" disabled style="background-color:white"></td>
+									<td ><input th:id="${mb.corderId}" class="form-control"type="number" name="corderQuantity" th:value="${mb.corderQuantity}" disabled style="background-color:white;"></td>
 <!-- 									<td th:text="${mb.corderQuantity}"></td> -->
-									<td ><input th:id="'corderCost-'+${mb.corderId}"class="form-control w-60" th:value="${mb.corderCost}" disabled style="background-color:white"></td>
-									<td class="updatebtn"><button
+									<td ><input th:id="'corderCost-'+${mb.corderId}"class="form-control " th:value="${mb.corderCost}" disabled style="background-color:white"></td>
+									<td class="review"colspan="2" th:style="${i==0?'display:none':'display:block'}"><input type="text" value="等待管理員審核" class="form-control " disabled></td>
+									<td class="updatebtn" th:style="${i==0?'display:block;float:left':'display:none;float:left;'}"><button
 											class="btn btn-outline-primary btn-sm"
 											th:id="'updatebtn-'+${mb.corderId}"
-											th:onclick="updateCorderBtn([[${mb.corderId}]])">
+											th:onclick="updateCorderBtn([[${mb.corderId}]])" >
 											更新</button>
 										<input type="hidden" th:id="'courseCost-'+${mb.corderId}" th:value="${mb.course.courseCost}">
 										<button class="btn btn-outline-primary btn-sm"
 											th:id="'updateclick-'+${mb.corderId}" th:onclick="updateCorder([[${mb.corderId}]])" style="display:none;">提交</button>
 									</td>
-									<td class="deletebtn">
+									<td class="deletebtn" th:style="${i==0?'display:block;float:right':'display:none;float:right'}">
 											<button type="button" class="btn btn-outline-danger btn-sm deletechbtn" name="coachId" th:data-deleteid="${mb.corderId}"
 											th:onclick="deletecoach([[${mb.corderId}]])">刪除</button>
 									</td>
@@ -85,7 +86,6 @@
     
     <div th:replace="~{layout/front_footer}"></div>
 <script th:src="@{/gym/course/front/membercorder.js}"></script>
-
 </body>
 
 </html>

@@ -98,7 +98,16 @@ public class corderService {
 		return form;
 	}
 	
-	//更新訂單
+	//更新訂單狀態
+	@Transactional
+	public void updateCorderState(Integer corderId,Integer corderState) {
+		Optional<CorderBean> optional = oRepo.findById(corderId);
+		if(optional.isPresent()) {
+			CorderBean obean = optional.get();
+			obean.setCorderState(corderState);
+		}
+	}
+	//更新訂單數量
 	@Transactional
 	public void updateCorder(Integer corderId,String corderUpdateTime,Integer corderQuantity) {
 		Optional<CorderBean> optional = oRepo.findById(corderId);

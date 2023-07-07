@@ -23,6 +23,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -293,6 +294,20 @@ public class CourseController_Front {
 			return "redirect:/Login";
 		}
 	}
-	
+	// 會員訂單查詢Ajax
+	@ResponseBody
+	@GetMapping("/course/membercorderajax")
+	public CourseDTO selectMemberCorderAjax(HttpSession session) {
+			int userId = Integer.parseInt(session.getAttribute("userId").toString());
+			Member member = oservice.selectMemberByuserId(userId);
+			return converDTO.convertMemberDTO(member);
+	}
+	//修改訂單狀態
+			@ResponseBody
+			@PutMapping("/course/corder/state")
+			public CourseDTO updateCorder(@RequestParam(name="corderId")Integer corderId,@RequestParam(name="corderState")Integer corderState,HttpSession session) {
+				oservice.updateCorderState(corderId, corderState);
+				return selectMemberCorderAjax(session);
+			}
 
 }

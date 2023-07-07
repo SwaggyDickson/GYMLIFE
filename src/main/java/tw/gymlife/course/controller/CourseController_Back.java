@@ -279,7 +279,8 @@ public class CourseController_Back {
 			List<CorderBean> corders = oservice.selectAllCorder();
 			return convertDTO.convertCorderDTOList(corders);
 		}
-		//修改訂單
+		
+		//修改訂單數量
 		@ResponseBody
 		@PutMapping("/course/corder/update")
 		public List<CourseDTO> updateCorder(@RequestParam(name="corderId")Integer corderId,@RequestParam(name="corderQuantity")Integer corderQuantity) {

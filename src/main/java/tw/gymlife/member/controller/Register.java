@@ -170,9 +170,7 @@ public class Register {
 	    	return "frontgymlife/member/firstPage"; 
 	    }
 	}
-	
-	public void aaaaa() {
-	}
+
 
 
 	

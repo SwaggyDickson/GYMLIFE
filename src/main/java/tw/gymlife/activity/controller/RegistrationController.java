@@ -51,7 +51,7 @@ public class RegistrationController {
 	    }
 	    
 	    // 不存在session，使用SweetAlert彈出提示框後跳轉到登入頁面
-	    String alertMessage = "请先登录/注册会员";
+	    String alertMessage = "請先登入或註冊會員";
 	    return "redirect:/Login?alert=" + URLEncoder.encode(alertMessage, StandardCharsets.UTF_8);
 	}
 

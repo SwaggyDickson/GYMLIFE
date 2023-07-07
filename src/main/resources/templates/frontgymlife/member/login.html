@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <title>登入</title>
 <link rel="stylesheet" th:href="@{gym/member/css/login.css}">
+<script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 
 <body class="test">
@@ -29,8 +30,9 @@
                     <div class="login">
                         <button id="autoFill" type="button" class="btn btn-primary btn-auto">一鍵輸入</button>
                         <button id="loginBtn" type="submit" value="Login"class="btn btn-primary btn-login">登入</button>
+                        <button type="button" id="google_login" class="btn btn-large btn-primary">GOOGLE 登入</button>
                     </div>
-                   
+                    
                     <div class="mt-2 registration-link">
                         沒有帳號嗎? <a th:href="@{/Register}">註冊</a>
                     </div>
@@ -184,20 +186,158 @@
             document.getElementById('userPassword').value = 'TestPassword';
         })
 
+       
 
 
-     </script>
 
 
- <script th:src="@{front/js/jquery-3.3.1.min.js}"></script>
- <script th:src="@{front/js/bootstrap.min.js}"></script>
- <script th:src="@{front/js/jquery.magnific-popup.min.js}"></script>
- <script th:src="@{front/js/masonry.pkgd.min.js}"></script>
- <script th:src="@{front/js/jquery.barfiller.js}"></script>
- <script th:src="@{front/js/jquery.slicknav.js}"></script>
- <script th:src="@{front/js/owl.carousel.min.js}"></script>
- <script th:src="@{front/js/main.js}"></script>
- <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-</body>
+
+	// 登入之後
+	var client_id = "1069018516881-45bcda0330d6d4fmvadm4hkvbrr9kfl3.apps.googleusercontent.com",
+		apiKey = "AIzaSyBpabi1bGi4BprVNE8_mRWKFfcllHoB2Rs",
+		scope = "https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/user.gender.read https://www.googleapis.com/auth/user.birthday.read",
+		personFields = "names,emailAddresses,photos,genders,birthdays",
+		discovery_doc = "https://www.googleapis.com/discovery/v1/apis/people/v1/rest",
+		resourceName = "people/me",
+		$persoanl_info = $("#persoanl_info"),
+		tokenClient;
+
+	loadApi();
+
+	// 載入 google api
+	function loadApi() {
+		// 載入 gapi
+		$.getScript("https://apis.google.com/js/api.js", function() {
+			gapi.load("client", function() {
+				gapi.client.init({
+					apiKey: apiKey,
+					discoveryDocs: [discovery_doc],
+				});
+			});
+		});
+
+		// 載入 gsi
+		$.getScript("https://accounts.google.com/gsi/client", function() {
+			tokenClient = google.accounts.oauth2.initTokenClient({
+				client_id: client_id,
+				scope: scope,
+				callback: signIn_callback,
+				error_callback: error_callback
+			});
+		});
+
+		// 登入後 callback
+		function signIn_callback(res) {
+			// 登入失敗時
+			if (res.error !== undefined) {
+				console.log(res.error);
+				$persoanl_info.html(res.error);
+			}
+
+			// 登入成功後
+			if (res && res.access_token) {
+				// 顯示帳號資訊
+				listAccountInfo();
+			}
+		}
+
+		// 捕捉非 OAuth 錯誤 或是在傳回 OAuth 回應前遭到關閉
+		function error_callback(res) {
+			console.log(res);
+			$persoanl_info.html(res.message);
+		}
+
+		// 顯示帳號資訊
+		function listAccountInfo() {
+			// 呼叫 people api 取得資料
+			gapi.client.people.people.get({
+				"resourceName": resourceName,
+				"personFields": personFields,
+			}).then(function(res) {
+                console.log(res.result);
+				// 顯示資料
+				var result = res.result,
+					errorMessage = "請重新登入, 並勾選生日及性別!",
+					html = "",
+					id, name, imgUrl, email, gender, birthday, birthdayStr;
+
+				// 沒有勾選生日、性別時
+				if (!result.genders || !result.birthdays) {
+					alert(errorMessage);
+					$persoanl_info.html(errorMessage);
+					return;
+				}
+
+				id = result.resourceName.split("/")[1];
+  				name = result.names[0].displayName;
+				imgUrl = result.photos[0].url;
+				email = result.emailAddresses[0].value;
+				gender = result.genders[0].formattedValue;
+				birthday = result.birthdays[0].date;
+				birthdayStr = birthday.year + "-" + birthday.month + "-" + birthday.day;
+
+				html += "ID： " + id + "<br/>";
+  				html += "暱稱： " + name + "<br/>";
+				html += "頭像：<img style='width: 40 px;' src='" + imgUrl + "'/><br/>";
+				html += "email：" + email + "<br/>";
+				html += "性別：" + gender + "<br/>";
+				html += "生日：" + birthdayStr + "<br/>";
+
+				$persoanl_info.html(html);
+			});
+		}
+	}
+
+	// 點擊登入按鈕
+	$("#google_login").click(function() {
+		// 進動畫
+		$persoanl_info.html("<img src='https://lh5.googleusercontent.com/-EyVZ0f8J0qQ/UCeEG7aa8nI/AAAAAAAADtY/9sXw53XkYXM/s512/indicator-light.gif' /> <span>請稍後...</span>");
+
+		if (gapi.client.getToken() === null) {
+			// 未登入則彈出登入視窗
+			tokenClient.requestAccessToken();
+		} else {
+			// 已登入則不彈出視窗
+			tokenClient.requestAccessToken({
+				prompt: ""
+			});
+		}
+	});
+
+	// 點擊登出按鈕
+	$("#google_logout").click(function() {
+		var token = gapi.client.getToken();
+		if (token !== null) {
+			google.accounts.oauth2.revoke(token.access_token);
+			gapi.client.setToken("");
+
+			// 登出後的動作
+			$persoanl_info.html("已登出");
+		}
+	});
+    
+            
+    
+    
+    </script>
+    
+    
+    <script th:src="@{front/js/jquery-3.3.1.min.js}"></script>
+    <script th:src="@{front/js/bootstrap.min.js}"></script>
+    <script th:src="@{front/js/jquery.magnific-popup.min.js}"></script>
+    <script th:src="@{front/js/masonry.pkgd.min.js}"></script>
+    <script th:src="@{front/js/jquery.barfiller.js}"></script>
+    <script th:src="@{front/js/jquery.slicknav.js}"></script>
+    <script th:src="@{front/js/owl.carousel.min.js}"></script>
+    <script th:src="@{front/js/main.js}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!--jQuery-->
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+    <!--Bootstrap-->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" />
+    
+    
+    <!-- <script src="https://accounts.google.com/gsi/client" async defer></script> -->
+    </body>
 </html>

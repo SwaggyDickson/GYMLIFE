@@ -7,7 +7,8 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 	import org.springframework.http.HttpStatus;
 	import org.springframework.http.ResponseEntity;
-	import org.springframework.stereotype.Controller;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.stereotype.Controller;
 	import org.springframework.ui.Model;
 	import org.springframework.web.bind.annotation.DeleteMapping;
 	import org.springframework.web.bind.annotation.GetMapping;
@@ -27,6 +28,9 @@ import tw.gymlife.member.service.MemberService;
 		    private MemberService memberService;
 		  @Autowired
 		  	private  MailService mailService;
+		  
+		  @Autowired
+		  private SimpMessagingTemplate template;
 	
 		    @GetMapping("/MemberQuery")
 		    public String showMemberQuery(Model model) {
@@ -82,6 +86,15 @@ import tw.gymlife.member.service.MemberService;
 		    @ResponseBody
 		    public Map<String, Integer> getGenderCountData() {
 		        return memberService.getGenderCount();
+		    }
+		    
+		    
+		    public void onDataChange() {
+		        // When data changes, fetch the new data
+		        List<Member> selectAllMembers = memberService.selectAllMembers();
+
+		        // Send the new data to all connected clients
+		        template.convertAndSend("/topic/MemberQuery", selectAllMembers);
 		    }
 		
 	}

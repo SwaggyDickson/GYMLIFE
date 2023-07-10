@@ -13,13 +13,16 @@
         <main class="myMain">
         	
             <div style="padding-top: 60px;" class="container">
-            	
+				<div style="padding-top: 100px;  width: 500px; display: block;margin-left: auto;
+				margin-right: auto;">
+				<div class="progress" style="margin-bottom: 20px;">
+			        <div id="progress-bar" class="progress-bar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+			     </div>
+				</div>
 				<div id="step1">
                 <form id="mailCheckForm" class="login-form" th:action="@{/Login}" method="POST">
         	
-        			 <div class="progress" style="margin-bottom: 20px;">
-			        <div id="progress-bar" class="progress-bar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-			     </div>
+        			
                     <div class="form-group">
                         <label for="userEmail">信箱: </label>
                         <input type="email" id="userEmail" name="userEmail" class="form-control" placeholder="請輸入Email" >
@@ -37,7 +40,7 @@
                         <button id="loginBtn" type="submit" value="Login"class="btn btn-primary btn-login">取得信件</button>
                     </div>
                     
-				</div>
+				
                    
                 </form>
             </div>
@@ -105,6 +108,9 @@
 			console.log(response);
 			$("#step1").hide();
        		$("#step2").show();
+			   $("#progress-bar").css("width", "33%");
+	// 設定進度條 aria-valuenow 屬性
+			   $("#progress-bar").attr("aria-valuenow", "33");
 			 swal.fire({
                     icon: 'success',
                     title: '信件成功送出',
@@ -143,6 +149,9 @@
         console.log(response);
         $("#step2").hide();
         $("#step3").show(); // Show the password reset form.
+		$("#progress-bar").css("width", "66%");
+		// 設定進度條 aria-valuenow 屬性
+		$("#progress-bar").attr("aria-valuenow", "66");
 		swal.fire({
                     icon: 'success',
                     title: '驗證成功',
@@ -195,6 +204,9 @@ $("#resetPasswordForm").on('submit',(e)=>{
 	})
 	.then(function (response) {
 		console.log(response);
+		$("#progress-bar").css("width", "100%");
+		// 設定進度條 aria-valuenow 屬性
+		$("#progress-bar").attr("aria-valuenow", "100");
 		let timerInterval
 		Swal.fire({
 		title: '修改成功',
@@ -213,6 +225,7 @@ $("#resetPasswordForm").on('submit',(e)=>{
 		}
 		}).then((result) => {
 		/* Read more about handling dismissals below */
+		
 		if (result.dismiss === Swal.DismissReason.timer) {
 			console.log('兩秒後關閉')
 		}

@@ -11,8 +11,10 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.HashMap;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -43,6 +45,8 @@ public class Register {
 	@Autowired
 	private MailService mailService;
 	
+	@Autowired
+	private SimpMessagingTemplate template;
 	
 	@GetMapping("/Register")
 	 public String showRegisterPage(Model model) {
@@ -140,7 +144,10 @@ public class Register {
         });
       
         if (insertedMember != null) {
-            // Registration succeeded, redirect to a success page
+            // Registration succeeded, redirect to a success page List<Member> allMembers = memberService.getAllMembers();
+            List<Member> allMembers = memberService.selectAllMembers();
+            template.convertAndSend("/topic/MemberQuery", allMembers);
+
         	
             return "frontgymlife/member/afterRegister";
         } else {

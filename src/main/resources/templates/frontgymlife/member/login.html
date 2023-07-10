@@ -5,6 +5,8 @@
 <title>登入</title>
 <link rel="stylesheet" th:href="@{gym/member/css/login.css}">
 <script src="https://accounts.google.com/gsi/client" async defer></script>
+<script src="https://www.google.com/recaptcha/api.js?render=6LdzSg4nAAAAANX_Y5wRMl5535cOi1bMjT09X2dI"></script>
+
 </head>
 
 <body class="test">
@@ -30,7 +32,9 @@
                     <div class="login">
                         <button id="autoFill" type="button" class="btn btn-primary btn-auto">一鍵輸入</button>
                         <button id="loginBtn" type="submit" value="Login"class="btn btn-primary btn-login">登入</button>
+
                     </div>
+                    <input type="hidden" id="recaptchaToken" name="recaptchaToken">
 
                     <div class="mt-2 registration-link">
                         沒有帳號嗎? <a th:href="@{/Register}">註冊</a>
@@ -342,7 +346,44 @@
 		}
 	});
     
-            
+    // 替換為你在步驟2中取得的網站金鑰
+    const siteKey = '6LdzSg4nAAAAANX_Y5wRMl5535cOi1bMjT09X2dI';
+
+        // 在提交表單之前獲取reCAPTCHA token
+        grecaptcha.ready(function() {
+        grecaptcha.execute(siteKey, { action: 'loginForm' })
+            .then(function(token) {
+            // 將token設置為input元素的值
+            document.getElementById('recaptchaToken').value = token;
+            });
+        });
+    
+        document.addEventListener('DOMContentLoaded', function() {
+    var form = document.getElementById('loginForm');
+
+    grecaptcha.ready(function() {
+        grecaptcha.execute(siteKey, { action: 'login' })
+            .then(function(token) {
+                // 將token添加到資料物件中
+                var data = {
+                    userAccount: form.elements.userAccount.value,
+                    userPassword: form.elements.userPassword.value,
+                    recaptchaToken: token
+                };
+
+                // 提交資料
+                fetch(form.action, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                }).then(/* 處理伺服器的響應... */);
+            });
+    });
+});
+
+
     
     
     </script>

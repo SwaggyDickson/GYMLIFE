@@ -61,8 +61,6 @@
                         <th scope="col">會員信箱</th>
                         <th scope="col">會員暱稱</th>
                         <th scope="col">註冊日期</th>
-                        <th scope="col">會員總花費</th>
-                        <th scope="col">紅利點數</th>
                         <th scope="col">會員權限</th>
                         <th>更新</th>
                         <th>刪除</th>
@@ -75,14 +73,12 @@
 			    <td th:text="${member.userAccount}"></td>
 			    <td th:text="${member.userName}"></td>
 			    <td th:text="${member.userGender}"></td>
-			    <td th:text="${member.userBirthDay}"></td>
+			<td th:text="${member.formattedUserBirthDay}"></td>
 			    <td th:text="${member.userAddress}"></td>
 			    <td th:text="${member.userTel}"></td>
 			    <td th:text="${member.userEmail}"></td>
 			    <td th:text="${member.userNickName}"></td>
-			    <td th:text="${member.userRegisterDate}"></td>
-			    <td th:text="${member.userTotalSpend}"></td>
-			    <td th:text="${member.userRewardPoint}"></td>
+			    <td th:text="${member.formattedUserRegisterDate}"></td>
 			    <td th:text="${member.userPermission}"></td>
 			    <td>
 			      <button data-bs-toggle="modal" data-bs-target="#updateModal" 
@@ -132,7 +128,7 @@
         </div>
         <div class="mb-3">
             <label for="birthDayInput" class="form-label">User Birthday</label>
-            <input type="text" class="form-control" id="birthDayInput" disabled>
+            <input type="text" class="form-control" id="birthDayInput" >
         </div>
         <div class="mb-3">
             <label for="addressInput" class="form-label">User Address</label>
@@ -264,8 +260,6 @@ $(document).ready(function() {
             row.append($("<td>").text(member.userEmail));
             row.append($("<td>").text(member.userNickName));
             row.append($("<td>").text(member.userRegisterDate));
-            row.append($("<td>").text(member.userTotalSpend));
-            row.append($("<td>").text(member.userRewardPoint));
             row.append($("<td>").text(member.userPermission));
 
             let updateButton = $("<button>")

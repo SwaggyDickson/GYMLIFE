@@ -4,12 +4,15 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.text.SimpleDateFormat;
+
 
 import org.hibernate.internal.build.AllowSysOut;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -51,7 +54,7 @@ public class Member {
 	private String userAddress;
 	private String userTel;
 	private String userEmail;
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "GMT+8")
 	private Date userBirthDay;
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
 	private Date userRegisterDate;
@@ -63,6 +66,14 @@ public class Member {
 	public boolean isVerified() {
 		return userStatus == 1;
 	}
+	public String getFormattedUserBirthDay() {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        return formatter.format(userBirthDay);
+    }
+	public String getFormattedUserRegisterDate() {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        return formatter.format(userRegisterDate);
+    }
 
 	// 跟文章關聯
 	@JsonIgnore

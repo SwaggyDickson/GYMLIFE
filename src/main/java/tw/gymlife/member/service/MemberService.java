@@ -84,7 +84,7 @@ public class MemberService {
 
 	
 	public Member updateUserDetails(int userId, String userAccount, String userName, String userGender, 
-			String userAddress, String userTel, String userEmail, String userNickName) {
+			String userAddress,Date userBirthDay, String userTel, String userEmail, String userNickName ) {
 		Optional<Member> memberOptional = memberRepo.findById(userId);
 
         if (!memberOptional.isPresent()) {
@@ -96,7 +96,7 @@ public class MemberService {
         member.setUserName(userName);
         member.setUserGender(userGender);
         member.setUserAddress(userAddress);
-//        member.setUserBirthDay(userBirthDay);
+        member.setUserBirthDay(userBirthDay);
         member.setUserTel(userTel);
         member.setUserEmail(userEmail);
         member.setUserNickName(userNickName);

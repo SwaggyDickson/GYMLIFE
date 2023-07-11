@@ -29,7 +29,7 @@
 			Object userAccount = httpSession.getAttribute("userAccount"); 
 		    Object userName = httpSession.getAttribute("userName");
 		    Object userGender = httpSession.getAttribute("userGender"); 
-	//	    Object userBirthDay = httpSession.getAttribute("userBirthDay");
+		    Object userBirthDay = httpSession.getAttribute("userBirthDay");
 		    Object userAddress = httpSession.getAttribute("userAddress");
 		    Object userTel = httpSession.getAttribute("userTel");
 		    Object userEmail = httpSession.getAttribute("userEmail");
@@ -39,7 +39,7 @@
 		    model.addAttribute("userAccount",userAccount);
 		    model.addAttribute("userName", userName);
 		    model.addAttribute("userGender", userGender);
-	//	    model.addAttribute("userBirthDay", userBirthDay);
+		    model.addAttribute("userBirthDay", userBirthDay);
 		    model.addAttribute("userAddress", userAddress);
 		    model.addAttribute("userTel", userTel);
 		    model.addAttribute("userEmail", userEmail);
@@ -57,7 +57,7 @@
 		            member.getUserName(), 
 		            member.getUserGender(), 
 		            member.getUserAddress(), 
-	//	            member.getUserBirthDay(), //json限定日期格式 之後修改
+		            member.getUserBirthDay(), //json限定日期格式 之後修改
 		            member.getUserTel(), 
 		            member.getUserEmail(), 
 		            member.getUserNickName()
@@ -72,6 +72,7 @@
 		        httpSession.setAttribute("userName", updatedMember.getUserName());
 		        httpSession.setAttribute("userGender", updatedMember.getUserGender());
 		        httpSession.setAttribute("userAddress", updatedMember.getUserAddress());
+		        httpSession.setAttribute("userBirthDay", updatedMember.getUserBirthDay());
 		        httpSession.setAttribute("userTel", updatedMember.getUserTel());
 		        httpSession.setAttribute("userEmail", updatedMember.getUserEmail());
 		        httpSession.setAttribute("UserNickName", updatedMember.getUserNickName());

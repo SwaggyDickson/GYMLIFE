@@ -103,39 +103,41 @@
 		    <div class="modal-content">
 		      <div class="modal-header">
 		        <h5 class="modal-title" id="updateModalLabel">更新資訊</h5>
-		        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
 		      </div>
 		      <div class="modal-body">
 		        <!-- 在這裡放置更新表單 -->
 		         <form id="updateForm">
         <input type="hidden" id="userIdInput" value="">
         <div class="mb-3">
-            <label for="accountInput" class="form-label">User Account</label>
+            <label for="accountInput" class="form-label">會員帳號</label>
             <input type="text" class="form-control" id="accountInput">
         </div>
        
         <div class="mb-3">
-            <label for="nameInput" class="form-label">User Name</label>
+            <label for="nameInput" class="form-label">會員姓名</label>
             <input type="text" class="form-control" id="nameInput">
         </div>
         <div class="mb-3">
-            <label for="emailInput" class="form-label">User Email</label>
+            <label for="emailInput" class="form-label">會員信箱</label>
             <input type="email" class="form-control" id="emailInput">
         </div>
         <div class="mb-3">
-            <label for="genderInput" class="form-label">User Gender</label>
+            <label for="genderInput" class="form-label">會員性別</label>
             <input type="text" class="form-control" id="genderInput">
         </div>
         <div class="mb-3">
-            <label for="birthDayInput" class="form-label">User Birthday</label>
+            <label for="birthDayInput" class="form-label">會員生日</label>
             <input type="date" class="form-control" id="birthDayInput" >
         </div>
         <div class="mb-3">
-            <label for="addressInput" class="form-label">User Address</label>
+            <label for="addressInput" class="form-label">會員住址</label>
             <input type="text" class="form-control" id="addressInput">
         </div>
         <div class="mb-3">
-            <label for="telInput" class="form-label">User Telephone</label>
+            <label for="telInput" class="form-label">會員電話</label>
             <input type="tel" class="form-control" id="telInput">
         </div>
         <!-- 更多的欄位可以在這裡添加 -->
@@ -155,7 +157,9 @@
 			    <div class="modal-content">
 			      <div class="modal-header">
 			        <h5 class="modal-title" id="deleteModalLabel">確認刪除</h5>
-			        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
 			      </div>
 			      <div class="modal-body">
 			        確定要刪除此會員嗎？

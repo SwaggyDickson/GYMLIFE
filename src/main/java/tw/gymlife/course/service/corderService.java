@@ -109,12 +109,13 @@ public class corderService {
 	}
 	//更新訂單數量
 	@Transactional
-	public void updateCorder(Integer corderId,String corderUpdateTime,Integer corderQuantity) {
+	public void updateCorder(Integer corderId,String corderUpdateTime,Integer corderQuantity,Integer corderCost) {
 		Optional<CorderBean> optional = oRepo.findById(corderId);
 		if(optional.isPresent()) {
 			CorderBean obean = optional.get();
 			obean.setCorderUpdateTime(corderUpdateTime);
 			obean.setCorderQuantity(corderQuantity);
+			obean.setCorderCost(corderCost);
 		}
 	}
 	//刪除訂單

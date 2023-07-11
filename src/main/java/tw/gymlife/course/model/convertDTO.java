@@ -71,6 +71,7 @@ public class convertDTO {
 			cdto.setCorderUpdateTime(obean.getCorderUpdateTime());
 			cdto.setCorderQuantity(obean.getCorderQuantity());
 			cdto.setCorderCost(obean.getCorderCost());
+			cdto.setCourseCost(obean.getCourse().getCourseCost());
 			cdto.setCorderState(obean.getCorderState());
 			cdto.setCourseName(obean.getCourse().getCourseName());
 			cdtos.add(cdto);

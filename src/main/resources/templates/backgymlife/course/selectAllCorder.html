@@ -45,8 +45,8 @@
 								<th>付款狀態</th>
 								<th>購買時間</th>
 								<th>更新時間</th>
-								<th>購買數量</th>
-								<th>訂單總金額</th>
+								<th style="width:100px">購買數量</th>
+								<th style="width:100px">訂單總金額</th>
 								<th>訂單狀態</th>
 								<th>更新</th>
 								<th>刪除</th>
@@ -65,18 +65,19 @@
 									<td th:text="${corder.corderPayment}"></td>
 									<td th:text="${corder.corderTime}"></td>
 									<td th:text="${corder.corderUpdateTime}"></td>
-									<td><input th:id="${corder.corderId}" class="form-control w-50"type="number" name="corderQuantity" th:value="${corder.corderQuantity}" disabled></td>
+									<td><input th:id="${corder.corderId}" class="form-control"type="number" min="1"name="corderQuantity" th:value="${corder.corderQuantity}" disabled></td>
 <!-- 									<div th:id="${corder.corderId}"> -->
 <!-- 											<a th:text="${corder.corderQuantity}" -->
 <!-- 												th:id="'corderQuantity-'+${corder.corderId}"></a> -->
 <!-- 										</div> -->
-									<td th:text="${corder.corderCost}"></td>
+									<td><input th:id="'corderCost-'+${corder.corderId}"class="form-control " th:value="${corder.corderCost}" disabled></td>
 									<td th:text="${corder.corderState}"></td>
 									<td class="updatebtn"><button
 											class="btn btn-outline-primary btn-sm"
 											th:id="'updatebtn-'+${corder.corderId}"
 											th:onclick="updateCorderBtn([[${corder.corderId}]])">
 											更新</button>
+									<input type="hidden" th:id="'courseCost-'+${corder.corderId}" th:value="${corder.course.courseCost}">
 										<button class="btn btn-outline-primary btn-sm"
 											th:id="'updateclick-'+${corder.corderId}" th:onclick="updateCorder([[${corder.corderId}]])" style="display:none;">提交</button>
 									</td>

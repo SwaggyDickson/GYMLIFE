@@ -283,14 +283,14 @@ public class CourseController_Back {
 		//修改訂單數量
 		@ResponseBody
 		@PutMapping("/course/corder/update")
-		public List<CourseDTO> updateCorder(@RequestParam(name="corderId")Integer corderId,@RequestParam(name="corderQuantity")Integer corderQuantity) {
+		public List<CourseDTO> updateCorder(@RequestParam(name="corderId")Integer corderId,@RequestParam(name="corderQuantity")Integer corderQuantity,@RequestParam(name="corderCost")Integer corderCost) {
 			System.out.println(corderId);
 			System.out.println(corderQuantity);
 			// 建立 SimpleDateFormat 物件，指定日期時間的格式
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 			// 取得現在的日期時間
 			String currentDate = sdf.format(new Date());
-			oservice.updateCorder(corderId, currentDate, corderQuantity);
+			oservice.updateCorder(corderId, currentDate, corderQuantity,corderCost);
 			return selectAllCorder();
 		}
 		//刪除訂單

@@ -74,7 +74,7 @@
 									<td th:id="'CoachId-'+${cbean.courseId}" th:text="${cbean.coach.coachId}"
 										style="display: none;"></td>
 									<td th:text="${cbean.courseCost}" th:id="'CourseCost-'+${cbean.courseId}"></td>
-									<td th:text="${cbean.courseIntroduce}" th:id="'CourseIntroduce-'+${cbean.courseId}">
+									<td th:text="${cbean.courseIntroduce}" th:id="'CourseIntroduce-'+${cbean.courseId}" data-toggle="tooltip" data-placement="bottom" th:title="${cbean.courseIntroduce}">
 									</td>
 									<td class="updatebtn"><button class="btn btn-outline-primary btn-sm"
 											th:onclick="updateCourse([[${cbean.courseId}]])">

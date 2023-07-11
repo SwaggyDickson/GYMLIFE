@@ -17,8 +17,8 @@ public class MailBean {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "mailId")
 	private Integer mailId;
-	@Column(name = "mailStatus")
-	private Integer mailStatus = 0;
+	@Column(name = "mailType")
+	private String mailType;
 	@Column(name = "mailNotRead")
 	private Integer mailNotRead = 1;
 	@Column(name = "mail")

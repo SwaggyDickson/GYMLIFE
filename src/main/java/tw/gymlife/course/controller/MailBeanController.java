@@ -25,8 +25,9 @@ public class MailBeanController {
 	//新增未讀訊息
 	@ResponseBody
 	@PostMapping("/mail/insert")
-	public void insertMail(@RequestParam("mail")String mail) {
+	public void insertMail(@RequestParam("mailType")String mailType,@RequestParam("mail")String mail) {
 		MailBean mailbean = new MailBean();
+		mailbean.setMailType(mailType);
 		mailbean.setMail(mail);
 		mservice.insertMail(mailbean);
 	}

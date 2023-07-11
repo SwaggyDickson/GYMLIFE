@@ -7,6 +7,7 @@ function selectmail() {
 		.then(res => {
 			console.log('res:' + JSON.stringify(res.data));
 			let data = res.data;
+			console.log(data)
 			let mailitem = document.getElementById('mailitem');
 			let mailhtml = '';
 			let notread = 0;
@@ -14,14 +15,16 @@ function selectmail() {
 				if (data[i].mailNotRead == 1) {
 					notread++;
 				}
-				mailhtml += `<a href="#" class="dropdown-item notify-item">                                    
+			console.log(data[i].mail)
+			if(data[i].mailType == '課程訂單'){
+				mailhtml += `<a href="http://localhost:8080/gymlife/course/corder" class="dropdown-item notify-item">                                    
                                     <p class="notify-details ml-0">
-                                        <b>課程訂單</b>
+                                        <b>${data[i].mailType}</b>
                                         <span data-toggle="tooltip" data-placement="bottom"title="${data[i].mail}">${data[i].mail}</span>
                                     </p>
                                 </a>
 `;
-			}
+			}}
 			if (notread >= 1) {
 				let mail = document.getElementsByClassName('mail')[0];
 				mail.innerHTML = `<span class="notif-bullet"></span>`;
@@ -42,15 +45,9 @@ stompClient.connect({}, function(frame) {
 		let corder = JSON.parse(updatebean.body)
 		console.log(corder);
 		console.log(corder.courseId);
-		//		let mail = document.getElementsByClassName('mail')[0];
-		//		console.log(mail);
-		//信箱跑出紅點
-		//		mail.innerHTML = `<span class="notif-bullet"></span>`;
-		//		let noread = document.getElementById('noread');
-		//未讀訊息+1
-		//		noread.textContent = parseInt(noread.textContent) + 1;
+		let type = '課程訂單';
 		let data = '訂單編號:' + corder.corderId + ',更改課程數量:' + corder.corderQuantity + ',訂單總額:' + corder.corderCost;
-		insertMail(data);
+		insertMail(data,type);
 		selectmail();
 	});
 }, function(error) {
@@ -63,12 +60,13 @@ function disconnect() {
 	console.log("斷開連線");
 }
 //新增訊息
-function insertMail(mail) {
+function insertMail(mail,type) {
 	axios({
 		url: 'http://localhost:8080/gymlife/mail/insert',
 		method: 'post',
 		params: {
-			'mail': mail
+			'mail': mail,
+			'mailType':type
 		}
 	})
 

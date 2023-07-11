@@ -79,7 +79,7 @@
 									<td th:text="${chbean.coachBirthday}" th:id="'CoachBirthday-'+${chbean.coachId}"></td>
 									<td th:text="${chbean.coachHeight}" th:id="'CoachHeight-'+${chbean.coachId}"></td>
 									<td th:text="${chbean.coachWeight}" th:id="'CoachWeight-'+${chbean.coachId}"></td>
-									<td th:text="${chbean.coachIntroduce}" th:id="'CoachIntroduce-'+${chbean.coachId}"></td>
+									<td th:text="${chbean.coachIntroduce}" th:id="'CoachIntroduce-'+${chbean.coachId}" data-toggle="tooltip" data-placement="bottom" th:title="${chbean.coachIntroduce}"></td>
 									
 									<td class="updatebtn"><button class="btn btn-outline-primary btn-sm"
 											th:onclick="updateCoach([[${chbean.coachId}]])">

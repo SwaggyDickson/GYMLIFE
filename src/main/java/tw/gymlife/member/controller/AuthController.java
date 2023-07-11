@@ -160,6 +160,9 @@ import tw.gymlife.member.service.ReCaptchaService;
 			    httpsession.setAttribute("userPermission", result.getUserPermission());
 			    httpsession.setAttribute("userStatus", result.getUserStatus());
 			    httpsession.setAttribute("userLoggedIn", true);
+			    httpsession.setAttribute("userPhoto", result.getUserPhoto());
+			    
+			   
 			    
 			    System.out.println("成功獲取帳號: " + result.getUserAccount());
 			}

@@ -84,7 +84,7 @@ public class MemberService {
 
 	
 	public Member updateUserDetails(int userId, String userAccount, String userName, String userGender, 
-			String userAddress,Date userBirthDay, String userTel, String userEmail, String userNickName ) {
+			String userAddress,Date userBirthDay, String userTel, String userEmail, String userNickName, byte[] userPhoto ) {
 		Optional<Member> memberOptional = memberRepo.findById(userId);
 
         if (!memberOptional.isPresent()) {
@@ -100,6 +100,8 @@ public class MemberService {
         member.setUserTel(userTel);
         member.setUserEmail(userEmail);
         member.setUserNickName(userNickName);
+        member.setUserPhoto(userPhoto);
+        
         
         return memberRepo.save(member);
     }
@@ -168,5 +170,8 @@ public class MemberService {
 		 return genderCount;
 	 }
 	 
+	  public Optional<Member> findById(int userId) {
+	        return memberRepo.findById(userId);
+	    }
 	 
 }

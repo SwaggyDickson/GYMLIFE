@@ -74,83 +74,88 @@
 
     <!-- Contact Section Begin -->
     <section class="contact-section spad">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-6">
-                    <div class="section-title contact-title">
-                        <span>Show Yourself</span>
-                        <h2>KEEP growing</h2>
-                    </div>
-                    <div class="contact-widget">
-                        
-                          <div class="cw-text">
-						       <img th:src="@{front/img/gallery/gallery-1.jpg}" alt="Your Image">
-						   </div>
-                        
-                    </div>
-                </div>
-                <div class="col-lg-6">
-                    <div class="leave-comment">
-                    
-                        <form>
-					        <div class="form-group">
-					            <label for="userId" class="idLabel">會員編號:</label>
-					            <input type="text" class="form-control" id="userId" name="userId" th:value="${userId}"  disabled>
-					        </div>
-					        
-					        <div class="form-group">
-					            <label for="userAccount">會員帳號:</label>
-					            <input type="text" class="form-control" id="userAccount" name="userAccount" th:value="${userAccount}" disabled>
-					        </div>
-					
-					        <div class="form-group">
-					            <label for="userName">會員名稱:</label>
-					            <input type="text" class="form-control" id="userName" name="userName" th:value="${userName}" disabled>
-					        </div>
-					
-					        <div class="form-group">
-					            <label for="userGender">性別:</label>
-					            <input type="text" class="form-control" id="userGender" name="userGender" th:value="${userGender}" disabled>
-					        </div>
-					 
-					        <div class="form-group">
-					            <label for="userBirthDay">生日:</label>
-					            <input type="date" class="form-control" id="userBirthDay" name="userBirthDay" th:value="${userBirthDay}" disabled>
-					        </div>
-					
-					        <div class="form-group">
-					            <label for="userAddress">地址:</label>
-					            <input type="text" class="form-control" id="userAddress" name="userAddress" th:value="${userAddress}" disabled>
-					        </div>
-					
-					        <div class="form-group">
-					            <label for="userTel">電話:</label>
-					            <input type="tel" class="form-control" id="userTel" name="userTel" th:value="${userTel}"disabled>
-					        </div>
-					
-					        <div class="form-group">
-					            <label for="userEmail">信箱:</label>
-					            <input type="email" class="form-control" id="userEmail" name="userEmail" th:value="${userEmail}" disabled>
-					        </div>
-					
-					        <div class="form-group">
-					            <label for="userNickName">暱稱:</label>
-					            <input type="text" class="form-control" id="userNickName" name="userNickName" th:value="${userNickName}" disabled>
-					        </div>
-                            <div id="myButtonGroup" class="editBtnDiv">
-                                <button  type="button" id="editBtn" class="btn btn-primary myEditButton">編輯</button>
-                                <button  type="button" id="cancelBtn" class="btn btn-primary " style="display:none;" >取消</button>
-                                <button type="submit" id="updateBtn" class="btn btn-danger" style="display:none;">確認更新</button>
-                                <button type="submit" id="submitBtn" class="btn btn-primary" style="display:none;">送出</button>
-                            </div>
-					    </form>
-                    </div>
-                </div>
-            </div>
-            <div >
-               
-            </div>
-        </div>
+	        <div class="container">
+	            <div class="row">
+	                <div class="col-lg-6">
+	                    <div class="section-title contact-title">
+	                        <span>Show Yourself</span>
+	                        <h2>KEEP growing</h2>
+	                    </div>
+	                    <div class="contact-widget">
+	
+	                       <div class="cw-text">
+	                        <img id="userPhotoDisplay" th:src="@{/userPhoto/{userId}(userId=${userId})}" />
+	                        </div>
+		
+	                        
+	                	    </div>
+	                </div>
+	                <div class="col-lg-6">
+	                    <div class="leave-comment">
+	                        
+	                        <form>
+						        <div class="form-group" enctype="multipart/form-data">
+						            <label for="userId" class="idLabel">會員編號:</label>
+						            <input type="text" class="form-control" id="userId" name="userId" th:value="${userId}"  disabled>
+						        </div>
+						        
+						        <div class="form-group">
+						            <label for="userAccount">會員帳號:</label>
+						            <input type="text" class="form-control" id="userAccount" name="userAccount" th:value="${userAccount}" disabled>
+						        </div>
+						
+						        <div class="form-group">
+						            <label for="userName">會員名稱:</label>
+						            <input type="text" class="form-control" id="userName" name="userName" th:value="${userName}" disabled>
+						        </div>
+						
+						        <div class="form-group">
+						            <label for="userGender">性別:</label>
+						            <input type="text" class="form-control" id="userGender" name="userGender" th:value="${userGender}" disabled>
+						        </div>
+						 
+						        <div class="form-group">
+						            <label for="userBirthDay">生日:</label>
+						            <input type="date" class="form-control" id="userBirthDay" name="userBirthDay" th:value="${userBirthDay}" disabled>
+						        </div>
+						
+						        <div class="form-group">
+						            <label for="userAddress">地址:</label>
+						            <input type="text" class="form-control" id="userAddress" name="userAddress" th:value="${userAddress}" disabled>
+						        </div>
+						
+						        <div class="form-group">
+						            <label for="userTel">電話:</label>
+						            <input type="tel" class="form-control" id="userTel" name="userTel" th:value="${userTel}"disabled>
+						        </div>
+						
+						        <div class="form-group">
+						            <label for="userEmail">信箱:</label>
+						            <input type="email" class="form-control" id="userEmail" name="userEmail" th:value="${userEmail}" disabled>
+						        </div>
+						
+						        <div class="form-group">
+						            <label for="userNickName">暱稱:</label>
+						            <input type="text" class="form-control" id="userNickName" name="userNickName" th:value="${userNickName}" disabled>
+						        </div>
+	                            <div class="form-group">
+	                                <label for="userPhoto">照片:</label>
+	                                <input type="file" class="form-control-file" id="userPhoto" name="userPhoto"  disabled>
+	                            </div>
+	                            <div id="myButtonGroup" class="editBtnDiv">
+	                                <button  type="button" id="editBtn" class="btn btn-primary myEditButton">編輯</button>
+	                                <button  type="button" id="cancelBtn" class="btn btn-primary " style="display:none;" >取消</button>
+	                                <button type="submit" id="updateBtn" class="btn btn-danger" style="display:none;">確認更新</button>
+	                                <button type="submit" id="submitBtn" class="btn btn-primary" style="display:none;">送出</button>
+	                            </div>
+						    </form>
+	                    </div>
+	                </div>
+	            </div>
+	            <div >
+	               
+	            </div>
+	        </div>
     </section>
     <!-- Contact Section End -->
 
@@ -204,50 +209,71 @@
     document.getElementById('submitBtn').addEventListener('click', (e)=>{
         e.preventDefault();
 
-        let userData = {
+        let formData = new FormData();
 
-        userId: document.getElementById("userId").value,
-        userAccount: document.getElementById("userAccount").value,
-        userName: document.getElementById("userName").value,
-        userGender: document.getElementById("userGender").value,
-        userBirthDay: document.getElementById("userBirthDay").value,
-        userAddress: document.getElementById("userAddress").value,
-        userTel: document.getElementById("userTel").value,
-        userEmail: document.getElementById("userEmail").value,
-        userNickName: document.getElementById("userNickName").value
+// Append all necessary data to FormData object
+formData.append('userId', document.getElementById("userId").value);
+formData.append('userAccount', document.getElementById("userAccount").value);
+formData.append('userName', document.getElementById("userName").value);
+formData.append('userGender', document.getElementById("userGender").value);
+formData.append('userBirthDay', document.getElementById("userBirthDay").value);
+formData.append('userAddress', document.getElementById("userAddress").value);
+formData.append('userTel', document.getElementById("userTel").value);
+formData.append('userEmail', document.getElementById("userEmail").value);
+formData.append('userNickName', document.getElementById("userNickName").value);
+let userPhotoFile = document.getElementById('userPhoto').files[0];  
+formData.append('userPhoto',userPhotoFile);
 
-        };
+let reader = new FileReader();
+reader.readAsDataURL(userPhotoFile);
+reader.onloadend = function(){
+    let base64data = reader.result;
+    axios({
+        method:'post',
+        url:'http://localhost:8080/gymlife/userInfo', 
+        data: formData,
+        
+       
+    }) 
+    .then(function (response) {
+    console.log(response);
+    
+     // Get the updated user data from the response
+    
+    Swal.fire({
+        icon: 'success',
+        title: '更新成功',
+        showConfirmButton: false,
+        timer: 1000
+     })
+    
+     document.getElementById('userPhotoDisplay').src = base64data;
+    })
+    .catch(function (error) {
+    console.log(error);
+    });
+}
 
-        axios({
-            method:'post',
-            url:'http://localhost:8080/gymlife/userInfo', 
-            data: userData,
-           
-        }) 
-        .then(function (response) {
-        console.log(response);
-        Swal.fire({
-            icon: 'success',
-            title: '更新成功',
-            showConfirmButton: false,
-            timer: 1000
-         })
 
-        document.getElementById('submitBtn').style.display = 'none';
-        document.getElementById('cancelBtn').style.display = 'none';
-        document.getElementById('editBtn').style.display = 'inline';
-        let inputs = document.getElementsByTagName("input");
-        for(let i = 2; i < inputs.length; i++) {
-            inputs[i].disabled = true;
-        }
-        })
-        .catch(function (error) {
-            console.log(error);
-        });
+
+document.getElementById('submitBtn').style.display = 'none';
+document.getElementById('cancelBtn').style.display = 'none';
+document.getElementById('editBtn').style.display = 'inline';
+let inputs = document.getElementsByTagName("input");
+for(let i = 2; i < inputs.length; i++) {
+    inputs[i].disabled = true;
+}
+})
+.catch(function (error) {
+    console.log(error);
+});
+
+
+
         
        
 
-    })
+    
 
      //--------cancelBtn觸發後，取消改過的資料，回復資料-------------
 

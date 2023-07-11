@@ -62,6 +62,7 @@ public class Member {
 	private BigDecimal userRewardPoint = BigDecimal.ZERO;
 	private String userPermission = "0";
 	private int userStatus;
+	private byte[] userPhoto;
 
 	public boolean isVerified() {
 		return userStatus == 1;

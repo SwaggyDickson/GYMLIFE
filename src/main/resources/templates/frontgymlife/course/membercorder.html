@@ -43,7 +43,7 @@
 								<th scope="col">購買時間</th>
 								<th scope="col" style="width:90px">購買數量</th>
 								<th scope="col" style="width:110px">訂單總金額</th>
-								<th class="editth " colspan="2">編輯</th>
+								<th class="editth " colspan="2" style="width:170px">編輯</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -60,7 +60,7 @@
 									<td ><input th:id="${mb.corderId}" class="form-control"type="number" name="corderQuantity" th:value="${mb.corderQuantity}" disabled style="background-color:white;"></td>
 <!-- 									<td th:text="${mb.corderQuantity}"></td> -->
 									<td ><input th:id="'corderCost-'+${mb.corderId}"class="form-control " th:value="${mb.corderCost}" disabled style="background-color:white"></td>
-									<td class="review"colspan="2" th:style="${i==0?'display:none':'display:block'}"><input type="text" value="等待管理員審核" class="form-control " disabled></td>
+									<td class="review"colspan="2" th:style="${i==0?'display:none':'display:block'}"><input type="text" value="等待管理員審核" class="form-control " disabled style="width:140px"></td>
 									<td class="updatebtn" th:style="${i==0?'display:block;float:left':'display:none;float:left;'}"><button
 											class="btn btn-outline-primary btn-sm"
 											th:id="'updatebtn-'+${mb.corderId}"

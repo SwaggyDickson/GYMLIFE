@@ -78,7 +78,7 @@ function corderHtmlMaker(data){
 								<th scope="col">購買時間</th>
 								<th scope="col" style="width:90px">購買數量</th>
 								<th scope="col" style="width:110px">訂單總金額</th>
-								<th class="editth " colspan="2" >編輯</th>
+								<th class="editth " colspan="2" style="width:170px">編輯</th>
 							</tr>
 						</thead>
 						<tbody>`;
@@ -95,7 +95,7 @@ function corderHtmlMaker(data){
 									<td ><input id="${data.corder[i].corderId}" class="form-control"type="number" name="corderQuantity" value="${data.corder[i].corderQuantity}" disabled style="background-color:white;"></td>
 <!-- 									<td >${data.corder[i].corderQuantity}</td> -->
 									<td ><input id="corderCost-${data.corder[i].corderId}"class="form-control " value="${data.corder[i].corderCost}" disabled style="background-color:white"></td>
-									<td class="review"colspan="2" style="${data.corder[i].corderState===0?'display:none':'display:block'}"><input type="text" value="等待管理員審核" class="form-control" disabled></td>
+									<td class="review"colspan="2" style="${data.corder[i].corderState===0?'display:none':'display:block'}"><input type="text" value="等待管理員審核" class="form-control" disabled style="width:140px"></td>
 									<td class="updatebtn" style="${data.corder[i].corderState===0?'display:block':'display:none'};float:left;"><button
 											class="btn btn-outline-primary btn-sm"
 											id="updatebtn-${data.corder[i].corderId}"

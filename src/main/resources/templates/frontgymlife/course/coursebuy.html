@@ -30,14 +30,14 @@
 	<!-- Class Details Section Begin -->
 					<form th:action="@{/ecpayCheckout}" method="post">
 	<section class="class-details-section spad">
-		<div class="container" style="background-color: white;">
+		<div class="container" style="background-color: white;border-radius:10px" >
 			<div class="row p-2">
 				<div class="col-lg-8 ">
 					<div class="row ">
 						<div class="col-lg-8 mb-2">
 							<div style="justify-content: center;align-items: center;">
 								<img th:src="@{'/courseImage/'+${cbean.images[0].imageId}}" class="img-fluid mx-auto"
-									alt="...">
+									alt="..." style="border-radius:10px">
 							</div>
 						</div>
 						<div class="col-lg-4 d-flex">
@@ -67,28 +67,55 @@
 
 					</div>
 				</div>
-				<div class="col-lg-4 d-flex" style="border: 1px solid rgb(192, 192, 192);">
-					<div class="row">
+				<div class="col-lg-4" style="height:774px">
+				<div style="border: 1px solid rgb(192, 192, 192);height:650px;text-align:center">
+				<div class="mb-3"><h5 style="background-color:gray">訂購人資料</h5>
+				</div>
+				<div class="mb-3"><h5>姓名:<span th:text="${userName}"></span></h5>
+				</div>
+				<div class="mb-3"><h5>E-mail:<span th:text="${member.userEmail}"></span></h5>
+				</div>
+				<div class="mb-3"><h5>電話:<span th:text="${member.userTel}"></span></h5>
+				</div>
+				<div class="mb-3"><h5>地址:<span th:text="${member.userAddress}"></span></h5>
+				</div>
+				
+<!-- 					<div class="row"> -->
+<!-- 					<div > -->
+<!-- 						<div class="col-lg-12 d-flex" style="justify-content: center;align-items: center;"> -->
+<!-- 							<h5>訂購人資料</h5> -->
+<!-- 						</div><br> -->
+<!-- 						<div class="col-lg-12 d-flex" style="justify-content: center;align-items: center;"> -->
+<!-- 							<input type="hidden" th:value="${cbean.courseCost}" id="courseCost"> -->
+<!-- 							<a>總金額:</a><a th:text="${cbean.courseCost}" id="allcost" ></a> -->
+							
+<!-- 						</div><br> -->
+<!-- 						<div class="col-lg-12 d-flex" style="justify-content: center;align-items: center;"> -->
+<!-- 							<button type="submit" class="btn btn-danger" id="paybtn">結帳</button> -->
+<!-- 						</div></div> -->
+<!-- 					<div > -->
 						<div class="col-lg-12 d-flex" style="justify-content: center;align-items: center;">
 							<span>購買堂數</span>
-							<!--							<i class="fa-solid fa-plus" style="color: #000000;"></i>-->
+														<i class="fa-solid fa-plus" style="color: #000000;"></i>
 							<input type="number" min="1" step="1" value="1" id="buynumber" name="corderQuantity">
-							<!--							<i class="fa-solid fa-minus" style="color: #000000;"></i>-->
-						</div>
+														<i class="fa-solid fa-minus" style="color: #000000;"></i>
+						</div><br>
 						<div class="col-lg-12 d-flex" style="justify-content: center;align-items: center;">
 							<input type="hidden" th:value="${cbean.courseCost}" id="courseCost">
 							<a>總金額:</a><a th:text="${cbean.courseCost}" id="allcost" ></a>
-						</div>
+							
+						</div><br>
 						<div class="col-lg-12 d-flex" style="justify-content: center;align-items: center;">
 							<button type="submit" class="btn btn-danger" id="paybtn">結帳</button>
 						</div>
+<!-- 						</div> -->
 						<input type="hidden" th:value="${cbean.courseName}" name="courseName">
 						<input type="hidden" th:value="${userId}" id="userId" name="userId">
 						<input type="hidden" th:value="${userName}" id="userName">
 						<input type="hidden" th:value="${cbean.courseId}" id="courseId" name="courseId">
 						<input type="hidden" value="完成" name="corderPayment">
 						<input type="hidden" name="corderCost" th:value="${cbean.courseCost}"id="corderCost">
-					</div>
+<!-- 					</div> -->
 				</div>
 			</div>
 			<div id="paymodal"></div>

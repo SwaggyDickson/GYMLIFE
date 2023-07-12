@@ -101,9 +101,9 @@ function AllCorderHtml(data){
 									<td >${data[i].corderPayment}</td>
 									<td >${data[i].corderTime}</td>
 									<td >${corderUpdateTime}</td>
-									<td><input id="${data[i].corderId}" class="form-control w-50"type="number" name="corderQuantity" value="${data[i].corderQuantity}" disabled></td>
+									<td><input id="${data[i].corderId}" class="form-control"type="number" min="1"name="corderQuantity" value="${data[i].corderQuantity}" disabled></td>
 									<td ><input id="corderCost-${data[i].corderId}"class="form-control " value="${data[i].corderCost}" disabled></td>
-									<td >${data[i].corderState}</td>
+									<td ><p style="color:${data[i].corderState ==0?'black':'red'}">${data[i].corderState ==0?'完成':'待修改'}</p></td>
 									<td class="updatebtn"><button
 											class="btn btn-outline-primary btn-sm"
 											id="updatebtn-${data[i].corderId}"

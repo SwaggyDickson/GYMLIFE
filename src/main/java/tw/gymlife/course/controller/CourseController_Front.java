@@ -273,9 +273,11 @@ public class CourseController_Front {
 			CourseBean cbean = cservice.selectCourseById(courseId);
 			String userName = session.getAttribute("userName").toString();
 			System.out.println("userId:" + userId);
+			Member member = oservice.selectMemberByuserId(userId);
 			model.addAttribute("userId", userId);
 			model.addAttribute("userName", userName);
 			model.addAttribute("cbean", cbean);
+			model.addAttribute("member", member);
 			return "frontgymlife/course/coursebuy";
 		} else {
 			return "redirect:/Login";

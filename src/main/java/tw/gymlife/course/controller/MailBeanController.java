@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -33,8 +34,9 @@ public class MailBeanController {
 	}
 	//已讀訊息
 	@ResponseBody
-	@PostMapping("/mail/read")
+	@PutMapping("/mail/read")
 	public void updateMailNotRead(@RequestParam("mailId")Integer mailId) {
+		System.out.println(mailId);
 		mservice.updateMailNotRead(mailId);
 	}
 }

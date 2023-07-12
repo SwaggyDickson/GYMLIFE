@@ -116,6 +116,7 @@ public class corderService {
 			obean.setCorderUpdateTime(corderUpdateTime);
 			obean.setCorderQuantity(corderQuantity);
 			obean.setCorderCost(corderCost);
+			obean.setCorderState(0);
 		}
 	}
 	//刪除訂單

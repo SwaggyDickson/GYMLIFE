@@ -45,7 +45,7 @@
 								<th>付款狀態</th>
 								<th>購買時間</th>
 								<th>更新時間</th>
-								<th style="width:100px">購買數量</th>
+								<th style="width:60px">購買數量</th>
 								<th style="width:100px">訂單總金額</th>
 								<th>訂單狀態</th>
 								<th>更新</th>
@@ -53,7 +53,7 @@
 							</tr>
 						</thead>
 						<tbody id="alltable">
-							<th:block th:each="corder:${corders}">
+							<th:block th:each="corder:${corders}"th:with="i=${corder.corderState}">
 								<tr>
 									<td th:text="${corder.corderId}"></td>
 									<td><button class="btn btn-outline-primary btn-sm"
@@ -71,7 +71,7 @@
 <!-- 												th:id="'corderQuantity-'+${corder.corderId}"></a> -->
 <!-- 										</div> -->
 									<td><input th:id="'corderCost-'+${corder.corderId}"class="form-control " th:value="${corder.corderCost}" disabled></td>
-									<td th:text="${corder.corderState}"></td>
+									<td><p th:style="${i==0?'color:black':'color:red'}" th:text="${i==0?'完成':'待修改'}"> </p></td>
 									<td class="updatebtn"><button
 											class="btn btn-outline-primary btn-sm"
 											th:id="'updatebtn-'+${corder.corderId}"

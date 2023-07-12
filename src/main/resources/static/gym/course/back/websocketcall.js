@@ -17,7 +17,7 @@ function selectmail() {
 				}
 			console.log(data[i].mail)
 			if(data[i].mailType == '課程訂單'){
-				mailhtml += `<a href="http://localhost:8080/gymlife/course/corder" class="dropdown-item notify-item">                                    
+				mailhtml += `<a href="http://localhost:8080/gymlife/course/corder" class="dropdown-item notify-item" onclick="mailread(${data[i].mailId})" style="background-color:${data[i].mailNotRead == 1? 'lightblue':'white'}">                                    
                                     <p class="notify-details ml-0">
                                         <b>${data[i].mailType}</b>
                                         <span data-toggle="tooltip" data-placement="bottom"title="${data[i].mail}">${data[i].mail}</span>
@@ -25,6 +25,7 @@ function selectmail() {
                                 </a>
 `;
 			}}
+			console.log(notread)
 			if (notread >= 1) {
 				let mail = document.getElementsByClassName('mail')[0];
 				mail.innerHTML = `<span class="notif-bullet"></span>`;
@@ -48,7 +49,7 @@ stompClient.connect({}, function(frame) {
 		let type = '課程訂單';
 		let data = '訂單編號:' + corder.corderId + ',更改課程數量:' + corder.corderQuantity + ',訂單總額:' + corder.corderCost;
 		insertMail(data,type);
-		selectmail();
+//		selectmail();
 	});
 }, function(error) {
 	console.log("連線失敗：" + error);
@@ -69,5 +70,18 @@ function insertMail(mail,type) {
 			'mailType':type
 		}
 	})
+	.then(res=>{
+		selectmail();
+	})
 
+}
+function mailread(mailId){
+	axios({
+		url:'http://localhost:8080/gymlife/mail/read',
+		method:'put',
+		params:{
+			'mailId':mailId
+		}
+	})
+	
 }

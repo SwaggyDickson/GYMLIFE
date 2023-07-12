@@ -11,14 +11,19 @@
 	}
 
 	div  > .small-chart {
-    width: 50px;
-    height: 50px;
+    width: 150px;
+    height: 150px;
 }
 	.small-div {
-    width: 200px;
-    height: 200px;
+    width: 400px;
+    height: 400px;
 }
 
+#counter {
+            font-size: 48px;
+            color: #333;
+            text-align: center;
+        }
 
 	
 	</style>
@@ -38,17 +43,22 @@
 								<h1 class="main-title float-left">後台</h1>
 								<ol class="breadcrumb float-right">
 									<li class="breadcrumb-item">會員</li>
-									<li class="breadcrumb-item active">會員列表 </li>
+									<li class="breadcrumb-item active">會員分析 </li>
 								</ol>
 								<div class="clearfix"></div>
 							</div>
 						</div>
 					</div>
 <!---------------------------內文---------------------------------------------------------------->
-					<div class="small-div">
+					<div class="row">
+                    <div class="small-div">
 						<canvas id="genderChart" class="small-chart"></canvas>
 					</div>
-				
+                    <div class="small-div" style="width: 50%; margin: auto; text-align: center;">
+						<canvas id="memberChart" class="small-chart" style="font-size: 48px;"></canvas>
+                        <div id="totalMembers" style="font-size: 24px;"></div>
+					</div>
+				</div>
 
 				</div>
 				<!-- END container-fluid -->
@@ -75,12 +85,12 @@
                     label: 'Gender Count',
                     data: Object.values(genderCount),
                     backgroundColor: [
-                        'rgba(75, 192, 192, 0.2)',
-                        'rgba(255, 99, 132, 0.2)'
+                        'rgb(255, 99, 132)',
+                        'rgb(75, 192, 192)',
                     ],
                     borderColor: [
-                        'rgba(75, 192, 192, 1)',
-                        'rgba(255, 99, 132, 1)'
+                        'rgb(255, 99, 132)',
+                        'rgb(75, 192, 192)',
                     ],
                     borderWidth: 1
                 }]
@@ -90,6 +100,36 @@
             }
         });
     });
+
+    fetch('api/totalMember')
+  .then(response => response.json())
+  .then(totalUsers => {
+    var ctx = document.getElementById('memberChart').getContext('2d');
+    var myChart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['members'],
+        datasets: [{
+          label: '# of Users',
+          data: [totalUsers],
+          backgroundColor: 'rgba(75, 192, 192, 0.2)',
+          borderColor: 'rgba(75, 192, 192, 1)',
+          borderWidth: 1
+        }]
+      },
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        }
+      }
+    });
+    // create a new div to display the total number of users
+    var totalMembersDiv = document.getElementById('totalMembers');
+      totalMembersDiv.textContent = "會員總數: " + totalUsers;
+  });
+
 </script>
 
 </body>

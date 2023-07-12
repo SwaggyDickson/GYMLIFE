@@ -88,13 +88,23 @@ import tw.gymlife.member.service.MemberService;
 		        return memberService.getGenderCount();
 		    }
 		    
+		    @GetMapping("/api/totalMember")
+		    @ResponseBody
+		    public Long getTotalUsers() {
+		      long totalMembers = memberService.countMember();
+		      return totalMembers;
+		    }
+		    
+		    
+		    
+		    	
 		    
 		    public void onDataChange() {
 		        // When data changes, fetch the new data
 		        List<Member> selectAllMembers = memberService.selectAllMembers();
-
 		        // Send the new data to all connected clients
 		        template.convertAndSend("/topic/MemberQuery", selectAllMembers);
+		        
 		    }
 		
 	}

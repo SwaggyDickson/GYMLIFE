@@ -147,6 +147,7 @@ public class Register {
             // Registration succeeded, redirect to a success page List<Member> allMembers = memberService.getAllMembers();
             List<Member> allMembers = memberService.selectAllMembers();
             template.convertAndSend("/topic/MemberQuery", allMembers);
+           
 
         	
             return "frontgymlife/member/afterRegister";

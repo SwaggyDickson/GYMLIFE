@@ -138,40 +138,44 @@ public class MemberService {
 	 }
 	 
 	 
-	 public Map<String, Integer> getGenderCount(){
-		 List<Member> members = memberRepo.findAll();
-		 
-		
-		 int male = 0;
-		 int female =0;
-		 
-		 for(Member member: members) {
-			 String gender = member.getUserGender().trim();
-			 
-			 System.out.println("Member gender: " + member.getUserGender());
-			  if ("male".equalsIgnoreCase(gender)) {
-		            male++;
-		            System.out.println("Incrementing male count");
-		        } else if ("female".equalsIgnoreCase(gender)) {
-		            female++;
-		            System.out.println("Incrementing female count");
-		        }
-			  System.out.println("Original gender value: '" + member.getUserGender() + "'");
-		 }
-		 
-		 
-		 Map<String, Integer> genderCount = new HashMap<>();
-		 genderCount.put("male", male);
-		 genderCount.put("female", female);
-		 System.out.println("Male: " + male);  // 打印男性数量
-		 System.out.println("Female: " + female);  // 打印女性数量
-		 
-		 
-		 return genderCount;
-	 }
-	 
 	  public Optional<Member> findById(int userId) {
 	        return memberRepo.findById(userId);
 	    }
 	 
+	  public Map<String, Integer> getGenderCount(){
+		  List<Member> members = memberRepo.findAll();
+		  
+		  
+		  int male = 0;
+		  int female =0;
+		  
+		  for(Member member: members) {
+			  String gender = member.getUserGender().trim();
+			  
+			  System.out.println("Member gender: " + member.getUserGender());
+			  if ("male".equalsIgnoreCase(gender)) {
+				  male++;
+				  System.out.println("Incrementing male count");
+			  } else if ("female".equalsIgnoreCase(gender)) {
+				  female++;
+				  System.out.println("Incrementing female count");
+			  }
+			  System.out.println("Original gender value: '" + member.getUserGender() + "'");
+		  }
+		  
+		  
+		  Map<String, Integer> genderCount = new HashMap<>();
+		  genderCount.put("女", female);
+		  genderCount.put("男", male);
+		  System.out.println("Male: " + male);  // 打印男性数量
+		  System.out.println("Female: " + female);  // 打印女性数量
+		  
+		  
+		  return genderCount;
+	  }
+	  
+	  public long countMember() {
+		  return memberRepo.count();
+	  }
+	  
 }

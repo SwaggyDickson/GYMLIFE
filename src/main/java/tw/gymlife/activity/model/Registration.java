@@ -4,7 +4,6 @@ import java.util.Date;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -28,7 +27,7 @@ public class Registration {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name="registrationId")
-	private int registrationId;
+	private Integer registrationId;
 	
 	@Column(name="activityId",insertable = false,updatable = false)
 	private Integer activityId;
@@ -36,12 +35,10 @@ public class Registration {
 	@Column(name="userId",insertable = false,updatable = false)
 	private Integer userId;
 	
-	@JsonIgnore 
     @ManyToOne
     @JoinColumn(name = "userId")
     private Member member;
 
-    @JsonIgnore 
     @ManyToOne
     @JoinColumn(name = "activityId")
     private Activity activity;
@@ -51,6 +48,15 @@ public class Registration {
 	
 	@Column(name="registrationDate")
 	private Date registrationDate;
+	
+	@Column(name="emergencyContact")
+	private String emergencyContact;
+	
+	@Column(name="emergencyContactPhone")
+	private Integer emergencyContactPhone;
+	
+	@Column(name="relationship")
+	private String relationship;
 	
 	@DateTimeFormat(pattern = "yyyy/MM/dd HH:mm:ss")//時間格式
 	@Temporal(TemporalType.TIMESTAMP)//時間選擇

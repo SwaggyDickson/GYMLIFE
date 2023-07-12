@@ -1,27 +1,28 @@
 // CKEditor Use
 ClassicEditor
-.create(document.querySelector('#activityInfo'), {
-    extraPlugins: [CustomUploadAdapterPlugin],
+    .create(document.querySelector('#activityInfo'), {
+        extraPlugins: [CustomUploadAdapterPlugin],
+        customUploadAdapter: {
+            uploadUrl: 'http://localhost:8080/gymlife/activity/api/upload'
+        }
+    })
+    .then(editor => {
+        console.log(editor);
+        // 將 CKEditor 實例綁定到全局變數 (一鍵上傳用)
+        window.editor = editor;
+    })
+    .catch(error => {
+        console.error(error);
+    });
 
-    
-    customUploadAdapter: {
-        uploadUrl: 'http://localhost:8080/gymlife/activity/api/upload'
-    }
-})
-.then(editor => {
-    console.log(editor);
-})
-.catch(error => {
-    console.error(error);
-});
-
+// 自定義上傳適配器插件
 function CustomUploadAdapterPlugin(editor) {
-editor.plugins.get('FileRepository').createUploadAdapter = loader => {
-    return new CustomUploadAdapter(loader, editor.config.get('customUploadAdapter.uploadUrl'));
-};
+    editor.plugins.get('FileRepository').createUploadAdapter = loader => {
+        return new CustomUploadAdapter(loader, editor.config.get('customUploadAdapter.uploadUrl'));
+    };
 }
 
-
+// 自定義上傳適配器
 class CustomUploadAdapter {
     constructor(loader, uploadUrl) {
         this.loader = loader;

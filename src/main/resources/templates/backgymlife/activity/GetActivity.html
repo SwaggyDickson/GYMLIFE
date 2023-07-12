@@ -35,7 +35,8 @@
 				<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
 
 					<form th:action="@{/activity/update}" th:method="post"
-						th:object="${activity}" enctype="multipart/form-data" id="updateForm">
+						th:object="${activity}" enctype="multipart/form-data"
+						id="updateForm">
 						<input th:field="*{activityId}" type="hidden" />
 						<div class="card-body">
 							<div class="row">
@@ -92,7 +93,7 @@
 							</div>
 							<div class="row">
 
-								<div class="form-group col-md-3">
+								<div class="form-group col-md-6">
 									<label for="activityCategory">活動類別 </label> <select
 										class="form-control" id="activityCategory"
 										name="activityCategory">
@@ -110,8 +111,15 @@
 											th:selected="${activity.activityCategory == '自行車'}">自行車</option>
 									</select>
 								</div>
-
-								<div class="form-group col-md-3">
+								<div class="form-group col-md-6">
+									<label for="activityStatus">報名狀態</label> <select
+										class="form-control" id="activityStatus" name="activityStatus"
+										required="required">
+										<option value="報名中">報名中</option>
+										<option value="報名截止">報名截止</option>
+									</select>
+								</div>
+								<div class="form-group col-md-6">
 									<label>活動封面</label><br /> <input type="file"
 										name="activityCover" id="activityCover"
 										th:field="*{activityCover}" />
@@ -122,7 +130,7 @@
 								<textarea rows="15" class="form-control editor ckeditor"
 									name="activityInfo" id="activityInfo"
 									th:utext="*{activityInfo}"></textarea>
-									<div id="imagePreview"></div>
+								<div id="imagePreview"></div>
 							</div>
 
 
@@ -145,10 +153,11 @@
 	<!-- BEGIN Java Script for this page -->
 	<script th:src="@{/assets/plugins/trumbowyg/trumbowyg.min.js}"></script>
 	<script th:src="@{/gym/activity/ckeditor/ckeditor.js}"></script>
-	<script th:src="@{/assets/plugins/trumbowyg/plugins/upload/trumbowyg.upload.js}"></script>
-		<script th:src="@{/gym/activity/js/ckeditor-use.js}"></script>
+	<script th:src="@{/gym/activity/js/ckeditor-use.js}"></script>
+	<script
+		th:src="@{/assets/plugins/trumbowyg/plugins/upload/trumbowyg.upload.js}"></script>
 	<!-- END Java Script for this page -->
-    <script>      
+	<script>      
     function submitTest(event) {
   event.preventDefault(); // 阻止表單提交
 

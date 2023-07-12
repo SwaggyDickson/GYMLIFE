@@ -7,6 +7,8 @@
 <!-- SweetAlert -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <link rel="stylesheet" th:href="@{/gym/activity/css/editor.css}">
+<link rel="stylesheet"
+	href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 </head>
 
 <body>
@@ -46,54 +48,60 @@
 							<div class="card-body">
 								<div class="row">
 									<div class="form-group col-md-6">
-										<label>活動名稱</label> <input class="form-control"
-											name="activityName" type="text" id="activityName" required="required">
+										<label for="activityName">活動名稱</label> <input
+											class="form-control" name="activityName" type="text"
+											id="activityName" required="required">
 									</div>
 									<div class="form-group col-md-6">
-										<label>活動日期</label> <input type="text" class="form-control"
-											id="activityDate" name="activityDate" required="required">
-									</div>
-								</div>
-
-								<div class="row">
-
-									<div class="form-group col-md-6">
-										<label>活動地點</label> <input type="text" class="form-control"
-											id="activityLocation" name="activityLocation" required="required">
-									</div>
-									<div class="form-group col-md-6">
-										<label>主辦單位</label> <input type="text" class="form-control"
-											id="organizer" name="organizer" required="required">
-									</div>
-								</div>
-								<div class="row">
-
-									<div class="form-group col-md-6">
-										<label>報名開始日期</label> <input type="text" class="form-control"
-											id="registrationStartDate" name="registrationStartDate" required="required">
-									</div>
-									<div class="form-group col-md-6">
-										<label>報名結束日期</label> <input type="text" class="form-control"
-											id="registrationEndDate" name="registrationEndDate" required="required">
+										<label for="activityDate">活動日期</label> <input type="date"
+											class="form-control" id="activityDate" name="activityDate"
+											required="required">
 									</div>
 								</div>
 
 								<div class="row">
 
 									<div class="form-group col-md-6">
-										<label>報名人數上限</label> <input type="number"
-											class="form-control" id="applicantLimitedQty"
+										<label for="activityLocation">活動地點</label> <input type="text"
+											class="form-control" id="activityLocation"
+											name="activityLocation" required="required">
+									</div>
+									<div class="form-group col-md-6">
+										<label for="organizer">主辦單位</label> <input type="text"
+											class="form-control" id="organizer" name="organizer"
+											required="required">
+									</div>
+								</div>
+								<div class="row">
+
+									<div class="form-group col-md-6">
+										<label for="registrationStartDate">報名開始日期</label> <input
+											type="date" class="form-control" id="registrationStartDate"
+											name="registrationStartDate" required="required">
+									</div>
+									<div class="form-group col-md-6">
+										<label for="registrationEndDate">報名結束日期</label> <input
+											type="date" class="form-control" id="registrationEndDate"
+											name="registrationEndDate" required="required">
+									</div>
+								</div>
+
+								<div class="row">
+
+									<div class="form-group col-md-6">
+										<label for="applicantLimitedQty">報名人數上限</label> <input
+											type="number" class="form-control" id="applicantLimitedQty"
 											name="applicantLimitedQty" required="required">
 									</div>
 									<div class="form-group col-md-6">
-										<label>目前報名人數</label> <input type="number"
-											class="form-control" id="activityApplicantsQty"
+										<label for="activityApplicantsQty">目前報名人數</label> <input
+											type="number" class="form-control" id="activityApplicantsQty"
 											name="activityApplicantsQty" required="required">
 									</div>
 								</div>
 								<div class="row">
 
-									<div class="form-group col-md-3">
+									<div class="form-group col-md-6">
 										<label for="activityCategory">活動類別</label> <select
 											class="form-control" id="activityCategory"
 											name="activityCategory" required="required">
@@ -106,19 +114,28 @@
 											<option value="自行車">自行車</option>
 										</select>
 									</div>
-									<div class="form-group col-md-3">
-										<label>活動封面</label><br /> <input type="file"
-											name="activityCover" id="activityCover" required="required"/>
+									<div class="form-group col-md-6">
+										<label for="activityStatus">報名狀態</label> <select
+											class="form-control" id="activityStatus"
+											name="activityStatus" required="required">
+											<option value="報名中">報名中</option>
+											<option value="報名截止">報名截止</option>
+										</select>
+									</div>
+									<div class="form-group col-md-6">
+										<label for="activityCover">活動封面</label><br /> <input
+											type="file" name="activityCover" id="activityCover"
+											required="required" />
 									</div>
 								</div>
 								<div class="form-group">
-									<label>活動介紹</label>
+									<label for="activityCover">活動介紹</label>
 									<textarea rows="15" class="form-control editor"
 										name="activityInfo" id="activityInfo" required="required"></textarea>
 								</div>
 								<div class="form-group">
 									<button type="submit" class="btn btn-primary" id="insert-btn"
-										onclick="submitTest(event)">確定</button>
+										onclick="submitForm(event)">確定</button>
 									<button type="reset" class="btn btn-primary">取消</button>
 									<button type="button" class="btn btn-primary"
 										id="fill-form-btn">一鍵輸入</button>
@@ -141,67 +158,10 @@
 		th:src="@{/assets/plugins/trumbowyg/plugins/upload/trumbowyg.upload.js}"></script>
 	<script th:src="@{/gym/activity/ckeditor/ckeditor.js}"></script>
 	<script th:src="@{/gym/activity/js/ckeditor-use.js}"></script>
+	<script th:src="@{/gym/activity/js/insert-activity.js}"></script>
 	<script th:src="@{/js/axios.min.js}"></script>
-	<script> 
-$(document).ready(function() {
-    // 一鍵輸入按鈕點擊事件處理函式
-    $('#fill-form-btn').click(function() {
-        // 設定表單欄位的值
-        $('#activityName').val('關子嶺鐵馬行');
-        $('#activityDate').val('2023/10/20');
-        $('#activityLocation').val('嘉義市文化公園');
-        $('#organizer').val('苗栗區公所');
-        $('#registrationStartDate').val('2023/07/11');
-        $('#registrationEndDate').val('2023/09/25');
-        // 由於檔案上傳欄位無法預先輸入，這裡留空
-        $('#applicantLimitedQty').val('500');
-        $('#activityApplicantsQty').val('120');
-
-        // 取得編輯器實例並設定內容
-        var editor = CKEDITOR.instances.activityInfo;
-        if (editor) {
-            editor.setData('好山、好湯、好食、好景，可說是體驗關子嶺風景區的最佳描述。俯瞰嘉南平原好景色，本次活動將帶領車友悠遊白河蓮花，看看全省最大賞蓮區，挑戰關子嶺雲萊庭院咖啡（標高540公尺），品嘗道地東山咖啡，探訪古廟名剎大仙寺和百年古廟碧雲寺、天然奇景水火洞等等，回程還可品嘗嘉義文化路美食，還在等什麼！一起來騎單車吧！！！');
-        }
-    });
-});
-
-function submitTest(event) {
-  event.preventDefault(); // 阻止表單提交
-
-  Swal.fire({
-    title: "確認新增",
-    text: "您確定要新增嗎？",
-    icon: "question",
-    showCancelButton: true,
-    confirmButtonText: "確定",
-    cancelButtonText: "取消"
-  }).then(function(result) {
-    if (result.isConfirmed) {
-      // 延遲執行表單提交
-      setTimeout(function() {
-        document.getElementById('insertForm').submit();
-      }, 2000); // 2秒延遲
-      
-      // 顯示打勾圖示及成功提示
-      Swal.fire({
-        title: "新增成功",
-        icon: "success",
-        showConfirmButton: false,
-        timer: 1500,
-        delay: 2000
-      });
-    } else if (result.isDismissed) {
-      // 顯示取消提示
-      Swal.fire("取消", "", "info");
-    }
-  });
-}
-
-$('#insert-btn').click(submitTest);
-
-
-</script>
-
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 	<!-- END Java Script for this page -->
 </body>
 

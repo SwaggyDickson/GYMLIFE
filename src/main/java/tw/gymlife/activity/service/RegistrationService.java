@@ -48,12 +48,15 @@ public class RegistrationService {
 
     // 更新
     @Transactional
-    public Registration updateRegistrationById(Integer registrationId,String registrationStatus,Date registrationDate) {
+    public Registration updateRegistrationById(Integer registrationId,String registrationStatus,Date registrationDate,String emergencyContact,Integer emergencyContactPhone, String relationship) {
     	Optional<Registration> optional = rRepo.findById(registrationId);
     	if(optional.isPresent()) {
     		Registration registration = optional.get();
     		registration.setRegistrationStatus(registrationStatus);
     		registration.setRegistrationDate(registrationDate);
+    		registration.setEmergencyContact(emergencyContact);
+    		registration.setEmergencyContactPhone(emergencyContactPhone);
+    		registration.setRelationship(relationship);
     		
 	        Date currentDate = new Date();
 	        registration.setUpdateTime(currentDate);
@@ -67,6 +70,12 @@ public class RegistrationService {
     // 刪除
     public void deleteRegistration(Integer registrationId) {
         rRepo.deleteById(registrationId);
+    }
+    
+    // 判斷是不是該報名過該活動
+    public boolean isMemberRegisteredForActivity(int userId, int activityId) {
+        List<Registration> registrations = rRepo.findByuserIdAndActivityId(userId, activityId);
+        return !registrations.isEmpty();
     }
     
 

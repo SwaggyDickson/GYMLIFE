@@ -56,7 +56,7 @@ public class ActivityService {
 	@Transactional
 	public Activity updateActivityById(Integer activityId, String activityName, Date activityDate,
 			String activityLocation,String activitCategory,byte[] activityCover, Date registrationStartDate, Date registrationEndDate,
-			String organizer,String activityInfo,Integer applicantLimitedQty,Integer activityApplicantsQty) {
+			String organizer,String activityStatus,String activityInfo,Integer applicantLimitedQty,Integer activityApplicantsQty) {
 		Optional<Activity> optional = aRepo.findById(activityId);
 		if (optional.isPresent()) {
 			Activity activity = optional.get();
@@ -68,6 +68,7 @@ public class ActivityService {
 			activity.setRegistrationStartDate(registrationStartDate);
 			activity.setRegistrationEndDate(registrationEndDate);
 			activity.setOrganizer(organizer);
+			activity.setActivityStatus(activityStatus);
 			activity.setActivityInfo(activityInfo);
 			activity.setApplicantLimitedQty(applicantLimitedQty);
 			activity.setActivityApplicantsQty(activityApplicantsQty);
@@ -83,50 +84,51 @@ public class ActivityService {
 
 	}
 	
-	//根據類別找活動
-	public List<Activity> getActivitiesByCategory(String activityCategory) {
-	    List<Activity> activitiesByCategory = new ArrayList<>();
-	    List<Activity> allActivity = getAllActivity(); // 获取所有活动
-
-	    for (Activity activity : allActivity) {
-	        if (activity.getActivityCategory().equals(activityCategory)) {
-	            activitiesByCategory.add(activity);
-	        }
-	    }
-
-	    return activitiesByCategory;
-	}
-	
-	// 使用者可自行新增活動類別的方法
-    public void addCategory(String activityCategory) {
-        // 在此處將自訂的活動類別添加到activity表格的activityCategory欄位
-        // 您可以使用activityRepository或其他資料庫存取層進行操作
-        
-        Activity activity = new Activity();
-        activity.setActivityCategory(activityCategory);
-        
-        aRepo.save(activity);
-    }
-	
-	
-	//解析 HTML 字符串中的圖片 URL
-//	public List<String> parseImageUrls(String activityInfo) {
-//	    List<String> imageUrls = new ArrayList<>();
+//	// 根据活動狀態排序
+//    public List<Activity> getActivitiesByStatus() {
+//        return aRepo.findAllByOrderByActivityStatusAsc();
+//    }
+//    
+//    // 根据活動日期的年份查詢
+//    public List<Activity> getActivitiesByYear(String year) {
+//        return aRepo.findAllByActivityDateStartingWith(year);
+//    }
 //
-//	    // 解析 HTML
-//	    Document doc = Jsoup.parse(activityInfo);
+//    // 根据活動日期的月份查詢
+//    public List<Activity> getActivitiesByMonth(String month) {
+//        return aRepo.findAllByActivityDateContaining(month);
+//    }
 //
-//	    // 提取所有的 <img> 標籤
-//	    Elements imgElements = doc.select("img");
+//    // 模糊查询
+//    public List<Activity> searchActivitiesByKeyword(String keyword) {
+//        return aRepo.searchActivitiesByKeyword(keyword);
+//    }
+	
+//	//根據類別找活動
+//	public List<Activity> getActivitiesByCategory(String activityCategory) {
+//	    List<Activity> activitiesByCategory = new ArrayList<>();
+//	    List<Activity> allActivity = getAllActivity(); // 获取所有活动
 //
-//	    // 遍歷每個 <img> 標籤，提取圖片 URL
-//	    for (Element imgElement : imgElements) {
-//	        String imageUrl = imgElement.attr("src");
-//	        imageUrls.add(imageUrl);
+//	    for (Activity activity : allActivity) {
+//	        if (activity.getActivityCategory().equals(activityCategory)) {
+//	            activitiesByCategory.add(activity);
+//	        }
 //	    }
 //
-//	    return imageUrls;
+//	    return activitiesByCategory;
 //	}
+//	
+//	// 使用者可自行新增活動類別的方法
+//    public void addCategory(String activityCategory) {
+//        // 在此處將自訂的活動類別添加到activity表格的activityCategory欄位
+//        // 您可以使用activityRepository或其他資料庫存取層進行操作
+//        
+//        Activity activity = new Activity();
+//        activity.setActivityCategory(activityCategory);
+//        
+//        aRepo.save(activity);
+//    }
+	
 	
 
     

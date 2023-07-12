@@ -1,0 +1,73 @@
+@charset "UTF-8";
+
+/* 顯示報名狀態按鈕*/
+.custom-button {
+	display: inline-block;
+	padding: 2px 5px;
+	font-size: 1.1em;
+	font-weight: bold;
+	text-align: center;
+	cursor: default;
+	border-radius: 5px;
+}
+
+.green-button {
+	background-color: #96FED1;
+	color: white;
+}
+
+.red-button {
+	background-color: #FF5151;
+	color: white;
+}
+
+/* 立即報名按鈕設置 */
+.go-button {
+	display: inline-block;
+	padding: 2px 5px;
+	font-size: 1.2em;
+	font-weight: bold;
+	text-align: center;
+	border-radius: 5px;
+	cursor: pointer;
+	background-color: #66B3FF;
+	color: black;
+}
+
+/* 搜索設置 */
+.form-row {
+  background-color: #FFFF6F;
+  padding-top: 20px;
+  padding-bottom: 10px;
+  margin-top: 0;
+  margin-bottom: 0;
+  border-radius: 2px;
+}
+
+.alltype select,
+.alltype input {
+  border-radius: 20px;
+}
+
+.alltype select {
+  width: 100%;
+  height: 40px;
+  padding: 5px;
+}
+
+.alltype input {
+  width: 100%;
+  height: 40px;
+  padding: 5px;
+}
+
+/* 調整卡片 */
+.card-title {
+  color: white;
+  font-size: 26px; 
+}
+
+.card-text {
+  color: white;
+  font-size: 20px;
+}

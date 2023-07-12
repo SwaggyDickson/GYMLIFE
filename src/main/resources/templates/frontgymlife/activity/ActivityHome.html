@@ -12,6 +12,10 @@
 <link
 	th:href="@{http://localhost:8080/gymlife/gym/activity/fontawesome/css/solid.css}"
 	rel="stylesheet">
+<link rel="stylesheet"
+	th:href="@{http://localhost:8080/gymlife/gym/activity/css/activityHome.css}">
+<!-- SweetAlert -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body style="background-color: black;">
 	<div th:replace="~{layout/front_nav}"></div>
@@ -23,11 +27,11 @@
 			<div class="row">
 				<div class="col-lg-12 text-center">
 					<div class="breadcrumb-text">
-						<h2>All Activity</h2>
+						<h2>所有活動</h2>
 						<div class="bt-option">
-							<a th:href="@{/}">Home</a> <span>Activity</span>
-				</div>
-				</div>
+							<a th:href="@{/}">首頁</a> <span>所有活動</span>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -82,7 +86,7 @@
 							</div>
 							<div class="col-md-3 mb-3">
 								<input type="text" class="form-control" name="searchQuery"
-									placeholder="名稱搜尋">
+									placeholder="活動名稱搜尋">
 							</div>
 						</div>
 					</form>
@@ -90,27 +94,46 @@
 			</div>
 		</div>
 	</section>
-	<!-- Search Form End -->
+	<!-- 活动列表部分 -->
+	<div id="activityList">
+		<!-- 这里显示活动列表 -->
+	</div>
+	<!-- Add a space with margin -->
+	<div style="margin-top: 40px; margin-bottom: 20px;"></div>
+
 	<!-- card Begin-->
 
 	<div class="container">
 		<div class="row">
 			<th:block th:each="oneActivity : ${allActivity}">
-				<div class="col-xs-12 col-sm-6 col-md-4 col-lg-3 mb-4">
-					<div class="card"
-						style="background-color: black; border: 1px solid white;">
-                    <a th:href="@{/activityDetails(activityId=${oneActivity.activityId})}">
-                        <img class="card-img-top" width="300px" height="200px"
-                             th:src="@{'/dowloadImageActivity/' + ${oneActivity.activityId}}">
-                    </a>
+				<div class="col-xs-12 col-sm-6 col-md-4 col-lg-4 mb-4">
+					<div class="card" style="background-color: black;">
+						<a
+							th:href="@{/activityDetails(activityId=${oneActivity.activityId})}">
+							<img class="card-img-top custom-card-image" width="300px"
+							height="200px"
+							th:src="@{'/dowloadImageActivity/' + ${oneActivity.activityId}}">
+						</a>
 						<div class="card-body">
-							<h4 class="card-title" th:text="${oneActivity.activityName}"
-								style="color: white;"></h4>
-							<h5 class="card-text"
-								    th:text="${#dates.format(oneActivity.activityDate, 'yyyy/MM/dd')} + ' (' + ${#dates.format(oneActivity.activityDate, 'EEEE')} + ')'"
-								style="color: white;"></h5>
-							<h5 class="card-text" th:text="${oneActivity.activityLocation}"
-								style="color: white;"></h5>
+							<a th:if="${oneActivity.activityStatus == '報名中'}"
+								class="custom-button green-button">報名中</a> <a
+								th:if="${oneActivity.activityStatus == '報名截止'}"
+								class="custom-button red-button">報名截止</a> </br> <span
+								class="card-title" th:text="${oneActivity.activityName}"
+								style="color: white;"></span>
+							<div style="color: white;">
+								<i class="far fa-calendar-alt"></i> <span class="card-text"
+									th:text="${#dates.format(oneActivity.activityDate, 'yyyy/MM/dd')} + ' (' + ${#dates.format(oneActivity.activityDate, 'EEEE')} + ')'"
+									style="display: inline; margin-right: 10px;"></span>
+							</div>
+							<div style="color: white;">
+								<i class="fas fa-map-marker-alt"></i> <span class="card-text"
+									th:text="${oneActivity.activityLocation}"
+									style="display: inline; color: white;"></span>
+							</div>
+							<a th:if="${oneActivity.activityStatus == '報名中'}"
+								th:href="@{/goRegistration(activityId=${oneActivity.activityId})}"
+								class="custom-button go-button">立即報名</a>
 						</div>
 					</div>
 				</div>
@@ -121,7 +144,7 @@
 
 	<div th:replace="~{layout/front_footer}"
 		style="background-color: black;"></div>
-<script>
+	<script>
   function filterCards() {
     var status = document.querySelector('select[name="status"]').value;
     var year = document.querySelector('select[name="year"]').value;
@@ -162,6 +185,22 @@
   
   // 在頁面載入時執行一次篩選功能，以便根據初始值顯示卡片
   filterCards();
+   
+  	// 報名日還未到截止時間但人數已滿跳出的提示訊息
+	// 獲取URL中的alert參數
+	const urlParams = new URLSearchParams(window.location.search);
+	const alertMessage = urlParams.get('alert');
+
+	// 如果存在alert参数，使用SweetAlert顯示提示框 (報名失敗)
+	if (alertMessage) {
+	Swal.fire({
+ 	 title: '注意！',
+  	text: alertMessage,
+  	icon: 'warning',
+ 	confirmButtonText: '確定'
+});
+}
+
 </script>
 
 

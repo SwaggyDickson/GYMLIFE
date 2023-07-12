@@ -106,6 +106,22 @@ public class MemberService {
         return memberRepo.save(member);
     }
 	
+	
+	public Member updateUserStatus(int userId, int userStatus) {
+		Optional<Member> memberOptional = memberRepo.findById(userId);
+		  if (!memberOptional.isPresent()) {
+			  return null;
+	        }
+	
+		  Member member = memberOptional.get();
+		    if (member.getUserStatus() == 1) {
+		        member.setUserStatus(0);
+		    } else {
+		        member.setUserStatus(1);
+		    }
+		  return memberRepo.save(member);
+
+	}
 	// 信箱驗證
 	 public void verifyUser(int userId) {
 	        // 根據userId從數據庫查找用戶

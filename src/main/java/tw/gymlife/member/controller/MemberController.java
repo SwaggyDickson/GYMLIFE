@@ -57,7 +57,6 @@ import tw.gymlife.member.service.MemberService;
 		    }
 	
 		    @PostMapping("gymlife/api/memberUpdate")
-		    
 		    public ResponseEntity<Member> memberUpdate(@RequestBody Member body) {
 		        try {
 		            Member member = memberService.memberUpdate(
@@ -77,6 +76,20 @@ import tw.gymlife.member.service.MemberService;
 		        }
 		    }
 		    
+		    @PostMapping("api/updateUserStatus")
+		    public ResponseEntity<Member> updateUserStatus(@RequestBody Member body){
+		    try {
+		    	Member member = memberService.updateUserStatus(
+		    		body.getUserId(),
+		    		body.getUserStatus()
+		    		);
+					    return new ResponseEntity<>(member, HttpStatus.OK);
+			
+			    } catch (Exception e) {
+			        return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+			    }
+			}
+		    
 		    @GetMapping("/memberAnalyze")
 		    public String memberAnalyze() {
 				return "backgymlife/member/memberAnalyze";
@@ -95,7 +108,7 @@ import tw.gymlife.member.service.MemberService;
 		      return totalMembers;
 		    }
 		    
-		    
+		   
 		    
 		    	
 		    

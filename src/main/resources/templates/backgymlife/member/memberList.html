@@ -19,6 +19,66 @@
         overflow-wrap: break-word; /* 新版瀏覽器支援 */
         overflow: hidden; /* 防止內容超出單元格 */
     }
+    .switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+.switch input { 
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: #2196F3;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
 	
 	</style>
 	<link rel="stylesheet"
@@ -62,6 +122,8 @@
                         <th scope="col">會員暱稱</th>
                         <th scope="col">註冊日期</th>
                         <th scope="col">會員權限</th>
+                        <th scope="col">會員狀態</th>
+
                         <th>更新</th>
                         <th>刪除</th>
                     </tr>
@@ -79,7 +141,15 @@
 			    <td th:text="${member.userEmail}"></td>
 			    <td th:text="${member.userNickName}"></td>
 			    <td th:text="${member.formattedUserRegisterDate}"></td>
-			    <td th:text="${member.userPermission}"></td>
+			    <td th:text="${member.userPermission == '1' ? '管理員' : '一般會員'}"></td>
+			    <td>
+                    <label class="switch">
+                        <input type="checkbox" th:checked="${member.userStatus == 1}" th:onclick="'changeUserStatus(' + ${member.userId} + ')'">
+                        <span class="slider round"></span>
+                    </label>
+                </td>
+
+
 			    <td>
 			      <button data-bs-toggle="modal" data-bs-target="#updateModal" 
 			              th:onclick="'storeData(' + ${status.index} + ')'" class="btn btn-primary">更新</button>
@@ -140,8 +210,9 @@
             <label for="telInput" class="form-label">會員電話</label>
             <input type="tel" class="form-control" id="telInput">
         </div>
+        <input type="hidden" id="userPermissionInput" value="">
         <!-- 更多的欄位可以在這裡添加 -->
-    </form>
+    </form> 
 		      </div>
 		      <div class="modal-footer">
 		        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
@@ -264,7 +335,21 @@ $(document).ready(function() {
             row.append($("<td>").text(member.userEmail));
             row.append($("<td>").text(member.userNickName));
             row.append($("<td>").text(member.userRegisterDate));
-            row.append($("<td>").text(member.userPermission));
+            let permissionText = member.userPermission == 1 ? "管理員" : "一般會員";
+            row.append($("<td>").text(permissionText));
+                let statusSwitch = $("<label>").addClass("switch");
+        let statusInput = $("<input>").attr("type", "checkbox");
+        if (member.userStatus == 1) {
+            statusInput.prop('checked', true);
+        }
+        statusInput.click(function() {
+            changeUserStatus(member.userId);
+        });
+        let slider = $("<span>").addClass("slider round");
+        statusSwitch.append(statusInput);
+        statusSwitch.append(slider);
+        row.append($("<td>").append(statusSwitch));
+
 
             let updateButton = $("<button>")
                 .addClass("btn btn-primary")
@@ -337,6 +422,7 @@ $(document).ready(function() {
                 let userAddress = tr.cells[5].innerText;
                 let userTel = tr.cells[6].innerText;
                 let userEmail = tr.cells[7].innerText;
+                
                 const rowData = {
                     id: rowId,
                     userId: userId,
@@ -347,6 +433,7 @@ $(document).ready(function() {
                     userBirthDay: userBirthDay,
                     userAddress: userAddress,
                     userTel: userTel,
+                    
                 };
                 // 將 rowData 保存到 localStorage
                 localStorage.setItem("rowData", JSON.stringify(rowData));
@@ -362,6 +449,7 @@ $(document).ready(function() {
                 document.getElementById("birthDayInput").value = rowData.userBirthDay;
                 document.getElementById("addressInput").value = rowData.userAddress;
                 document.getElementById("telInput").value = rowData.userTel;
+              
             });
             function updateData() {
             	const updatedUserId = document.getElementById("userIdInput").value;
@@ -372,6 +460,7 @@ $(document).ready(function() {
                 const updatedBirthDay = document.getElementById("birthDayInput").value;
                 const updatedAddress = document.getElementById("addressInput").value;
                 const updatedTel = document.getElementById("telInput").value;
+              
                
                 // 發送AJAX請求到後端Servlet
                 const xhr = new XMLHttpRequest();
@@ -387,7 +476,8 @@ $(document).ready(function() {
                         userGender: updatedGender,
                         userBirthDay: updatedBirthDay,
                         userAddress: updatedAddress,
-                        userTel: updatedTel
+                        userTel: updatedTel,
+                        
                     };
             
                 xhr.onreadystatechange = function () {
@@ -493,7 +583,7 @@ function deleteData() {
                     // 处理错误
                     console.log("HTTP status: ", xhr.status);
                     console.log("Status description: ", xhr.statusText);
-                    alert("Get all members operation failed: " + xhr.responseText);
+                    alert("Get all members operation f	ailed: " + xhr.responseText);
                 }
             });
 
@@ -509,6 +599,24 @@ function deleteData() {
         
     });
     console.log("deleteData called");
+}
+
+function changeUserStatus(userId) {
+    // 发送 AJAX 请求
+    $.ajax({
+        url: 'api/updateUserStatus',  // 你的 API 端点
+        type: 'POST',
+        contentType: 'application/json', 
+        data:JSON.stringify({
+            userId: userId
+        }),
+        success: function(response) {
+            console.log("User status changed successfully.");
+        },
+        error: function(error) {
+            console.log("Error changing user status: ", error);
+        }
+    });
 }
 
 

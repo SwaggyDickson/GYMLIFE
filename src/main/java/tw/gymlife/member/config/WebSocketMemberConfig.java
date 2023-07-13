@@ -10,9 +10,9 @@ import org.slf4j.LoggerFactory;
 
 @Configuration
 @EnableWebSocketMessageBroker
-public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
+public class WebSocketMemberConfig implements WebSocketMessageBrokerConfigurer {
 	
-	private static final Logger logger = LoggerFactory.getLogger(WebSocketConfig.class);
+	private static final Logger logger = LoggerFactory.getLogger(WebSocketMemberConfig.class);
 	 @Override
 	    public void registerStompEndpoints(StompEndpointRegistry registry) {
 	        registry.addEndpoint("/MemberQuery")
@@ -21,11 +21,11 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 	                .withSockJS(); // 启用SockJS支持
 	    
 	    }
-	 
-
-	    @Override
-	    public void configureMessageBroker(MessageBrokerRegistry registry) {
-	        registry.enableSimpleBroker("/topic"); // 配置消息代理（可根据需求进行更改）
-	    }
+//	 
+//
+//	    @Override
+//	    public void configureMessageBroker(MessageBrokerRegistry registry) {
+//	        registry.enableSimpleBroker("/topic"); // 配置消息代理（可根据需求进行更改）
+//	    }
 	
 }

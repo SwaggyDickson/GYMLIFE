@@ -116,10 +116,12 @@ public class Member {
 	
 	// 會員一對多商品訂單
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "members", cascade = CascadeType.ALL)
+	@JsonIgnore
 	private List<Orders> orders = new ArrayList<>(); 
 	
 	// 新增課程訂單
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "member", cascade = CascadeType.ALL)
+	@JsonIgnore
 	private List<CorderBean> corder;
 	
 	// 會員一對多報名

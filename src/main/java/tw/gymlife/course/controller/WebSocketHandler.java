@@ -51,8 +51,8 @@ public class WebSocketHandler {
 //    	System.out.println(obean.getCorderQuantity());
 //    	System.out.println(obean.getCorderCost());
         String successmessage = "訂單更新通知: "+message;
-        messagingTemplate.convertAndSend("/reply/back", successmessage);
-        messagingTemplate.convertAndSend("/reply/back", obean);
+        messagingTemplate.convertAndSend("/topic/back", successmessage);
+        messagingTemplate.convertAndSend("/topic/back", obean);
     }
     
 }

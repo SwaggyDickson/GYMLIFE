@@ -194,4 +194,15 @@ public class MemberService {
 		  return memberRepo.count();
 	  }
 	  
+		// 查單筆(id)
+		public Member getMemberById(Integer userId) {
+			Optional<Member> memberOptional = memberRepo.findById(userId);
+
+			if (memberOptional.isPresent()) {
+				return memberOptional.get();
+			}
+			return null;
+		}
+
+	  
 }

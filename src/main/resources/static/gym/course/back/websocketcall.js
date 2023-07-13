@@ -42,7 +42,7 @@ stompClient = Stomp.over(socket);
 stompClient.connect({}, function(frame) {
 	console.log("開啟連線");
 	//		stompClient.send(destination, {}, message);
-	stompClient.subscribe('/reply/back', function(updatebean) {
+	stompClient.subscribe('/topic/back', function(updatebean) {
 		let corder = JSON.parse(updatebean.body)
 		console.log(corder);
 		console.log(corder.courseId);

@@ -1,0 +1,65 @@
+@charset "UTF-8";
+
+.pageItem span {
+	font-size: 24px;
+	color: white;
+}
+
+.pageItem {
+	margin-top: 40px;
+}
+
+.title {
+	font-size: 36px;
+}
+
+.registration {
+	text-align: center;
+}
+
+.indented-list {
+	padding-left: 40px; /* 自定义缩进的像素值或百分比 */
+	color: white;
+}
+
+.sidebar-option {
+	margin-top: 50px;
+	color: white;
+}
+
+.categories-title {
+    display: inline-block;
+    background-color: #97CBFF;
+    color: black;
+    padding: 5px 10px;
+    border-radius: 20px;
+    margin-bottom: 15px;
+}
+
+.Category-button {
+    background-color:#97CBFF;
+    color: black;
+    border: none;
+    padding: 5px 10px;
+    margin: 5px;
+    cursor: pointer;
+    border-radius: 20px; /* 設置圓角半徑 */
+}
+
+.Category-button:hover {
+    color: #FFB5B5;
+}
+
+figure.image {
+	margin: 0; /* 設置外邊距為0，去除默認間距 */
+}
+
+figure.image+figure.image {
+	margin-top: 20px; /* 設置相鄰圖像之間的上邊距 */
+}
+
+figure.image img {
+	width: 100%; /* 設置圖像的寬度為容器的寬度 */
+	height: 100%; /* 設置圖像的高度為容器的高度 */
+	object-fit: contain; /* 圖像在容器內等比例放大，填滿容器並保持完整顯示 */
+}

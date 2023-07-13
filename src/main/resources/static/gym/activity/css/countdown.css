@@ -1,0 +1,57 @@
+@charset "UTF-8";
+
+.sideright {
+	margin-top: 40px;
+}
+
+.info-all {
+	color: white;
+}
+
+.info-title {
+	text-align: center;
+	display: block;
+	font-size: 28px;
+	font-weight: bold;
+	margin-bottom: 10px;
+}
+
+.info-subtitle {
+	display: block;
+	font-size: 20px;
+	margin-bottom: 10px;
+}
+
+/* 在.info-all 元素的末尾利用偽元素寫分隔線 */
+.info-all:after {
+	content: ""; /* 設置偽元素內容為空 */
+	display: block;
+	border-bottom: 1px solid white;
+	margin-top: 10px;
+}
+
+.go-button {
+	display: inline-block;
+	padding: 2px 5px;
+	font-size: 1.2em;
+	font-weight: bold;
+	text-align: center;
+	cursor: pointer;
+	background-color: #FFE66F;
+	margin-top: 5px;
+	color: black;
+	width: 100%;
+}
+
+.button-wrapper {
+	margin-top: 20px;
+}
+
+.countdown-wrapper {
+	font-weight: bold;
+	background-color: gold;
+	color: black;
+	margin-bottom: 15px;
+	font-size: 16px;
+	text-align: center;
+}

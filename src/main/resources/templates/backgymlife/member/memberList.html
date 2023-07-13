@@ -480,37 +480,37 @@ $(document).ready(function() {
                         
                     };
             
-                xhr.onreadystatechange = function () {
-                    if (xhr.readyState === 4 && xhr.status === 200) {
-                        // 根據響應更新前端UI或顯示操作結果
-                        console.log(xhr.responseText);
-                        const updateMessage = {
+                    xhr.onreadystatechange = function () {
+    if (xhr.readyState === 4 && xhr.status === 200) {
+        // 根據響應更新前端UI或顯示操作結果
+        console.log(xhr.responseText);
+        const updateMessage = {
             type: "update",
             userId: updatedUserId
         };
-        
+    
         // 使用WebSocket发送更新消息
         stompClient.send("/topic/MemberQuery", {}, JSON.stringify(updateMessage));
     
-                    } $.ajax({
-                url: 'gymlife/api/MemberQuery',
-                method: "GET",
-                success: function(allMembersResponse) {
-                    console.log("Get all members request successful");
+        // Here, send the GET request to retrieve all members
+        $.ajax({
+            url: 'gymlife/api/MemberQuery',
+            method: "GET",
+            success: function(allMembersResponse) {
+                console.log("Get all members request successful");
 
-                    // 将新的成员列表发送到WebSocket
-                    stompClient.send("/topic/MemberQuery", {}, JSON.stringify(allMembersResponse));
-                },
-                error: function(xhr, status, error) {
-                    // 处理错误
-                    console.log("HTTP status: ", xhr.status);
-                    console.log("Status description: ", xhr.statusText);
-                    alert("Get all members operation failed: " + xhr.responseText);
-                }
-            });
-
-                    
-                };
+                // 将新的成员列表发送到WebSocket
+                stompClient.send("/topic/MemberQuery", {}, JSON.stringify(allMembersResponse));
+            },
+            error: function(xhr, status, error) {
+                // 处理错误
+                console.log("HTTP status: ", xhr.status);
+                console.log("Status description: ", xhr.statusText);
+                alert("Get all members operation failed: " + xhr.responseText);
+            }
+        });
+    }
+};
                 // 將更新後的數據作為請求參數發送
              
                 //xhr.send(`userAccount=${updatedAccount}&userName=${updatedName}&userEmail=${updatedEmail}&userId=${updatedUserId}&userGender=${updatedGender}&userBirthDay=${updatedBirthDay}&userAddress=${updatedAddress}&userTel=${updatedTel}`);

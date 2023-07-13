@@ -19,6 +19,8 @@ public class convertDTO {
 			cdto.setCourseCost(cbean.getCourseCost());
 			cdto.setCourseIntroduce(cbean.getCourseIntroduce());
 			cdto.setCoachName(cbean.getCoach().getCoachName());
+			cdto.setCourseViewers(cbean.getCourseViewers());
+			cdto.setCourseBuyers(cbean.getCourseBuyers());
 			List<Integer> imageIds = new ArrayList<>();
 			for(ImageBean img: cbean.getImages()) {
 				imageIds.add(img.getImageId());
@@ -52,6 +54,27 @@ public class convertDTO {
 			cdto.setImageId(imageIds);
 		
 		return cdto;
+	}
+	//轉ListCorderBean
+	public List<CourseDTO> convertCorderDTOList(List<CorderBean> obeans) {
+		List<CourseDTO> cdtos = new ArrayList<>();
+		for(CorderBean obean:obeans) {
+//			System.out.println(cbean.getCoachId());
+			CourseDTO cdto = new CourseDTO();
+			cdto.setCorderId(obean.getCorderId());
+			cdto.setUserId(obean.getUserId());
+			cdto.setCourseId(obean.getCourseId());
+			cdto.setCorderPayment(obean.getCorderPayment());
+			cdto.setCorderTime(obean.getCorderTime());
+			cdto.setCorderUpdateTime(obean.getCorderUpdateTime());
+			cdto.setCorderQuantity(obean.getCorderQuantity());
+			cdto.setCorderCost(obean.getCorderCost());
+			cdto.setCorderState(obean.getCorderState());
+			cdto.setCourseName(obean.getCourse().getCourseName());
+			cdtos.add(cdto);
+		}
+		
+		return cdtos;
 	}
 //	public List<CoachDTO> convertCoachDTO(List<CoachBean> chbeans) {
 //		List<CoachDTO> chdtos = new ArrayList<>();

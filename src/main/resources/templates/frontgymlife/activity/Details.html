@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title th:text="${activity.activityName}"></title>
+<style>
+.pageItem span {
+	font-size: 24px;
+	color: white;
+}
+
+.pageItem {
+	margin-top: 40px;
+}
+
+.title {
+	font-size: 36px;
+}
+
+.registration {
+	text-align: center;
+}
+</style>
+</head>
+<body>
+	<div th:replace="~{layout/front_nav}"></div>
+	<!-- Class Details Section Begin -->
+	<section class="class-details-section spad">
+		<!-- Add a space with margin -->
+		<div style="margin-top: 40px;"></div>
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-8">
+					<div class="class-details-text">
+						<div class="title" style="text-align: center;">
+							<span th:text="${activity.activityName}"
+								style="color: white; border-bottom: 2px solid #fcd317; display: inline-block;"></span>
+						</div>
+						<div style="margin-top: 40px;"></div>
+						<div class="cd-pic">
+							<img class="card-img-top" width="300px" height="500px"
+								th:src="@{'/dowloadImageActivity/' + ${activity.activityId}}">
+						</div>
+
+						<div class="cd-text">
+							<div class="cd-single-item">
+								<div class="cd-single-item">
+									<p class="pageItem">
+										<strong><span>一、</span><span>主辦單位：</span><span
+											th:text="${activity.organizer}"></span></strong>
+									</p>
+								</div>
+								<p class="pageItem">
+									<strong><span>二、</span><span>活動日期：</span><span
+										th:text="${#dates.format(activity.activityDate, 'yyyy/MM/dd')} + ' (' + ${#dates.format(activity.activityDate, 'EEEE')} + ')'"></span></strong>
+								</p>
+							</div>
+							<div class="cd-single-item">
+								<p class="pageItem">
+									<strong><span>三、</span><span>活動地點：</span><span
+										th:text="${activity.activityLocation}"></span></strong>
+								</p>
+							</div>
+							<div class="cd-single-item">
+								<p class="pageItem">
+									<strong><span>四、</span><span>報名開始日期：</span><span
+										th:text="${#dates.format(activity.registrationStartDate, 'yyyy/MM/dd')} + ' (' + ${#dates.format(activity.registrationStartDate, 'EEEE')} + ')'"></span></strong>
+								</p>
+							</div>
+							<div class="cd-single-item">
+								<p class="pageItem">
+									<strong><span>五、</span><span>報名截止日期：</span><span
+										th:text="${#dates.format(activity.registrationEndDate, 'yyyy/MM/dd')} + ' (' + ${#dates.format(activity.registrationEndDate, 'EEEE')} + ')'"></span></strong>
+								</p>
+							</div>
+							<div class="cd-single-item">
+								<p class="pageItem">
+									<strong><span>六、</span><span>報名資格：</span><br> <span>1.凡身心健康適合長距離跑步者皆可報名。</span>
+										<br> <span>2.未滿18歲之跑者需在報名時於線上填寫家長同意書。</span></strong>
+								</p>
+							</div>
+							<div class="cd-single-item">
+								<p class="pageItem">
+									<strong><span>七、</span><span>活動介紹：</span><span
+										th:utext="${activity.activityInfo}"></span> </strong>
+								</p>
+							</div>
+							<div class="registration">
+								<!-- 生成URL的代码 -->
+								<a class="btn btn-outline-light btn-lg"
+									th:href="@{/goRegistration(activityId=${activity.activityId})}">我要報名</a>
+							</div>
+						</div>
+						<div class="cd-trainer">
+							<div class="row">
+								<div class="col-md-6">
+									<div class="cd-trainer-pic">
+										<img src="img/classes/class-details/trainer-profile.jpg"
+											alt="">
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="cd-trainer-text">
+										<div class="trainer-title">
+											<h4>Athart Rachel</h4>
+											<span>Gym Trainer</span>
+										</div>
+										<div class="trainer-social">
+											<a href="#"><i class="fa fa-facebook"></i></a> <a href="#"><i
+												class="fa fa-twitter"></i></a> <a href="#"><i
+												class="fa fa-youtube-play"></i></a> <a href="#"><i
+												class="fa fa-instagram"></i></a> <a href="#"><i
+												class="fa  fa-envelope-o"></i></a>
+										</div>
+										<p>Lorem ipsum dolor sit amet, consectetur adipiscing
+											elit, sed do eiusmod tempor incididunt ut labore et dolore
+											magna aliqua viverra maecenas lacus vel facilisis.</p>
+										<ul class="trainer-info">
+											<li><span>Age</span>35</li>
+											<li><span>Weight</span>148lbs</li>
+											<li><span>Height</span>10' 2``</li>
+											<li><span>Occupation</span>no-founder</li>
+										</ul>
+										<p>Lorem ipsum dolor sit amet, consectetur adipiscing
+											elit, sed do eiusmod tempor incididunt ut labore et dolore
+											magna aliqua viverra maecenas lacus vel facilisis.</p>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-4 col-md-8">
+					<div class="sidebar-option">
+						<div class="so-categories">
+							<h5 class="title">Categories</h5>
+							<ul>
+								<li><a th:href="@{/category(activityCategory='路跑')}">路跑</a></li>
+								<li><a th:href="@{/category(activityCategory='游泳')}">游泳</a></li>
+								<li><a th:href="@{/category(activityCategory='健走')}">健走</a></li>
+								<li><a th:href="@{/category(activityCategory='鐵人')}">鐵人</a></li>
+								<li><a th:href="@{/category(activityCategory='籃球')}">籃球</a></li>
+								<li><a th:href="@{/category(activityCategory='越野跑')}">越野跑</a></li>
+								<li><a th:href="@{/category(activityCategory='自行車')}">自行車</a></li>
+							</ul>
+						</div>
+
+						<div class="so-latest">
+							<h5 class="title">Latest posts</h5>
+							<div class="latest-large set-bg"
+								data-setbg="img/letest-blog/latest-1.jpg">
+								<div class="ll-text">
+									<h5>
+										<a href="#">This Japanese Way of Making Iced Coffee Is a
+											Game...</a>
+									</h5>
+									<ul>
+										<li>Aug 20, 2019</li>
+										<li>20 Comment</li>
+									</ul>
+								</div>
+							</div>
+							<div class="latest-item">
+								<div class="li-pic">
+									<img src="img/letest-blog/latest-2.jpg" alt="">
+								</div>
+								<div class="li-text">
+									<h6>
+										<a href="#">Grilled Potato and Green Bean Salad</a>
+									</h6>
+									<span class="li-time">Aug 15, 2019</span>
+								</div>
+							</div>
+							<div class="latest-item">
+								<div class="li-pic">
+									<img src="img/letest-blog/latest-3.jpg" alt="">
+								</div>
+								<div class="li-text">
+									<h6>
+										<a href="#">The $8 French Rosé I Buy in Bulk Every Summer</a>
+									</h6>
+									<span class="li-time">Aug 15, 2019</span>
+								</div>
+							</div>
+							<div class="latest-item">
+								<div class="li-pic">
+									<img src="img/letest-blog/latest-4.jpg" alt="">
+								</div>
+								<div class="li-text">
+									<h6>
+										<a href="#">Ina Garten's Skillet-Roasted Lemon Chicken</a>
+									</h6>
+									<span class="li-time">Aug 15, 2019</span>
+								</div>
+							</div>
+							<div class="latest-item">
+								<div class="li-pic">
+									<img src="img/letest-blog/latest-5.jpg" alt="">
+								</div>
+								<div class="li-text">
+									<h6>
+										<a href="#">The Best Weeknight Baked Potatoes, 3 Creative
+											Ways</a>
+									</h6>
+									<span class="li-time">Aug 15, 2019</span>
+								</div>
+							</div>
+						</div>
+						<div class="so-banner set-bg" data-setbg="img/sidebar-banner.jpg">
+							<h5>Banner 300x300</h5>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	<!-- Class Details Section End -->
+	<div th:replace="~{layout/front_footer}"></div>
+</body>
+</html>

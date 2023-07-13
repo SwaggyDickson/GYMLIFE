@@ -272,10 +272,17 @@ public class CourseController_Back {
 			m.addAttribute("corders",corders);
 			return "/backgymlife/course/selectAllCorder";
 		}
+		//查詢所有訂單Ajax
+		@ResponseBody
+		@GetMapping("/course/corderajax")
+		public List<CourseDTO> selectAllCorder() {
+			List<CorderBean> corders = oservice.selectAllCorder();
+			return convertDTO.convertCorderDTOList(corders);
+		}
 		//修改訂單
 		@ResponseBody
 		@PutMapping("/course/corder/update")
-		public String updateCorder(@RequestParam(name="corderId")Integer corderId,@RequestParam(name="corderQuantity")Integer corderQuantity) {
+		public List<CourseDTO> updateCorder(@RequestParam(name="corderId")Integer corderId,@RequestParam(name="corderQuantity")Integer corderQuantity) {
 			System.out.println(corderId);
 			System.out.println(corderQuantity);
 			// 建立 SimpleDateFormat 物件，指定日期時間的格式
@@ -283,7 +290,26 @@ public class CourseController_Back {
 			// 取得現在的日期時間
 			String currentDate = sdf.format(new Date());
 			oservice.updateCorder(corderId, currentDate, corderQuantity);
-			return "success";
+			return selectAllCorder();
+		}
+		//刪除訂單
+		@ResponseBody
+		@DeleteMapping("/course/corder/delete")
+		public List<CourseDTO> deleteCorder(@RequestParam("corderId")Integer corderId) {
+			oservice.deleteCorder(corderId);
+			return selectAllCorder();
+		}
+		// 訂單分析跳轉
+		@GetMapping("/course/corderanalyze")
+		public String corderAnalyzechange(Model m) {
+			return "/backgymlife/course/corderAnalyze";
+		}
+		// 訂單分析圖
+		@ResponseBody
+		@GetMapping("/course/corder/analyze")
+		public List<CourseDTO> corderAnalyze() {
+			List<CourseBean> cbeans = cservice.selectAllCourse();
+			return convertDTO.convertCourseDTOList(cbeans);
 		}
 	/*
 	//查詢教練圖片

@@ -58,6 +58,33 @@ Optional<CourseBean> optional = cRepo.findById(courseId);
 		System.out.println("no update data");
 		
 	}
+	//增加觀看人數
+	@Transactional
+	public void insertCourseViewers(Integer courseId) {
+		Optional<CourseBean> optional = cRepo.findById(courseId);
+		if(optional.isPresent()) {
+			CourseBean cbean = optional.get();
+			Integer courseViewers = cbean.getCourseViewers();
+			if (courseViewers == null) {
+				courseViewers = 0;
+			}
+			cbean.setCourseViewers(courseViewers+1);
+		}
+	}
+	//增加購買人數
+	@Transactional
+	public void insertCourseBuyers(Integer courseId) {
+		Optional<CourseBean> optional = cRepo.findById(courseId);
+		
+		if(optional.isPresent()) {
+			CourseBean cbean = optional.get();
+			Integer courseBuyers = cbean.getCourseBuyers();
+			if (courseBuyers == null) {
+			    courseBuyers = 0;
+			}
+			cbean.setCourseBuyers(courseBuyers + 1);
+		}
+	}
 
 
 }

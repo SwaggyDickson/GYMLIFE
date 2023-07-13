@@ -3,6 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <title>修改活動</title>
+<!-- SweetAlert -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
 	<div th:replace="~{layout/navbar}"></div>
@@ -15,7 +17,9 @@
 			<div class="row">
 				<div class="col-xl-12">
 					<div class="breadcrumb-holder">
-						<h1 class="main-title float-left"><i class="fa fa-file-text-o"></i> 修改活動</h1>
+						<h1 class="main-title float-left">
+							<i class="fa fa-file-text-o"></i> 修改活動
+						</h1>
 						<ol class="breadcrumb float-right">
 							<li class="breadcrumb-item">Home</li>
 							<li class="breadcrumb-item active">Update</li>
@@ -30,79 +34,150 @@
 
 				<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
 
-					<form th:action="@{/activity/update}" th:method="post" th:object="${activity}"
-						enctype="multipart/form-data">
-						<input th:field="*{activityId}" type="hidden"/>
-						<div class="card mb-3">
-							<div class="card-body">
-								<div class="row">
-									<div class="form-group col-md-6">
-										<label>活動名稱</label> <input class="form-control"
-											name="activityName" type="text" id="activityName" th:field="*{activityName}">
-									</div>
-									<div class="form-group col-md-6">
-										<label>活動日期</label> <input type="text" class="form-control"
-											id="activityDate" name="activityDate" th:field="*{activityDate}">
-									</div>
+					<form th:action="@{/activity/update}" th:method="post"
+						th:object="${activity}" enctype="multipart/form-data" id="updateForm">
+						<input th:field="*{activityId}" type="hidden" />
+						<div class="card-body">
+							<div class="row">
+								<div class="form-group col-md-6">
+									<label>活動名稱</label> <input class="form-control"
+										name="activityName" type="text" id="activityName"
+										th:field="*{activityName}">
 								</div>
-
-								<div class="row">
-
-									<div class="form-group col-md-6">
-										<label>活動地點</label> <input type="text" class="form-control"
-											id="activityLocation" name="activityLocation" th:field="*{activityLocation}">
-									</div>
-									<div class="form-group col-md-6">
-										<label>活動狀態</label> <input type="text" class="form-control"
-											id="activityStatus" name="activityStatus" th:field="*{activityStatus}">
-									</div>
+								<div class="form-group col-md-6">
+									<label>活動日期</label> <input type="text" class="form-control"
+										id="activityDate" name="activityDate"
+										th:field="*{activityDate}">
 								</div>
-
-								<div class="form-group">
-									<label>活動內容</label>
-									<textarea rows="3" class="form-control editor"
-										name="activityContent" id="activityContent" th:field="*{activityContent}"></textarea>
-								</div>
-
-								<div class="form-group">
-									<label>活動封面</label><br /> <input type="file"
-										name="activityCover" id="activityCover" accept="image/gif, image/jpeg, image/png" th:field="*{activityCover}">
-									<img width="300px" height="200px" id="activityCoverImg" th:src="@{/gym/activity/img/placeholder-image.jpg}" />
-								</div>
-
-								<div class="form-group">
-									<button type="submit" class="btn btn-primary" id="update-btn"
-										onclick="return confirm('您確定要修改這個活動嗎？')">確定</button>
-									<button type="reset" class="btn btn-primary">取消</button>
-								</div>
-
 							</div>
-							<!-- end card-body -->
+
+							<div class="row">
+
+								<div class="form-group col-md-6">
+									<label>活動地點</label> <input type="text" class="form-control"
+										id="activityLocation" name="activityLocation"
+										th:field="*{activityLocation}">
+								</div>
+								<div class="form-group col-md-6">
+									<label>主辦單位</label> <input type="text" class="form-control"
+										id="organizer" name="organizer" th:field="*{organizer}">
+								</div>
+							</div>
+
+							<div class="row">
+
+								<div class="form-group col-md-6">
+									<label>報名開始日期</label> <input type="text" class="form-control"
+										id="registrationStartDate" name="registrationStartDate"
+										th:field="*{registrationStartDate}">
+								</div>
+								<div class="form-group col-md-6">
+									<label>報名結束日期</label> <input type="text" class="form-control"
+										id="registrationEndDate" name="registrationEndDate"
+										th:field="*{registrationEndDate}">
+								</div>
+							</div>
+							<div class="row">
+
+								<div class="form-group col-md-6">
+									<label>報名人數上限</label> <input type="number" class="form-control"
+										id="applicantLimitedQty" name="applicantLimitedQty"
+										th:field="*{applicantLimitedQty}">
+								</div>
+								<div class="form-group col-md-6">
+									<label>目前報名人數</label> <input type="number" class="form-control"
+										id="activityApplicantsQty" name="activityApplicantsQty"
+										th:field="*{activityApplicantsQty}">
+								</div>
+							</div>
+							<div class="row">
+
+								<div class="form-group col-md-3">
+									<label for="activityCategory">活動類別 </label> <select
+										class="form-control" id="activityCategory"
+										name="activityCategory">
+										<option value="跑步"
+											th:selected="${activity.activityCategory == '跑步'}">跑步</option>
+										<option value="游泳"
+											th:selected="${activity.activityCategory == '游泳'}">游泳</option>
+										<option value="健走"
+											th:selected="${activity.activityCategory == '健走'}">健走</option>
+										<option value="鐵人"
+											th:selected="${activity.activityCategory == '鐵人'}">鐵人</option>
+										<option value="越野跑"
+											th:selected="${activity.activityCategory == '自行車'}">越野跑</option>
+										<option value="越野跑"
+											th:selected="${activity.activityCategory == '自行車'}">自行車</option>
+									</select>
+								</div>
+
+								<div class="form-group col-md-3">
+									<label>活動封面</label><br /> <input type="file"
+										name="activityCover" id="activityCover"
+										th:field="*{activityCover}" />
+								</div>
+							</div>
+							<div class="form-group">
+								<label>活動介紹</label>
+								<textarea rows="15" class="form-control editor ckeditor"
+									name="activityInfo" id="activityInfo"
+									th:utext="*{activityInfo}"></textarea>
+									<div id="imagePreview"></div>
+							</div>
+
+
+							<div class="form-group">
+								<button type="submit" class="btn btn-primary" id="update-btn"
+									onclick="submitTest(event)">確定</button>
+								<button type="reset" class="btn btn-primary">取消</button>
+							</div>
 
 						</div>
-						<!-- end card -->
+						<!-- end card-body -->
+
 					</form>
 				</div>
+				<!-- end card -->
 			</div>
 		</div>
 	</div>
 	<div th:replace="~{layout/footer}"></div>
 	<!-- BEGIN Java Script for this page -->
 	<script th:src="@{/assets/plugins/trumbowyg/trumbowyg.min.js}"></script>
-	<script
-		th:src="@{/assets/plugins/trumbowyg/plugins/upload/trumbowyg.upload.js}"></script>
+	<script th:src="@{/gym/activity/ckeditor/ckeditor.js}"></script>
+	<script th:src="@{/assets/plugins/trumbowyg/plugins/upload/trumbowyg.upload.js}"></script>
+		<script th:src="@{/gym/activity/js/ckeditor-use.js}"></script>
 	<!-- END Java Script for this page -->
-	<script>$('#activityCover').on('change', function(e){      
-  const file = this.files[0];//將上傳檔案轉換為base64字串
-      
-  const fr = new FileReader();//建立FileReader物件
-  fr.onload = function (e) {
-    $('#activityCoverImg').attr('src', e.target.result);//读取的结果放入圖片
-  };
-      
-  // 使用 readAsDataURL 將圖片轉成 Base64
-  fr.readAsDataURL(file);
-});
-</script>
+    <script>      
+    function submitTest(event) {
+  event.preventDefault(); // 阻止表單提交
+
+  Swal.fire({
+    title: "您確定要更新活動資料嗎？",
+    icon: "question",
+    showCancelButton: true,
+    confirmButtonText: "確定",
+    cancelButtonText: "取消"
+  }).then(function(result) {
+    if (result.isConfirmed) {
+      // 延遲執行表單提交
+      setTimeout(function() {
+        document.getElementById('updateForm').submit();
+      }, 2000); // 2秒延遲
+      // 顯示打勾圖示及成功
+      Swal.fire({
+        title: "更新成功",
+        icon: "success",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+    } else if (result.isDismissed) {
+      // 顯示取消提示
+      Swal.fire("取消更新", "", "info");
+    }
+  });
+}
+$('#update-btn').click(submitTest);
+    </script>
 </body>
 </html>

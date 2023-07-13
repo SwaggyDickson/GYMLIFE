@@ -1,15 +1,22 @@
 package tw.gymlife.activity.model;
 
 import java.util.Date;
-
+import java.util.List;
+import java.util.ArrayList;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Lob;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
@@ -26,7 +33,7 @@ public class Activity {
 	private Integer activityId;
 	
 	@Column(name="activityName")
-	private String activityName;
+	private String activityName; 
 	
 	@DateTimeFormat(pattern = "yyyy/MM/dd")//時間格式
 	@Temporal(TemporalType.DATE)//時間選擇
@@ -36,13 +43,63 @@ public class Activity {
 	@Column(name="activityLocation")
 	private String activityLocation;
 	
-	@Column(name="activityStatus")
-	private String activityStatus;
+	@Column(name="activityCategory")
+	private String activityCategory;
 	
 	@Lob
 	@Column(name="activityCover")
 	private byte[] activityCover;
 	
-	@Column(name="activityContent")
-	private String activityContent;
+	@DateTimeFormat(pattern = "yyyy/MM/dd")//時間格式
+	@Temporal(TemporalType.DATE)//時間選擇
+	@Column(name="registrationStartDate")
+	private Date registrationStartDate;
+	
+	@DateTimeFormat(pattern = "yyyy/MM/dd")//時間格式
+	@Temporal(TemporalType.DATE)//時間選擇
+	@Column(name="registrationEndDate")
+	private Date registrationEndDate;
+	
+	@Column(name="organizer")
+	private String organizer;
+	
+	@Column(name = "activityInfo")
+	private String activityInfo;
+	
+	@Column(name = "applicantLimitedQty")
+	private Integer applicantLimitedQty;
+	
+	@Column(name = "activityApplicantsQty")
+	private Integer activityApplicantsQty;
+	
+	@DateTimeFormat(pattern = "yyyy/MM/dd HH:mm:ss")//時間格式
+	@Temporal(TemporalType.TIMESTAMP)//時間選擇
+	@Column(name="createTime", updatable = false)
+	private Date createTime;
+	
+	@DateTimeFormat(pattern = "yyyy/MM/dd HH:mm:ss")//時間格式
+	@Temporal(TemporalType.TIMESTAMP)//時間選擇
+	@Column(name="updateTime")
+	private Date updateTime;
+    
+    @JsonIgnore 
+    @OneToMany(mappedBy = "activity",cascade = CascadeType.ALL,orphanRemoval = true )
+    private List<Registration> registrations = new ArrayList<>();;
+    
+    @JsonManagedReference // 由這邊做 JSON 序列化
+    @OneToMany(mappedBy = "activity",cascade = CascadeType.ALL,orphanRemoval = true)
+    private List<ActivityImage> images = new ArrayList<>();
+    
+    @PrePersist
+    public void prePersist() {
+        this.createTime = new Date();
+    }
+    
+    
+    
+//    @PreUpdate
+//    public void preUpdate() {
+//        this.updateTime = new Date();
+//    }
+//	
 }

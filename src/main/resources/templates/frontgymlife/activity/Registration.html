@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body style="background-color: black;">
+	<div th:replace="~{layout/front_nav}"></div>
+
+	<!-- Breadcrumb Section Begin -->
+	<section class="breadcrumb-section set-bg"
+		th:data-setbg="@{http://localhost:8080/gymlife/gym/activity/img/home2.jpg}">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-12 text-center">
+					<div class="breadcrumb-text">
+						<h2>All Activity</h2>
+						<div class="bt-option">
+							<a th:href="@{/}">Home</a> <span>Activity</span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	<!-- Breadcrumb Section End -->
+	<!-- Add a space with margin -->
+	<div style="margin-top: 40px; margin-bottom: 50px;"></div>
+	<div class="container">
+		<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-12">
+			<div class="card mb-3">
+				<div class="card-header">
+					<h3>
+						<i class="fa fa-hand-pointer-o"></i> 線上報名
+					</h3>
+				</div>
+
+				<div class="card-body">
+
+					<form action="#">
+						<div class="form-group">
+							<label for="userName">報名者姓名<span class="text-danger">*</span></label>
+							<input type="text" name="nick" required class="form-control"
+								id="userName" th:value="${member.userName}">
+						</div>
+						<div class="form-group">
+							<label for="userName">性别<span class="text-danger">*</span></label>
+							<div class="col-sm-10">
+								<div class="form-check">
+									<input class="form-check-input" type="radio" name="gender"
+										id="gridRadios1" value="男"
+										th:checked="${member.userGender == '男'}" /> <label
+										class="form-check-label" for="gridRadios1">男</label>
+								</div>
+								<div class="form-check">
+									<input class="form-check-input" type="radio" name="gender"
+										id="gridRadios2" value="女"
+										th:checked="${member.userGender == '女'}" /> <label
+										class="form-check-label" for="gridRadios2">女</label>
+								</div>
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="emailAddress">身分證字號<span class="text-danger">*</span></label>
+							<input type="text" name="idcode" maxlength="10"
+								pattern="[a-z,A-Z]{1}[1-2,8-9]\d{8}" class="form-control"
+								id="identityCard" required="required">
+						</div>
+						<div class="form-group">
+							<label for="userBirthDay">出生年月日<span class="text-danger">*</span></label>
+							<input type="date" name="userBirthDay" class="form-control"
+								th:value="${#dates.format(member.userBirthDay, 'yyyy-MM-dd')}"
+								th:attr="value=${#dates.format(member.userBirthDay, 'yyyy-MM-dd')}"
+								min="1900-01-01" max="2023-01-01" required="required">
+						</div>
+						<div class="form-group">
+							<label for="userTel">聯絡電話<span class="text-danger">*</span></label>
+							<input type="tel" required="required" id="userTel"
+								class="form-control" maxlength="11" pattern="09\d{2}\d{6}"
+								th:value="${member.userTel}">
+						</div>
+						<div class="form-group">
+							<label for="userEmail">E-mail<span class="text-danger">*</span></label>
+							<input type="email" required="required" class="form-control"
+								id="userEmail" th:value="${member.userEmail}">
+						</div>
+						<div class="form-group">
+							<label for="userAddress">地址</label>
+							<div>
+								<input type="text" class="form-control" id="userAddress"
+									th:value="${member.userAddress}" required="required">
+							</div>
+						</div>
+						<div class="form-group">
+							<label>緊急聯絡人</label>
+							<div>
+								<input type="text" class="form-control" required="required" />
+							</div>
+						</div>
+						<div class="form-group">
+							<label>Textarea</label>
+							<div>
+								<textarea class="form-control" required="required"></textarea>
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="checkbox">
+								<input id="remember-1" type="checkbox"> <label
+									for="remember-1"> Remember me </label>
+							</div>
+						</div>
+
+						<div class="form-group text-right m-b-0">
+							<button class="btn btn-primary" type="submit">Submit</button>
+							<button type="reset" class="btn btn-secondary m-l-5">
+								Cancel</button>
+						</div>
+
+					</form>
+
+				</div>
+			</div>
+			<!-- end card-->
+		</div>
+	</div>
+	<div th:replace="~{layout/front_footer}"></div>
+</body>
+</html>

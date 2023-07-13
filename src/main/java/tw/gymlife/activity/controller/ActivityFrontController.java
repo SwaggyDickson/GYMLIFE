@@ -77,6 +77,25 @@ public class ActivityFrontController {
         m.addAttribute("remainingSecondsDate", remainingSecondsDate);
 	    return "frontgymlife/activity/Details";
 	}
+	
+//	@GetMapping("/map")
+//	public String showMapPage(@RequestParam("activityId") Integer activityId, Model m) {
+//	    // 根据活动ID找到该笔数据
+//	    Activity activity = aService.getActivityById(activityId);
+//	    
+//	    // 获取活动地点
+//	    String activityLocation = activity.getActivityLocation();
+//
+//	    // 使用地理编码服务将地址转换为经纬度
+//	    double latitude = // 调用逆地理编码服务将地址转换为经度
+//	    double longitude = // 调用逆地理编码服务将地址转换为纬度
+//
+//	    // 将经纬度添加到模型对象
+//	    model.addAttribute("latitude", latitude);
+//	    model.addAttribute("longitude", longitude);
+//
+//	    return "map"; // 返回前端页面的文件名，例如 "map.html" 或 "map"（如果使用 Thymeleaf）
+//	}
 
 
 }

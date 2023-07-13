@@ -50,12 +50,12 @@
 									<div class="form-group col-md-6">
 										<label for="activityName">活動名稱</label> <input
 											class="form-control" name="activityName" type="text"
-											id="activityName" required="required">
+											id="activityName" required>
 									</div>
 									<div class="form-group col-md-6">
 										<label for="activityDate">活動日期</label> <input type="date"
 											class="form-control" id="activityDate" name="activityDate"
-											required="required">
+											required>
 									</div>
 								</div>
 
@@ -69,7 +69,7 @@
 									<div class="form-group col-md-6">
 										<label for="organizer">主辦單位</label> <input type="text"
 											class="form-control" id="organizer" name="organizer"
-											required="required">
+											required>
 									</div>
 								</div>
 								<div class="row">
@@ -77,12 +77,12 @@
 									<div class="form-group col-md-6">
 										<label for="registrationStartDate">報名開始日期</label> <input
 											type="date" class="form-control" id="registrationStartDate"
-											name="registrationStartDate" required="required">
+											name="registrationStartDate" required>
 									</div>
 									<div class="form-group col-md-6">
 										<label for="registrationEndDate">報名結束日期</label> <input
 											type="date" class="form-control" id="registrationEndDate"
-											name="registrationEndDate" required="required">
+											name="registrationEndDate" required>
 									</div>
 								</div>
 
@@ -91,12 +91,12 @@
 									<div class="form-group col-md-6">
 										<label for="applicantLimitedQty">報名人數上限</label> <input
 											type="number" class="form-control" id="applicantLimitedQty"
-											name="applicantLimitedQty" required="required">
+											name="applicantLimitedQty" required>
 									</div>
 									<div class="form-group col-md-6">
 										<label for="activityApplicantsQty">目前報名人數</label> <input
 											type="number" class="form-control" id="activityApplicantsQty"
-											name="activityApplicantsQty" required="required">
+											name="activityApplicantsQty" required>
 									</div>
 								</div>
 								<div class="row">
@@ -104,9 +104,8 @@
 									<div class="form-group col-md-6">
 										<label for="activityCategory">活動類別</label> <select
 											class="form-control" id="activityCategory"
-											name="activityCategory" required="required">
+											name="activityCategory" required>
 											<option value="路跑">路跑</option>
-											<option value="游泳">游泳</option>
 											<option value="健走">健走</option>
 											<option value="鐵人">鐵人</option>
 											<option value="籃球">籃球</option>
@@ -117,7 +116,7 @@
 									<div class="form-group col-md-6">
 										<label for="activityStatus">報名狀態</label> <select
 											class="form-control" id="activityStatus"
-											name="activityStatus" required="required">
+											name="activityStatus" required>
 											<option value="報名中">報名中</option>
 											<option value="報名截止">報名截止</option>
 										</select>
@@ -125,13 +124,13 @@
 									<div class="form-group col-md-6">
 										<label for="activityCover">活動封面</label><br /> <input
 											type="file" name="activityCover" id="activityCover"
-											required="required" />
+											required />
 									</div>
 								</div>
 								<div class="form-group">
 									<label for="activityCover">活動介紹</label>
 									<textarea rows="15" class="form-control editor"
-										name="activityInfo" id="activityInfo" required="required"></textarea>
+										name="activityInfo" id="activityInfo" required></textarea>
 								</div>
 								<div class="form-group">
 									<button type="submit" class="btn btn-primary" id="insert-btn"
@@ -156,7 +155,7 @@
 	<script th:src="@{/assets/plugins/trumbowyg/trumbowyg.min.js}"></script>
 	<script
 		th:src="@{/assets/plugins/trumbowyg/plugins/upload/trumbowyg.upload.js}"></script>
-	<script th:src="@{/gym/activity/ckeditor/ckeditor.js}"></script>
+	<script th:src="@{/gym/activity/ckeditor/build/ckeditor.js}"></script>
 	<script th:src="@{/gym/activity/js/ckeditor-use.js}"></script>
 	<script th:src="@{/gym/activity/js/insert-activity.js}"></script>
 	<script th:src="@{/js/axios.min.js}"></script>

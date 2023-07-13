@@ -176,6 +176,13 @@ public class RegistrationController {
 	    m.addAttribute("activity", activity);
 	    m.addAttribute("registrations", registrations);
 	    m.addAttribute("members", members);
+	    
+	    // 檢查報名紀錄是否為空
+	    if (registrations.isEmpty()) {
+	    	// 該活動目前無報名紀錄，使用SweetAlert彈出提示框後跳轉到登入頁面
+    	    String alertMessage = "該活動目前無報名紀錄";
+    	    return "redirect:/activity/getAll?alert=" + URLEncoder.encode(alertMessage, StandardCharsets.UTF_8);
+	    }
 
 	  return "backgymlife/activity/backRegistrationRecord"; 
 	}

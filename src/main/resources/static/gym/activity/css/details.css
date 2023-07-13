@@ -28,20 +28,27 @@
 }
 
 .categories-title {
-	color: white;
-	font-size: 1.2em;
-	font-weight: bold;
+    display: inline-block;
+    background-color: #97CBFF;
+    color: black;
+    padding: 5px 10px;
+    border-radius: 20px;
+    margin-bottom: 15px;
 }
 
-    .categories-info a {
-      color: white;
-      font-size: 1.2em; /* 设置链接的初始字体大小 */
-      transition: font-size 0.3s ease; /* 添加过渡效果 */
-    }
+.Category-button {
+    background-color:#97CBFF;
+    color: black;
+    border: none;
+    padding: 5px 10px;
+    margin: 5px;
+    cursor: pointer;
+    border-radius: 20px; /* 設置圓角半徑 */
+}
 
-    .categories-info a.active {
-      font-size: 1.5em; /* 设置链接被点击后的字体大小 */
-    }
+.Category-button:hover {
+    color: #FFB5B5;
+}
 
 figure.image {
 	margin: 0; /* 設置外邊距為0，去除默認間距 */

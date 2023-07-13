@@ -46,14 +46,6 @@ public class ActivityBackController {
 	@Autowired
 	public RegistrationService rService;
 
-
-	// 後台首頁
-//	@GetMapping("/backHomePage")
-//	public String getBackHomePage() {
-//
-//		return "backgymlife/activity/backHomePage";
-//	}
-
 	// 顯示新增活動頁面
 	@GetMapping("/activity/insert")
 	public String showInsertActivityPage(Model model) {
@@ -73,22 +65,6 @@ public class ActivityBackController {
 	        @RequestParam("activityInfo") String activityInfo,
 	        @RequestParam("applicantLimitedQty") Integer applicantLimitedQty,
 	        @RequestParam("activityApplicantsQty") Integer activityApplicantsQty, Model m) throws IOException {
-		 
-	    // 進行日期判斷
-	    Date currentDate = new Date();
-	    if (currentDate.before(registrationStartDate)) {
-	        // 報名尚未開始，返回錯誤視圖或執行其他操作
-	    	String alertMessage = "報名時間尚未開始，請重新選擇。";
-	    	return "redirect:/activity/insert?alert=" + URLEncoder.encode(alertMessage, StandardCharsets.UTF_8);
-	    } else if (currentDate.after(registrationEndDate)) {
-	        // 報名已結束，返回錯誤視圖或執行其他操作
-	    	String alertMessage = "報名時間已結束，請重新選擇。";
-	    	return "redirect:/activity/insert?alert=" + URLEncoder.encode(alertMessage, StandardCharsets.UTF_8);
-	    } else if (currentDate.after(activityDate)) {
-	        // 活動已結束，返回錯誤視圖或執行其他操作
-	    	String alertMessage = "活動已結束，請重新選擇。";
-	    	return "redirect:/activity/insert?alert=" + URLEncoder.encode(alertMessage, StandardCharsets.UTF_8);
-	    }
 
 	    // 建立新的活動物件並設定屬性
 	    Activity activity = new Activity();

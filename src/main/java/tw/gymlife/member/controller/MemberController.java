@@ -7,7 +7,8 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 	import org.springframework.http.HttpStatus;
 	import org.springframework.http.ResponseEntity;
-	import org.springframework.stereotype.Controller;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.stereotype.Controller;
 	import org.springframework.ui.Model;
 	import org.springframework.web.bind.annotation.DeleteMapping;
 	import org.springframework.web.bind.annotation.GetMapping;
@@ -27,6 +28,9 @@ import tw.gymlife.member.service.MemberService;
 		    private MemberService memberService;
 		  @Autowired
 		  	private  MailService mailService;
+		  
+		  @Autowired
+		  private SimpMessagingTemplate template;
 	
 		    @GetMapping("/MemberQuery")
 		    public String showMemberQuery(Model model) {
@@ -53,13 +57,11 @@ import tw.gymlife.member.service.MemberService;
 		    }
 	
 		    @PostMapping("gymlife/api/memberUpdate")
-		    
 		    public ResponseEntity<Member> memberUpdate(@RequestBody Member body) {
 		        try {
 		            Member member = memberService.memberUpdate(
 		                body.getUserId(),
 		                body.getUserAccount(),
-		                body.getUserPassword(),
 		                body.getUserName(),
 		                body.getUserGender(),
 		                body.getUserAddress(),
@@ -74,5 +76,48 @@ import tw.gymlife.member.service.MemberService;
 		        }
 		    }
 		    
+		    @PostMapping("api/updateUserStatus")
+		    public ResponseEntity<Member> updateUserStatus(@RequestBody Member body){
+		    try {
+		    	Member member = memberService.updateUserStatus(
+		    		body.getUserId(),
+		    		body.getUserStatus()
+		    		);
+					    return new ResponseEntity<>(member, HttpStatus.OK);
+			
+			    } catch (Exception e) {
+			        return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+			    }
+			}
+		    
+		    @GetMapping("/memberAnalyze")
+		    public String memberAnalyze() {
+				return "backgymlife/member/memberAnalyze";
+			}
+		    
+		    @GetMapping("/api/genderCountData")
+		    @ResponseBody
+		    public Map<String, Integer> getGenderCountData() {
+		        return memberService.getGenderCount();
+		    }
+		    
+		    @GetMapping("/api/totalMember")
+		    @ResponseBody
+		    public Long getTotalUsers() {
+		      long totalMembers = memberService.countMember();
+		      return totalMembers;
+		    }
+		    
+		   
+		    
+		    	
+		    
+		    public void onDataChange() {
+		        // When data changes, fetch the new data
+		        List<Member> selectAllMembers = memberService.selectAllMembers();
+		        // Send the new data to all connected clients
+		        template.convertAndSend("/topic/MemberQuery", selectAllMembers);
+		        
+		    }
 		
 	}

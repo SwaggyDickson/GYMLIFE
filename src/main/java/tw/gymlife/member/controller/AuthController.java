@@ -30,6 +30,7 @@ import jakarta.servlet.http.HttpSession;
 import tw.gymlife.member.model.Member;
 import tw.gymlife.member.service.MailService;
 import tw.gymlife.member.service.MemberService;
+import tw.gymlife.member.service.ReCaptchaService;
 
 	@Controller
 	public class AuthController {
@@ -42,6 +43,9 @@ import tw.gymlife.member.service.MemberService;
 		
 		@Autowired
 		private  PasswordEncoder pwdEncoder;
+		
+		@Autowired
+		private ReCaptchaService reCaptchaService;
 		
 		private static final int LOCK_DURATION = 1000;
 		
@@ -59,8 +63,17 @@ import tw.gymlife.member.service.MemberService;
 			public Map<String, Object> handleLogin(@RequestBody Map<String, String> accpwd, HttpSession httpsession) {
 			    String userAccount = accpwd.get("userAccount");
 			    String userPassword = accpwd.get("userPassword");
+//			    String recaptchaToken = accpwd.get("recaptchaToken");
 			    
 			    Map<String, Object> response = new HashMap<>();
+			    
+//			    boolean isRecaptchaValid = reCaptchaService.verify(recaptchaToken);
+//			    if (!isRecaptchaValid) {
+//			        response.put("status", "fail");
+//			        response.put("message", "reCAPTCHA驗證失敗");
+//			        return response;
+//			    }
+
 			    
 			    Optional<Integer> failedAttemptsOpt = Optional.ofNullable((Integer) httpsession.getAttribute("failedAttempts"));
 			    Integer failedAttempts = failedAttemptsOpt.orElse(0);
@@ -147,6 +160,9 @@ import tw.gymlife.member.service.MemberService;
 			    httpsession.setAttribute("userPermission", result.getUserPermission());
 			    httpsession.setAttribute("userStatus", result.getUserStatus());
 			    httpsession.setAttribute("userLoggedIn", true);
+			    httpsession.setAttribute("userPhoto", result.getUserPhoto());
+			    
+			   
 			    
 			    System.out.println("成功獲取帳號: " + result.getUserAccount());
 			}

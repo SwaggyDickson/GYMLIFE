@@ -1,10 +1,12 @@
 package tw.gymlife.forum.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import jakarta.transaction.Transactional;
 import tw.gymlife.forum.model.ArticleBean;
 import tw.gymlife.forum.model.ArticleReport;
 import tw.gymlife.forum.model.ArticleReportRepository;
@@ -19,8 +21,26 @@ public class ArticleReportService {
 	@Autowired
 	private ArticleService articleService;
 
-	@Autowired
-	private MailService mailService;
+
+	@Transactional
+	public void updateReportStatus(Integer reportId, String newStatus) {
+		Optional<ArticleReport> optionalReport = articleReportRepository.findById(reportId);
+		if (optionalReport.isPresent()) {
+			ArticleReport report = optionalReport.get();
+			report.setReportStatus(newStatus);
+			articleReportRepository.save(report);
+		} else {
+			throw new IllegalArgumentException("No report found with ID " + reportId);
+		}
+	}
+
+	public List<ArticleReport> findAllByMemberUserId(int userId) {
+		return articleReportRepository.findAllByMemberUserId(userId);
+	}
+
+	public List<ArticleReport> findAll() {
+		return articleReportRepository.findAll();
+	}
 
 	// 新增
 	public void insert(ArticleReport articleReport) {

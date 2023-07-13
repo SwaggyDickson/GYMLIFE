@@ -4,6 +4,7 @@
 <head>
 	<meta charset="UTF-8">
 	<title>文章內頁</title>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"
 		integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
@@ -37,9 +38,40 @@
 			color: black;
 		}
 
+		div p {
+	    color: black; /* 或者任何你想要的顏色 */
+		}
+		
+		/* 	.fa.fa-share-alt {
+ 	   color: #777;
+		}
+	.qa-share {
+    display: block;
+    padding-top: 4px;
+    padding-right: 16px;
+    font-size: 14px;
+    color: #777;
+}
+.qa-action__ul {
+    width: 100%;
+    margin-bottom: 0;
+    padding-left: 0;
+    list-style: none;
+}
+.pull-left {
+    float: left;
+}
 
-
-
+ul {
+    display: block;
+    list-style-type: disc;
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    padding-inline-start: 40px;
+}
+*/
 		.test {
 			display: flex;
 			flex-direction: column;
@@ -136,6 +168,26 @@
 			background-color: #F2F2F2;
 			border-color: #DDDDDD;
 		}
+
+		footer {
+			margin-top: auto;
+		}
+
+		#main,
+		.h-100 {
+			min-height: 100vh;
+		}
+
+		#progressbar {
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 0;
+			height: 6px;
+			background-color: #f36100;
+			/* 預設是藍色，可以更改為你喜歡的顏色 */
+			z-index: 9999;
+		}
 	</style>
 	<!-- CSS only -->
 </head>
@@ -143,563 +195,938 @@
 <body class="test" th:data-is-logged-in="${isLoggedIn}">
 	<div th:replace="~{layout/front_nav}"></div>
 
-	<h2 style="padding-top: 100px;">文章內頁</h2>
+
+	<div class="h-100 container rounded p-2 h-75">
+		<div class="row justify-content-center">
+			<div class="col-6">
+				<h2 style="padding-top: 100px;">文章內頁</h2>
+
+				<div id="progressbar"></div>
 
 
+				<div class="card" style="margin-top: 20px;">
+					<div class="card-header" style="color: black">
+						<h2>
+							<a th:href="@{/front/{articleId}(articleId=${article.articleId})}"
+								th:text="${article}?${article.articleTitle}" class="link-dark"></a>
+						</h2>
 
-	<div class="card" style="margin-top: 20px;">
-		<div class="card-header" style="color: black">
-			<h2>
-				<a th:href="@{/front/{articleId}(articleId=${article.articleId})}"
-					th:text="${article}?${article.articleTitle}" class="link-dark"></a>
-			</h2>
-			<!-- <p>By <span th:text="${article.author}"></span></p> -->
-			發文時間<span th:text="${article}?${#dates.format(article.articleTime,'yyyy-MM-dd, HH:mm:ss')}">發文時間</span>
-			<br /> 最新編輯時間<span
-				th:text="${article}?${#dates.format(article.articleUpdateTime,'yyyy-MM-dd, HH:mm:ss')}">最新編輯時間</span>
-		</div>
-
-		<div class="card-body">
-			<section style="color: black">
-				<div>
-					<input type="hidden" id="articleId" th:value="${article.articleId}">
-				</div>
-				<div th:text="${article}?${'#'+ article.articleType}"></div>
-				<hr>
-				<div th:text="${article}?${article.articleContent}">文章內容</div>
-				<hr>
-				<div>
-					<img width="200px" th:src="@{'/downloadImage/'+${article.articleId}}">
-				</div>
-
-				<!-- 	<div class="edit-place" style="display: flex">  -->
-				<div class="d-flex">
-					<!-- 修改文章(跳頁) -->
-
-					<form th:action="@{/front/articleEdit}" method="get">
-						<!-- 雖然藏起來但是參數有跟著送過去 -->
-						<input name="articleId" th:value="${article.articleId}" type="hidden" /> <input type="submit"
-							value="編輯文章" class="btn btn-outline-success btn-sm" />
-					</form>
-
-					<!-- 刪除文章(假刪除) -->
-					<form th:action="@{'/front/article/delete/' + ${article.articleId}}" method="post"
-						class="deleteForm5">
-						<button type="submit" class="btn btn-outline-danger btn-sm deleteButton5">刪除文章</button>
-					</form>
-
-					<!--文章按讚-->
-					<div class="articlelike-section like-section">
-						<i class="far fa-heart fa-heart-article" th:id="'article-heart-' + ${article.articleId}"
-							th:class="${userLikedArticle ? 'fas fa-heart fa-heart-article' : 'far fa-heart fa-heart-article'}"
-							th:data-article-id="${article.articleId}"
-							th:data-article-liked="${userLikedArticle ? 'true' : 'false'}">
-						</i> <span class="like-count" th:text="${articleLikeCount}"></span>
-						Likes
-					</div>
-
-					<!-- 文章收藏 -->
-					<div class="articleSave-section save-section">
-						<i class="fa-bookmark fa-bookmark-article" th:id="'article-bookmark-' + ${article.articleId}"
-							th:class="${userSavedArticle ? 'fas fa-bookmark fa-bookmark-article' : 'far fa-bookmark fa-bookmark-article'}"
-							th:data-article-id="${article.articleId}"
-							th:data-article-saved="${userSavedArticle ? 'true' : 'false'}">
-						</i>
-					</div>
-
-
-					<div class="view-count">
-						<span>瀏覽次數：</span> <span th:text="${article.viewCount}"></span>
-					</div>
-
-					<!-- 檢舉文章的按鈕，點擊後顯示modal -->
-					<button type="button" class="btn btn-primary reportButton" data-toggle="modal"
-						data-target="#reportModal">檢舉文章
-					</button>
-
-				</div>
-			</section>
-		</div>
-	</div>
-
-
-	<!-- 檢舉文章的modal -->
-	<div class="modal fade" id="reportModal" tabindex="-1" role="dialog" aria-labelledby="reportModalLabel"
-		aria-hidden="true">
-		<div class="modal-dialog" role="document">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title" id="reportModalLabel">檢舉文章</h5>
-					<button type="button" class="close" data-dismiss="modal" aria-label="關閉">
-						<span aria-hidden="true">&times;</span>
-					</button>
-				</div>
-				<div class="modal-body">
-					<form id="reportForm">
-						<div class="form-group">
-							<label for="reportType">檢舉類型</label> <select class="form-control" id="reportType"
-								name="reportType">
-								<option>選擇...</option>
-								<option>類型1</option>
-								<option>類型2</option>
-								<option>類型3</option>
-							</select>
-						</div>
-						<div class="form-group">
-							<label for="reportReason">檢舉原因</label> <input type="text" class="form-control"
-								id="reportReason" name="reportReason">
-						</div>
-					</form>
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary" data-dismiss="modal">關閉</button>
-					<button type="button" class="btn btn-primary" id="submitReport">送出檢舉</button>
-				</div>
-			</div>
-		</div>
-	</div>
-
-	<br />
-	<div>
-		<form th:action="@{/front/{articleId}/insertCommentPage(articleId=${article.articleId})}" method="get"
-			enctype="multipart/form-data">
-			<button type="submit" class="btn btn-outline-warning">新增留言</button>
-		</form>
-	</div>
-
-
-	<!-- 顯示留言 -->
-	<h2 style="color: white">Comments</h2>
-	<div th:text="${'共 ' + totalComments + ' 筆留言'}" style="color: white"></div>
-
-	<th:block th:each="comment,commentIndex : ${comments}" style="color:black;">
-		<div class="card" style="color: black;">
-			<div class="card-header" style="color: black;">
-				<!-- 顯示留言者的名稱 -->
-				<!-- <p th:text="${comment.userName}"></p>--commentIndex.count>  -->
-				<!--  顯示留言的編號 -->
-				<div></div>
-				<div th:text="${'B'+  (commentIndex.index + 1 + (currentPage - 1) * pageSize)  }"></div>
-				留言時間<span th:text="${comment}?${#dates.format(comment.commentTime,'yyyy-MM-dd, HH:mm:ss')}"></span>
-				<!-- 顯示留言的更新時間 -->
-				<!--	更新留言時間<div th:text="${comment}?${#dates.format(comment.commentUpdateTime,'yyyy-MM-dd, HH:mm:ss')}"></div>-->
-			</div>
-			<div class="card-body" style="color: black;">
-				<div id="commentList" style="color: black;">
-					<span th:text="${comment.commentContent}"></span>
-					<!-- th:if="${comment.commentUpdateTime != null}" -->
-					<!--<p th:if="${comment.commentUpdateTime == null}">未更新</p> -->
-					<!-- 如果有圖片，顯示圖片 -->
-					<!-- 	<img th:if="${comment.commentImg != null}" th:src="@{'data:image/png;base64,'+${T(org.apache.tomcat.util.codec.binary.Base64).encodeBase64String(comment.commentImg)}}" /> -->
-					<br />
-					<hr>
-					<img width="200px" th:src="@{'/front/comments/'+${comment.commentId}}">
-
-					<div class="d-flex ">
-						<form th:action="@{/front/comments/edit}" method="get" enctype="multipart/form-data">
-							<!-- 雖然藏起來但是參數有跟著送過去 -->
-							<input name="commentId" th:value="${comment.commentId}" type="hidden" /> <input
-								type="hidden" name="articleId" th:value="${article.articleId}" />
-							<button type="submit" value="編輯留言" class="btn btn-outline-success btn-sm">編輯留言</button>
-						</form>
-						<!-- 假刪除 -->
-						<form th:action="@{/front/{articleId}/comment/delete(articleId=${article.articleId})}"
-							method="post" class="deleteForm">
-							<input name="articleId" th:value="${article.articleId}" type="hidden" /> <input
-								name="commentId" th:value="${comment.commentId}" type="hidden" />
-							<button type="submit" class="btn btn-outline-danger btn-sm deleteButton"
-								id="deleteButton">刪除留言</button>
-						</form>
-
-						<!--留言点赞-->
-						<div class="commentlike-section like-section">
-							<i class="far fa-heart fa-heart-comment" th:id="'comment-heart-' + ${comment.commentId}"
-								th:class="${userLikedComments[__${comment.commentId}__] ? 'fas fa-heart fa-heart-comment' : 'far fa-heart fa-heart-comment'}"
-								th:data-comment-id="${comment.commentId}"
-								th:data-comment-liked="${userLikedComments[__${comment.commentId}__] ? 'true' : 'false'}">
-							</i> <span class="like-count" th:text="${likeCounts[__${comment.commentId}__]}"></span>
-							Likes
-						</div>
-
-						<hr>
+						<a th:href="@{/front/memberPersonalPage}">
+							<p style="color: black">發文者<span th:text="${article.member.userName}"></span></p>
+						</a>
+						發文時間<span
+							th:text="${article}?${#dates.format(article.articleTime,'yyyy-MM-dd, HH:mm:ss')}"></span>
 						<br />
+						<!-- <span
+							th:text="${article.articleUpdateTime} != null ? '最新編輯時間' + ${#dates.format(article.articleUpdateTime, 'yyyy-MM-dd, HH:mm:ss')} : ''"></span> -->
+					</div>
 
-						<!-- Add reply form -->
-						<form th:action="@{/parent/add/{parentCommentId}(parentCommentId=${comment.commentId})}"
-							method="post">
-							<input type="hidden" name="articleId" th:value="${article.articleId}"> <input type="hidden"
-								name="parentCommentId" th:value="${comment.commentId}">
-							<textarea name="commentContent" placeholder="Add a reply..."></textarea>
-							<button type="submit">新增回覆</button>
-						</form>
-
-						<!-- 巢狀留言開始 -->
-						<th:block th:each="reply, replyStat : ${commentReplies.get(comment.commentId)}">
-							<div class="card" style="color: black;">
-								<div class="card-header" style="color: black;">
-									<div th:text="${'R'+  (replyStat.index + 1 + (currentPage - 1) * pageSize)  }">
-									</div>
-									回覆時間<span
-										th:text="${reply}?${#dates.format(reply.commentTime,'yyyy-MM-dd, HH:mm:ss')}"></span>
-								</div>
-								<div class="card-body" style="color: black;">
-									<span th:text="${reply.commentContent}"></span> <br />
-									<hr>
-									<img width="200px" th:src="@{'/front/comments/'+${reply.commentId}}">
-									<!-- ... -->
-									<!-- Your other controls for each reply like edit, delete, etc. -->
-								</div>
-								<div class="d-flex ">
-									<form th:action="@{/parent/update/{replyId}(replyId=${reply.commentId})}"
-										method="post" onsubmit="event.preventDefault(); updateReply(this);">
-										<input type="hidden" name="articleId" th:value="${article.articleId}"> <input
-											type="hidden" name="replyId" th:value="${reply.commentId}"> <input
-											name="commentContent" placeholder="Enter new content...">
-										<button type="submit">修改巢狀留言</button>
-									</form>
-									<form th:action="@{/parent/delete/{replyId}(replyId=${reply.commentId})}"
-										th:method="delete">
-										<input type="hidden" name="articleId" th:value="${article.articleId}"> <input
-											type="hidden" name="replyId" th:value="${reply.commentId}">
-										<button type="submit">刪除巢狀留言</button>
-									</form>
-								</div>
-
+					<div class="card-body">
+						<section style="color: black">
+							<div>
+								<input type="hidden" id="articleId" th:value="${article.articleId}">
 							</div>
-							<br />
-							<br />
-						</th:block>
-						<!-- 巢狀留言結束 -->
+							<i class="fa-solid fa-tag"><span class="badge rounded-pill bg-warning text-dark"
+									th:text="${article}?${ article.articleType}"></span></i>
+							<hr>
+							<div style="color: black" th:utext="${article}?${article.articleContent}">文章內容</div>
+							<hr>
+							
+								<img width="200px" th:src="@{'/downloadImage/'+${article.articleId}}" th:if="${article.hasImage}">
+								<p th:unless="${article.hasImage}"></p>
 
 
+							<!-- <div class="edit-place" style="display: flex">  -->
+							<div class="d-flex">
+								<!-- 修改文章(跳頁) -->
+
+								<form th:action="@{/front/articleEdit}" method="get" th:if="${userIsAuthor}">
+									<!-- 雖然藏起來但是參數有跟著送過去 -->
+									<input name="articleId" th:value="${article.articleId}" type="hidden" /> <input
+										type="submit" value="編輯文章" class="btn btn-outline-success btn-sm" />
+								</form>
+
+								<!-- 刪除文章(假刪除) -->
+								<form th:action="@{'/front/article/delete/' + ${article.articleId}}" method="post"
+									class="deleteForm5" th:if="${userIsAuthor}">
+									<button type="submit"
+										class="btn btn-outline-danger btn-sm deleteButton5">刪除文章</button>
+								</form>
+
+
+								<!-- <ul class="qa-action__ul pull-left qa-action__ul--ironman">
+				<li> -->
+								<!--文章按讚-->
+								<div class="articlelike-section like-section">
+									<i class="far fa-heart fa-heart-article"
+										th:id="'article-heart-' + ${article.articleId}"
+										th:class="${userLikedArticle ? 'fas fa-heart fa-heart-article' : 'far fa-heart fa-heart-article'}"
+										th:data-article-id="${article.articleId}"
+										th:data-article-liked="${userLikedArticle ? 'true' : 'false'}">
+									</i> <span class="like-count" th:text="${articleLikeCount}"></span>
+									Likes
+								</div>
+								<!-- </li>
+				<li> -->
+								<!-- 文章收藏 -->
+								<div class="articleSave-section save-section">
+									<i class="fa-bookmark fa-bookmark-article"
+										th:id="'article-bookmark-' + ${article.articleId}"
+										th:class="${userSavedArticle ? 'fas fa-bookmark fa-bookmark-article' : 'far fa-bookmark fa-bookmark-article'}"
+										th:data-article-id="${article.articleId}"
+										th:data-article-saved="${userSavedArticle ? 'true' : 'false'}">
+									</i>
+								</div>
+
+								<!-- </li>
+				<li>	 -->
+								<div class="articleShare-section share-section">
+									<i class="fa fa-share-alt fa-fw fa--spacing"></i>
+								</div>
+								<!-- 	</li>
+				<li> -->
+								<div class="view-count">
+									<span>瀏覽次數：</span> <span th:text="${article.viewCount}"></span>
+								</div>
+								<!-- </li>
+				</ul> -->
+								<!-- 檢舉文章的按鈕，點擊後顯示modal -->
+								<button type="button" class="btn btn-primary reportButton" data-toggle="modal"
+									data-target="#reportModal">檢舉文章
+								</button>
+							</div>
+						</section>
 					</div>
 				</div>
+
+
+				<!-- 檢舉文章的modal -->
+				<div class="modal fade" id="reportModal" tabindex="-1" role="dialog" aria-labelledby="reportModalLabel"
+					aria-hidden="true">
+					<div class="modal-dialog" role="document">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h5 class="modal-title" id="reportModalLabel">檢舉文章</h5>
+								<button type="button" class="close" data-dismiss="modal" aria-label="關閉">
+									<span aria-hidden="true">&times;</span>
+								</button>
+							</div>
+							<div class="modal-body">
+								<form id="reportForm">
+									<div class="form-group">
+										<label for="reportType">檢舉類型</label>
+										<select class="form-control" id="reportType" name="reportType">
+											<option>言語霸凌</option>
+											<option>色情</option>
+											<option>分類錯誤</option>
+										</select>
+									</div>
+									<div class="form-group">
+										<label for="reportReason">檢舉原因</label> <input type="text" class="form-control"
+											id="reportReason" name="reportReason">
+									</div>
+								</form>
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-secondary" data-dismiss="modal">關閉</button>
+								<button type="button" class="btn btn-primary" id="submitReport">送出檢舉</button>
+							</div>
+						</div>
+					</div>
+				</div>
+				<br />
+				<div>
+					<!--跳頁的新增留言-->
+					<!-- <form th:action="@{/front/{articleId}/insertCommentPage(articleId=${article.articleId})}"
+						method="get" enctype="multipart/form-data">
+						<button type="submit" class="btn btn-outline-warning">新增留言</button>
+					</form> -->
+
+					<!-- 新增留言的modal-->
+					<!-- <button type="button" class="btn btn-outline-success" data-bs-toggle="modal"
+			data-bs-target="#commentModal">新增留言</button> -->
+
+					<!--ajax 新增留言-->
+			<div style="color: black; background-color: white; padding: 20px;">
+				<form action="#" method="post" enctype="multipart/form-data" id="commentForm">
+					<textarea id="commentCon" name="commentContent" placeholder="輸入留言內容" required style="width: 100%; height: 150px; padding: 10px; border: none; border-radius: 10px; background: #f2f2f2;"></textarea>
+					<div class="input-group">
+						<input type="file" id="commentImg" name="commentImg" accept="image/*" style="display: none;">
+						<label for="commentImg" id="fileLabel">
+						<i class="fa-solid fa-arrow-up-from-bracket fa-2xl">上傳圖片</i>
+							<!-- <img id="uploadIcon" src="upload_icon.png" style="cursor:pointer;" /> -->
+						</label>
+					</div>
+					<button type="button" class="btn btn-outline-warning" id="submitCommentBtn" style="display: block; width: 100%; margin-top: 10px;">新增留言</button>
+				</form>
 			</div>
-		</div>
-		<br />
-		<br />
-	</th:block>
+
+					
+					
+					
+				</div>
 
 
+				<!-- 顯示留言 -->
+				<h2 style="color: white">Comments</h2>
 
-	<div class="pagination">
-		<ul class="pagination">
+				<!-- 	<div class="commentList"> -->
 
-			<!-- 往前一頁 -->
-			<th:block th:switch="${comments.number == 0}">
-				<li th:case="${true}" class="page-item disabled"><span class="page-link" aria-label="Previous"> <span
-							aria-hidden="true" style="user-select: none">這是第一頁</span>
-					</span></li>
+				<div id="totalCommentsDisplay" th:text="${'共 ' + totalComments + ' 筆留言'}" style="color: white">
+				</div>
 
-				<li th:case="${false}" class="page-item"><a class="page-link"
-						th:href="@{'/front/'+${article.articleId}+'?p='+${comments.number}}" aria-label="Previous">
-						<span aria-hidden="true">&laquo;</span>
-					</a></li>
-			</th:block>
 
-			<!-- 中間每一頁 -->
-			<th:block th:each="pageNumber : ${#numbers.sequence(1, comments.totalPages)}">
-				<th:block th:switch="${comments.number != pageNumber-1}">
-					<li th:case="${true}" class="page-item"><a class="page-link"
-							th:href="@{'/front/'+${article.articleId}+'?p='+${pageNumber}}">
-							[[${pageNumber}]] </a></li>
+				<th:block th:each="comment,commentIndex : ${comments}" style="color:black; font-family: Arial;">
+					<div class="card" style="color: black; border: 1px solid #ddd; padding: 10px; margin: 10px;">
+						<div class="card-header"
+							style="color: black; border-bottom: 1px solid #ddd; padding-bottom: 10px;">
+							<div></div>
+							<div th:text="${'B'+  (commentIndex.index + 1 + (currentPage - 1) * pageSize)  }"
+								style="font-weight: bold;"></div>
+							<p style="color: black">發文者<span th:text="${article.member.userName}"
+									style="font-weight: bold;"></span></p>
+							留言時間<span th:text="${comment}?${#dates.format(comment.commentTime,'yyyy-MM-dd, HH:mm:ss')}"
+								style="font-size: 12px;"></span>
+						</div>
+						<div class="card-body" style="color: black;">
+							<div id="commentList" style="color: black;">
+								<span th:text="${comment.commentContent}" style="margin: 10px 0;"></span>
+								<br />
+							<!-- 如果該評論有圖片則顯示圖片 -->
+							<img width="200px" 
+							     th:if="${comment.commentImg != null}" 
+							     th:src="@{'/front/comments/'+${comment.commentId}}" 
+							     style="margin: 10px 0;">
+							
+							<!-- 如果該評論沒有圖片則顯示空字串 -->
+							<p th:unless="${comment.commentImg != null}" style="margin: 10px 0;"></p>
 
-					<li th:case="${false}" class="page-item active"><span class="page-link"
-							th:text="${pageNumber}"></span></li>
+
+								<div class="" style="justify-content: space-between; align-items: center;">
+
+									<button type="button" class="btn btn-outline-success btn-sm ajaxEditComment"
+										th:data-comment-id="${comment.commentId}"
+										style=" width:74px ; height: 31px; background-color: #28a745; color: #fff;"
+										th:if="${userIsCommentAuthors[comment.commentId]}">
+										更新留言
+									</button>
+
+									<form th:action="@{/front/{articleId}/delete(articleId=${article.articleId})}"
+										th:method="delete" class="deleteForm"
+										th:if="${userIsCommentAuthors[comment.commentId]}">
+										<input name="articleId" th:value="${article.articleId}" type="hidden" />
+										<input name="commentId" th:value="${comment.commentId}" type="hidden" />
+										<button type="submit" class="btn btn-outline-danger btn-sm deleteButton"
+											id="deleteButton"
+											style=" width:74px ; height: 31px; background-color: #dc3545; color: #fff;">刪除留言</button>
+									</form>
+
+									<!--留言点赞-->
+									<div class="commentlike-section like-section">
+										<i class="far fa-heart fa-heart-comment"
+											th:id="'comment-heart-' + ${comment.commentId}"
+											th:class="${userLikedComments[__${comment.commentId}__] ? 'fas fa-heart fa-heart-comment' : 'far fa-heart fa-heart-comment'}"
+											th:data-comment-id="${comment.commentId}"
+											th:data-comment-liked="${userLikedComments[__${comment.commentId}__] ? 'true' : 'false'}"
+											style="color: #dc3545;">
+										</i>
+										<span class="like-count" th:text="${likeCounts[__${comment.commentId}__]}"
+											style="font-weight: bold;"></span>
+										Likes
+									</div>
+
+									<hr style="border-top: 1px solid #ddd;">
+									<br />
+
+									<form th:action="@{'/parent/add/'+${comment.commentId}}" method="post">
+										<input type="hidden" name="articleId" th:value="${article.articleId}">
+										<input type="hidden" name="parentCommentId" th:value="${comment.commentId}">
+										<textarea name="commentContent" placeholder="Add a reply..."
+											style="width: 100%; height: 100px; padding: 10px;"></textarea>
+										<button type="submit"
+											style="background-color: #007bff; color: #fff; padding: 5px 10px; border: none; border-radius: 5px;">新增回覆</button>
+									</form>
+
+									<div style="margin-left: 20px;">
+										<th:block th:each="reply, replyStat : ${commentReplies.get(comment.commentId)}">
+											<div class="card" style="color: black;">
+												<div class="card-header" style="color: black;">
+													<div
+														th:text="${'R'+  (replyStat.index + 1 + (currentPage - 1) * pageSize)  }">
+													</div>
+													回覆時間<span
+														th:text="${reply}?${#dates.format(reply.commentTime,'yyyy-MM-dd, HH:mm:ss')}"></span>
+												</div>
+												<div class="card-body" style="color: black;">
+													<span th:text="${reply.commentContent}"></span> <br />
+													<hr>
+													<img width="200px"
+														th:src="@{'/front/comments/'+${reply.commentId}}">
+												</div>
+												<div class="d-flex ">
+													<th:block th:if="${userIsReplyAuthors[reply.commentId]}">
+														<form
+															th:action="@{/parent/update/{replyId}(replyId=${reply.commentId})}"
+															method="post"
+															onsubmit="event.preventDefault(); updateReply(this);">
+
+															<input type="hidden" name="articleId"
+																th:value="${article.articleId}">
+															<input type="hidden" name="replyId"
+																th:value="${reply.commentId}"> <input
+																name="commentContent" placeholder="修改巢狀留言">
+															<button type="submit">修改巢狀留言</button>
+														</form>
+														<form
+															th:action="@{/parent/delete/{replyId}(replyId=${reply.commentId})}"
+															th:method="delete">
+															<input type="hidden" name="articleId"
+																th:value="${article.articleId}">
+															<input type="hidden" name="replyId"
+																th:value="${reply.commentId}">
+															<button type="submit">刪除巢狀留言</button>
+														</form>
+													</th:block>
+												</div>
+
+											</div>
+											<br />
+											<br />
+										</th:block>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<br />
+					<br />
 				</th:block>
-			</th:block>
-
-			<!-- 往後一頁 -->
-			<th:block th:switch="${comments.number == comments.totalPages-1}">
-				<li th:case="${true}" class="page-item disabled"><span class="page-link" aria-label="Next"> <span
-							aria-hidden="true">最後一頁了哦</span>
-					</span></li>
-
-				<li th:case="${false}" class="page-item"><a class="page-link"
-						th:href="@{'/front/'+${article.articleId}+'?p='+(comments.number + 2)}" aria-label="Next"> <span
-							aria-hidden="true">&raquo;</span>
-					</a></li>
-			</th:block>
-
-		</ul>
-	</div>
 
 
-	<div th:replace="~{layout/front_footer}"></div>
-	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-	<script th:inline="javascript">
 
 
-		$(document).ready(function () {
-			$('.deleteButton').on('click', function (e) {
-				e.preventDefault();
+				<!-- </div> -->
 
-				Swal.fire({
-					title: '確定刪除?',
-					text: "你將無法恢復此內容!",
-					icon: 'warning',
-					showCancelButton: true,
-					confirmButtonColor: '#3085d6',
-					cancelButtonColor: '#d33',
-					confirmButtonText: '是的, 刪除!',
-					cancelButtonText: '取消'
-				}).then((result) => {
-					if (result.isConfirmed) {
-						$('.deleteForm').submit();
+
+
+
+
+
+				<!-- Edit Comment Modal -->
+				<!-- <div class="modal fade" id="editCommentModal" tabindex="-1" aria-labelledby="editCommentModalLabel"
+					aria-hidden="true">
+					<div class="modal-dialog">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h5 class="modal-title" id="editCommentModalLabel">編輯留言</h5>
+							 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+							</div>
+							<div class="modal-body">
+								<form id="editCommentForm" method="POST" enctype="multipart/form-data">
+									<input type="hidden" id="editCommentId" name="commentId">
+									<div class="form-group">
+										<label for="editCommentContent" class="col-form-label">留言内容:</label>
+										<textarea class="form-control" id="editCommentContent"
+											name="commentContent"></textarea>
+									</div>
+									<div class="form-group">
+										<label for="editCommentImage" class="col-form-label">留言图片:</label>
+										<input type="file" class="form-control" id="editCommentImage" name="commentImg">
+									</div>
+									<button type="submit" class="btn btn-primary">保存更改</button>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div> -->
+
+
+
+
+				<!-- 更新留言的Modal -->
+				<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+					aria-hidden="true">
+					<div class="modal-dialog">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h5 class="modal-title" id="editCommentModalLabel">編輯留言</h5>
+								<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+									id="closeEditCommentModal"></button>
+							</div>
+							<div class="modal-body">
+								<form id="editCommentForm" method="POST" enctype="multipart/form-data">
+									<input type="hidden" id="editCommentId" name="commentId">
+									<div class="form-group">
+										<label for="editCommentContent" class="col-form-label">留言内容:</label>
+										<textarea class="form-control" id="editCommentContent"
+											name="commentContent"></textarea>
+									</div>
+									<div class="form-group">
+										<label for="editCommentImage" class="col-form-label">留言圖片:</label>
+										<input type="file" class="form-control" id="editCommentImage" name="commentImg">
+									</div>
+									<button type="submit" class="btn btn-primary" id="saveEditComment">保存更改</button>
+								</form>
+							</div>
+
+						</div>
+					</div>
+				</div>
+
+
+
+
+				<input type="hidden" id="currentPage" value="${currentPage}" />
+				<input type="hidden" id="pageSize" value="${pageSize}" />
+
+				<!-- <div class="commentList"></div> -->
+
+				<div class="pagination">
+					<ul class="pagination">
+
+						<th:block th:switch="${comments.number == 0}">
+							<li th:case="${true}" class="page-item disabled"><span class="page-link"
+									aria-label="Previous"> <span aria-hidden="true"
+										style="user-select: none">&laquo;</span>
+								</span></li>
+
+							<li th:case="${false}" class="page-item"><a class="page-link"
+									th:href="@{'/front/'+${article.articleId}+'?p='+${comments.number}}"
+									aria-label="Previous">
+									<span aria-hidden="true">&laquo;</span>
+								</a></li>
+						</th:block>
+
+
+						<th:block th:each="pageNumber : ${#numbers.sequence(1, comments.totalPages)}">
+							<th:block th:switch="${comments.number != pageNumber-1}">
+								<li th:case="${true}" class="page-item"><a class="page-link"
+										th:href="@{'/front/'+${article.articleId}+'?p='+${pageNumber}}">
+										[[${pageNumber}]] </a></li>
+
+								<li th:case="${false}" class="page-item active"><span class="page-link"
+										th:text="${pageNumber}"></span></li>
+
+
+							</th:block>
+						</th:block>
+
+
+						<th:block th:switch="${comments.number == comments.totalPages-1}">
+							<li th:case="${true}" class="page-item disabled"><span class="page-link" aria-label="Next">
+									<span aria-hidden="true">&raquo;</span>
+								</span></li>
+
+							<!-- Next page link -->
+							<li th:case="${false}" class="page-item">
+								<a class="page-link"
+									th:href="@{'/front/' + ${article.articleId} + '?p=' + ${comments.number + 2}}"
+									aria-label="Next">
+									<span aria-hidden="true">&raquo;</span>
+								</a>
+							</li>
+						</th:block>
+
+					</ul>
+				</div>
+
+				<div th:replace="~{layout/front_footer}"></div>
+				<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+				<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+				<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.min.js"></script>
+
+				<script th:inline="javascript">
+
+					window.onscroll = function () { updateProgressBar() };
+
+					function updateProgressBar() {
+						var docHeight = document.body.scrollHeight - document.documentElement.clientHeight;
+						var scrollPosition = window.pageYOffset;
+						var scrollPercent = (scrollPosition / docHeight) * 100;
+
+						document.getElementById("progressbar").style.width = scrollPercent + "%";
 					}
-				})
-			});
 
-			$('.deleteButton5').on('click', function (e) {
-				e.preventDefault();
+					$(document).ready(function () {
+						$('.deleteButton').on('click', function (e) {
+							e.preventDefault();
 
-				Swal.fire({
-					title: '確定刪除?',
-					text: "你將無法恢復此內容!",
-					icon: 'warning',
-					showCancelButton: true,
-					confirmButtonColor: '#3085d6',
-					cancelButtonColor: '#d33',
-					confirmButtonText: '是的, 刪除!',
-					cancelButtonText: '取消'
-				}).then((result) => {
-					if (result.isConfirmed) {
-						$('.deleteForm5').submit();
-					}
-				})
-			});
-
-		});
-
-		//文章按讚
-		document.addEventListener('DOMContentLoaded', function () {
-			document.querySelectorAll('.articlelike-section').forEach(function (likeSection) {
-				likeSection.addEventListener('click', function (event) {
-					console.log(document.querySelectorAll('.articlelike-section'));
-					console.log(!event.target.matches('.fa-heart-article'));
-					if (!event.target.matches('.fa-heart-article')) return;
-
-					var articleId = event.target.getAttribute('data-article-id');
-
-					if (!articleId) {
-						console.log('Warning: found .fa-heart-article element without data-article-id');
-						return;  // skip this element
-					}
-
-					let isLiked = event.target.classList.contains('fas');
-
-					// 获取点赞数元素
-					let count = event.target.parentElement.querySelector('.like-count');
-
-					$.ajax({
-						url: '/gymlife/article/' + articleId + '/likes',
-						method: 'POST',
-						success: function (response) {
-							//為文章設置它獨特的id
-							var heart = document.getElementById('article-heart-' + articleId);
-
-							if (response.isLiked && !isLiked) {
-								heart.classList.add('fas');
-								heart.classList.remove('far');
-								count.textContent = response.likeCount;
-							} else if (!response.isLiked && isLiked) {
-								heart.classList.add('far');
-								heart.classList.remove('fas');
-								count.textContent = response.likeCount;
-							}
-						},
-						error: function () {
-							console.log('切換讚狀態時發生錯誤');
-						}
-					});
-				});
-			});
-		});
-
-
-
-		//留言按讚
-		document.addEventListener('DOMContentLoaded', function () {
-			document.querySelectorAll('.commentlike-section').forEach(function (likeSection) {
-				likeSection.addEventListener('click', function (event) {
-					//event.target = likeSection or .commentlike-section  ? 
-					if (!event.target.matches('.fa-heart-comment')) return;
-					var commentId = event.target.getAttribute('data-comment-id');
-
-					console.log(!event.target.matches('.fa-heart-comment'));
-					if (!commentId) {
-						console.log('Warning: found .fa-heart-comment element without data-comment-id');
-						return;  // skip this element
-					}
-
-					let isLiked = event.target.classList.contains('fas');
-
-					// 获取点赞数元素
-					let count = event.target.parentElement.querySelector('.like-count');
-
-					console.log(document.querySelectorAll('.commentlike-section'));
-					$.ajax({
-						url: '/gymlife/comment/' + commentId + '/likes',
-						method: 'POST',
-						success: function (response) {
-							//為留言設置它獨特的id
-							var heart = document.getElementById('comment-heart-' + commentId);
-
-							if (response.isLiked && !isLiked) {
-								heart.classList.add('fas');
-								heart.classList.remove('far');
-								count.textContent = response.likeCount;
-							} else if (!response.isLiked && isLiked) {
-								heart.classList.add('far');
-								heart.classList.remove('fas');
-								count.textContent = response.likeCount;
-							}
-						},
-						error: function () {
-							console.log('切換讚狀態時發生錯誤');
-						}
-					});
-				});
-			});
-		});
-
-		function updateReply(form) {
-			var formData = new FormData(form);
-			var articleId = formData.get("articleId");
-			var replyId = formData.get("replyId");
-			var commentContent = formData.get("commentContent");
-
-			$.ajax({
-				url: form.action,
-				type: 'PUT',
-				data: {
-					articleId: articleId,
-					replyId: replyId,
-					commentContent: commentContent
-				},
-				success: function (result) {
-					// Update the DOM based on 'result'
-					alert("Reply successfully updated");
-				},
-				error: function (jqXHR, textStatus, errorThrown) {
-					// Handle any errors
-					alert("Error: " + textStatus);
-				}
-			});
-		}
-
-
-		let loggedInUserId = /*[[${loggedInUserId}]]*/ null;
-		let articleUserId = /*[[${articleUserId}]]*/ null;
-
-		if (loggedInUserId !== articleUserId) {
-			// 顯示檢舉按鈕
-			$(".reportButton").show();
-		} else {
-			// 隱藏檢舉按鈕
-			$(".reportButton").hide();
-		}
-
-
-		$('#submitReport').on('click', function (e) {
-			e.preventDefault();
-
-			var articleId = document.getElementById("articleId").value;
-
-
-			var reportData = {
-				reportType: $('#reportType').val(),
-				reportReason: $('#reportReason').val()
-			};
-
-			$.ajax({
-				url: '/gymlife/article/' + articleId + '/report',
-				method: 'POST',
-				contentType: 'application/json',
-				data: JSON.stringify(reportData),
-				success: function (response) {
-					console.log("Success handler called", response);
-					Swal.fire("成功！", "檢舉成功！", "success").then(() => {
-						$('#reportModal').removeClass('show');
-						$('#reportModal').css('display', 'none');
-						$('body').removeClass('modal-open');
-						$('.modal-backdrop').remove();
-					});
-				},
-				error: function (response) {
-					console.log("Error handler called", response);
-					if (response.status == 401) {
-						Swal.fire("失敗！", "請先登入再進行檢舉", "error").then(() => {
-							$('#reportModal').removeClass('show');
-							$('#reportModal').css('display', 'none');
-							$('body').removeClass('modal-open');
-							$('.modal-backdrop').remove();
+							Swal.fire({
+								title: '確定刪除?',
+								text: "你將無法恢復此內容!",
+								icon: 'warning',
+								showCancelButton: true,
+								confirmButtonColor: '#3085d6',
+								cancelButtonColor: '#d33',
+								confirmButtonText: '是的, 刪除!',
+								cancelButtonText: '取消'
+							}).then((result) => {
+								if (result.isConfirmed) {
+									$('.deleteForm').submit();
+								}
+							})
 						});
-					} else if (response.status == 409) {
-						Swal.fire("失敗！", "你已經檢舉過這篇文章，每個會員只能檢舉一次", "error").then(() => {
-							$('#reportModal').removeClass('show');
-							$('#reportModal').css('display', 'none');
-							$('body').removeClass('modal-open');
-							$('.modal-backdrop').remove();
+
+						$('.deleteButton5').on('click', function (e) {
+							e.preventDefault();
+
+							Swal.fire({
+								title: '確定刪除?',
+								text: "你將無法恢復此內容!",
+								icon: 'warning',
+								showCancelButton: true,
+								confirmButtonColor: '#3085d6',
+								cancelButtonColor: '#d33',
+								confirmButtonText: '是的, 刪除!',
+								cancelButtonText: '取消'
+							}).then((result) => {
+								if (result.isConfirmed) {
+									$('.deleteForm5').submit();
+								}
+							})
 						});
+
+					});
+					//新增留言預覽圖片
+					/* $("#commentImg").change(function () {
+						if (this.files && this.files[0]) {
+							var reader = new FileReader();
+							reader.onload = function (e) {
+								$('#previewImg').attr('src', e.target.result); 
+							}
+							reader.readAsDataURL(this.files[0]);
+						}
+					}); */
+
+					//新增留言ajax
+					$(document).ready(function () {
+						$("#submitCommentBtn").click(function (event) {
+							event.preventDefault(); // 防止表單自動提交
+							// 禁用按鈕
+							$(this).prop('disabled', true);
+							// 取得留言內容
+							let commentContent = $("#commentCon").val();
+							// 處理文件上傳
+							let commentImg = $("#commentImg")[0].files[0];
+							let formData = new FormData();
+							formData.append('commentImg', commentImg);
+							formData.append('commentContent', commentContent);
+
+							let articleId = $("#articleId").val();
+							// AJAX提交留言
+							$.ajax({
+								type: "POST",
+								url: "/gymlife/front/article/" + articleId + "/comment",
+								data: formData,
+								processData: false,
+								contentType: false,
+								success: function (response) {
+									console.log(response)
+									$("#commentCon").val(''); // 清除文字輸入框的值
+									$("#commentImg").val(''); // 清除檔案輸入框的值
+									$(".commentList").empty();
+
+									var commentCount = 0;
+									// 遍历response数组并处理每一个返回的评论
+									$.each(response, function (i, comment) {
+										if (i == 0) {
+											var totalComments = comment.totalComments;
+											var currentPage = comment.currentPage;
+											var pageSize = comment.pageSize;
+											var floorNumber = comment.floorNumber;
+
+											console.log('Total comments: ' + totalComments); //新增
+											console.log('Current page: ' + currentPage); //新增
+											console.log('Page size: ' + pageSize); //新增
+											console.log('Floor number: ' + floorNumber); //新增
+
+											document.getElementById('totalCommentsDisplay').innerHTML = '共 ' + totalComments + ' 筆留言';
+											$('#totalComments').text(totalComments);
+											$('#floorNumber').text(floorNumber);
+
+											commentCount = totalComments + (currentPage - 1) * pageSize;
+											$('div.totalComments').text('共 ' + totalComments + ' 筆留言');
+										}
+
+										var commentTime = new Date(comment.commentTime);
+										var formattedTime = commentTime.getFullYear() + "-" + (commentTime.getMonth() + 1).toString().padStart(2, '0') + "-" + commentTime.getDate().toString().padStart(2, '0') + ", " + commentTime.getHours().toString().padStart(2, '0') + ":" + commentTime.getMinutes().toString().padStart(2, '0') + ":" + commentTime.getSeconds().toString().padStart(2, '0');
+
+										let commentImgElem = '';
+										if (comment.commentImg) {
+											commentImgElem = `<img width="200px" src="data:image/*;base64,${comment.commentImg}">`;
+										}
+
+										var newCommentElem = $(`<div class="card" style="color: black;">
+						    <div class="card-header" style="color: black;">
+						        <div></div>
+						        <div>B${comment.floorNumber}</div>
+						        留言時間<span>${formattedTime}</span>
+						    </div>
+						    <div class="card-body" style="color: black;">
+						        <div id="commentList" style="color: black;">
+						            <span>${comment.commentContent}</span>
+						            <br />
+						            <hr>
+									${commentImgElem}
+						            <div class="d-flex ">
+						                <form action="/gymlife/front/comments/edit" method="get" enctype="multipart/form-data">
+						                    <input name="commentId" value="${comment.commentId}" type="hidden" />
+						                    <input type="hidden" name="articleId" value="${comment.articleId}" />
+						                    <button type="submit" value="編輯留言" class="btn btn-outline-success btn-sm">編輯留言</button>
+						                </form>
+						                <form action="/gymlife/front/${comment.articleId}/comment/delete" method="post" class="deleteForm">
+						                    <input name="articleId" value="${comment.articleId}" type="hidden" /> 
+						                    <input name="commentId" value="${comment.commentId}" type="hidden" />
+						                    <button type="submit" class="btn btn-outline-danger btn-sm deleteButton" id="deleteButton">刪除留言</button>
+						                </form>
+						                <!--留言点赞-->
+						                <div class="commentlike-section like-section">
+						                    <i class="far fa-heart fa-heart-comment" id="comment-heart-${comment.commentId}"></i> 
+						                    <span class="like-count"></span>
+						                    Likes
+						                </div>
+						                <hr>
+						                <br />
+						                <!-- Add reply form -->
+						                <form action="/gymlife/parent/add/${comment.commentId}" method="post">
+						                    <input type="hidden" name="articleId" value="${comment.articleId}"> 
+						                    <input type="hidden" name="parentCommentId" value="${comment.commentId}">
+						                    <textarea name="commentContent" placeholder="Add a reply..."></textarea>
+						                    <button type="submit">新增回覆</button>
+						                </form>
+						            </div>
+						        </div>
+						    </div>
+						</div>
+						<br />
+						<br />`);
+
+										$(".commentList").append(newCommentElem);
+									});
+									// 啟用按鈕
+									$("#submitCommentBtn").prop('disabled', false);
+									window.location.reload();
+								},
+								error: function (jqXHR, textStatus, errorThrown) {
+									console.log("提交留言失败");
+									console.log("HTTP Status: " + jqXHR.status); // 查看 HTTP 响应状态码
+									console.log("Error Thrown: " + errorThrown); // 查看异常信息
+									console.log("Response Body: " + jqXHR.responseText); // 查看服务器的响应文本
+									// 启用按钮
+									$("#submitCommentBtn").prop('disabled', false);
+								},
+							});
+						});
+					});
+
+
+
+
+
+					//更新留言的ajax
+					//要同時更新文字內容和圖片才能更新留言
+					$(document).ready(function () {
+						// 觸發模態窗口
+						let editComments = document.querySelectorAll('.ajaxEditComment');
+						editComments.forEach(editComment => {
+							editComment.addEventListener('click', function () {
+								var commentId = editComment.getAttribute('data-comment-id');
+								var commentContent = $('#comment-content-' + commentId).text();
+								$('#editCommentId').val(commentId);
+								$('#editCommentContent').val(commentContent);
+								let myModal = document.getElementById('exampleModal');
+								myModal.classList.add('show');
+								myModal.style.display = "block";
+							});
+							let closeEditCommentModal = document.querySelector('#closeEditCommentModal');
+							closeEditCommentModal.addEventListener('click', function () {
+								let myModal = document.getElementById('exampleModal');
+								myModal.classList.remove('show');
+								myModal.style.display = "none";
+							});
+
+							// let closeEditModal = document.querySelector('#closeEditModal');
+							// closeEditModal.addEventListener('click', function () {
+							// 	let myModal = document.getElementById('exampleModal');
+							// 	myModal.classList.remove('show');
+							// 	myModal.style.display = "none";
+							// });
+						});
+
+						// 處理表單提交
+						$('#editCommentForm').submit(function (e) {
+							e.preventDefault();
+
+							//let commentImg = $("#commentImg")[0].files[0];
+							var formData = new FormData();//this
+							var commentId = $('#editCommentId').val();
+							var commentContent = $('#editCommentContent').val();
+							var commentImg = $('#editCommentImage')[0].files[0];
+							if (commentImg) {
+								formData.append('commentImg', commentImg);
+							}
+							formData.append('commentId', commentId);
+							formData.append('commentContent', commentContent);
+							//saveEditComment
+
+							$.ajax({
+								url: 'http://localhost:8080/gymlife/front/comments/editCommentAjax',
+								type: 'PUT',
+								data: formData,
+								processData: false,
+								contentType: false,
+								success: function (data) {
+									Swal.fire("成功！", "編輯成功！", "success")
+										.then(() => {
+											$('#exampleModal').modal('hide'); // 使用 Bootstrap 的 .modal$('#reportModal').removeClass('show');
+											$('#exampleModal').css('display', 'none');
+											$('body').removeClass('modal-open');
+											$('.modal-backdrop').remove();
+										});
+									$('#comment-content-' + commentId).text(data.commentContent);
+									if (data.commentImg) {
+										$('#comment-img-' + commentId).attr('src', 'data:image/png;base64,' + data.commentImg);
+									}
+									window.location.reload();
+
+								},
+								error: function (jqXHR, textStatus, errorThrown) {
+									console.log(jqXHR, textStatus, errorThrown);
+								}
+							});
+						});
+					});
+
+
+
+
+
+
+					//文章按讚
+					document.addEventListener('DOMContentLoaded', function () {
+						document.querySelectorAll('.articlelike-section').forEach(function (likeSection) {
+							likeSection.addEventListener('click', function (event) {
+								console.log(document.querySelectorAll('.articlelike-section'));
+								console.log(!event.target.matches('.fa-heart-article'));
+								if (!event.target.matches('.fa-heart-article')) return;
+
+								var articleId = event.target.getAttribute('data-article-id');
+
+								if (!articleId) {
+									console.log('Warning: found .fa-heart-article element without data-article-id');
+									return;  // skip this element
+								}
+
+								let isLiked = event.target.classList.contains('fas');
+
+								// 获取点赞数元素
+								let count = event.target.parentElement.querySelector('.like-count');
+
+								$.ajax({
+									url: '/gymlife/article/' + articleId + '/likes',
+									method: 'POST',
+									success: function (response) {
+										//為文章設置它獨特的id
+										var heart = document.getElementById('article-heart-' + articleId);
+
+										if (response.isLiked && !isLiked) {
+											heart.classList.add('fas');
+											heart.classList.remove('far');
+											count.textContent = response.likeCount;
+										} else if (!response.isLiked && isLiked) {
+											heart.classList.add('far');
+											heart.classList.remove('fas');
+											count.textContent = response.likeCount;
+										}
+									},
+									error: function () {
+										console.log('切換讚狀態時發生錯誤');
+									}
+								});
+							});
+						});
+					});
+
+
+
+					//留言按讚
+					document.addEventListener('DOMContentLoaded', function () {
+						document.querySelectorAll('.commentlike-section').forEach(function (likeSection) {
+							likeSection.addEventListener('click', function (event) {
+								//event.target = likeSection or .commentlike-section 
+								if (!event.target.matches('.fa-heart-comment')) return;
+								var commentId = event.target.getAttribute('data-comment-id');
+
+								console.log(!event.target.matches('.fa-heart-comment'));
+								if (!commentId) {
+									console.log('Warning: found .fa-heart-comment element without data-comment-id');
+									return;  // skip this element
+								}
+
+								let isLiked = event.target.classList.contains('fas');
+
+								// 获取点赞数元素
+								let count = event.target.parentElement.querySelector('.like-count');
+
+								console.log(document.querySelectorAll('.commentlike-section'));
+								$.ajax({
+									url: '/gymlife/comment/' + commentId + '/likes',
+									method: 'POST',
+									success: function (response) {
+										//為留言設置它獨特的id
+										var heart = document.getElementById('comment-heart-' + commentId);
+
+										if (response.isLiked && !isLiked) {
+											heart.classList.add('fas');
+											heart.classList.remove('far');
+											count.textContent = response.likeCount;
+										} else if (!response.isLiked && isLiked) {
+											heart.classList.add('far');
+											heart.classList.remove('fas');
+											count.textContent = response.likeCount;
+										}
+									},
+									error: function () {
+										console.log('切換讚狀態時發生錯誤');
+									}
+								});
+							});
+						});
+					});
+
+					//更新巢狀留言
+					function updateReply(form) {
+						var formData = new FormData(form);
+						var articleId = formData.get("articleId");
+						var replyId = formData.get("replyId");
+						var commentContent = formData.get("commentContent");
+
+						$.ajax({
+							url: form.action,
+							type: 'PUT',
+							data: {
+								articleId: articleId,
+								replyId: replyId,
+								commentContent: commentContent
+							},
+							success: function (result) {
+								// Update the DOM based on 'result'
+								alert("Reply successfully updated");
+								//把原本的替換掉
+							},
+							error: function (jqXHR, textStatus, errorThrown) {
+								// Handle any errors
+								alert("Error: " + textStatus);
+							}
+						});
+					}
+
+					//檢舉文章
+					let loggedInUserId = /*[[${loggedInUserId}]]*/ null;
+					let articleUserId = /*[[${articleUserId}]]*/ null;
+
+					if (loggedInUserId !== articleUserId) {
+						// 顯示檢舉按鈕
+						$(".reportButton").show();
 					} else {
-						Swal.fire("失敗！", "檢舉失敗，請稍後再試", "error").then(() => {
-							$('#reportModal').removeClass('show');
-							$('#reportModal').css('display', 'none');
-							$('body').removeClass('modal-open');
-							$('.modal-backdrop').remove();
-						});
+						// 隱藏檢舉按鈕
+						$(".reportButton").hide();
 					}
 
-				}
-			});
-		});
 
-		//文章收藏
-		document.addEventListener('DOMContentLoaded', function () {
-			document.querySelectorAll('.articleSave-section').forEach(function (bookmarkIcon) {
-				bookmarkIcon.addEventListener('click', function (event) {
+					//檢舉文章
+					$('#submitReport').on('click', function (e) {
+						e.preventDefault();
 
-					if (!event.target.classList.contains('fa-bookmark-article')) return;
-					var articleId = event.target.getAttribute('data-article-id');
+						var articleId = document.getElementById("articleId").value;
 
-					if (!articleId) {
-						console.log('Warning: found .fa-bookmark element without data-article-id');
-						return;  // skip this element
-					}
+						var reportData = {
+							reportType: $('#reportType').val(),
+							reportReason: $('#reportReason').val()
+						};
 
-					let isSaved = event.target.classList.contains('fas');
+						$.ajax({
+							url: '/gymlife/article/' + articleId + '/report',
+							method: 'POST',
+							contentType: 'application/json',
+							data: JSON.stringify(reportData),
+							success: function (response) {
+								console.log("Success handler called", response);
+								Swal.fire("成功！", "檢舉成功！", "success")
+									.then(() => {
+										$('#reportModal').removeClass('show');
+										$('#reportModal').css('display', 'none');
+										$('body').removeClass('modal-open');
+										$('.modal-backdrop').remove();
+									});
+							},
+							error: function (response) {
+								console.log("Error handler called", response);
+								if (response.status == 401) {
+									Swal.fire("失敗！", "請先登入再進行檢舉", "error").then(() => {
+										$('#reportModal').removeClass('show');
+										$('#reportModal').css('display', 'none');
+										$('body').removeClass('modal-open');
+										$('.modal-backdrop').remove();
+									});
+								} else if (response.status == 409) {
+									Swal.fire("失敗！", "你已經檢舉過這篇文章，每個會員只能檢舉一次", "error").then(() => {
+										$('#reportModal').removeClass('show');
+										$('#reportModal').css('display', 'none');
+										$('body').removeClass('modal-open');
+										$('.modal-backdrop').remove();
+									});
+								} else {
+									Swal.fire("失敗！", "檢舉失敗，請稍後再試", "error").then(() => {
+										$('#reportModal').removeClass('show');
+										$('#reportModal').css('display', 'none');
+										$('body').removeClass('modal-open');
+										$('.modal-backdrop').remove();
+									});
+								}
 
-					$.ajax({
-						url: '/gymlife/article/' + articleId + '/save',
-						method: 'POST',
-						success: function (response) {
-							var bookmark = document.getElementById('article-bookmark-' + articleId);
-
-							if (response.isSaved && !isSaved) {
-								bookmark.classList.add('fas');
-								bookmark.classList.remove('far');
-							} else if (!response.isSaved && isSaved) {
-								bookmark.classList.add('far');
-								bookmark.classList.remove('fas');
 							}
-						},
-						error: function () {
-							console.log('切換收藏狀態時發生錯誤');
-						}
+						});
 					});
-				});
-			});
-		});
 
+					//文章收藏
+					document.addEventListener('DOMContentLoaded', function () {
+						document.querySelectorAll('.articleSave-section').forEach(function (bookmarkIcon) {
+							bookmarkIcon.addEventListener('click', function (event) {
 
+								if (!event.target.classList.contains('fa-bookmark-article')) return;
+								var articleId = event.target.getAttribute('data-article-id');
 
+								if (!articleId) {
+									console.log('Warning: found .fa-bookmark element without data-article-id');
+									return;  // skip this element
+								}
 
+								let isSaved = event.target.classList.contains('fas');
 
+								$.ajax({
+									url: '/gymlife/article/' + articleId + '/save',
+									method: 'POST',
+									success: function (response) {
+										var bookmark = document.getElementById('article-bookmark-' + articleId);
 
-	</script>
+										if (response.isSaved && !isSaved) {
+											bookmark.classList.add('fas');
+											bookmark.classList.remove('far');
+										} else if (!response.isSaved && isSaved) {
+											bookmark.classList.add('far');
+											bookmark.classList.remove('fas');
+										}
+									},
+									error: function () {
+										console.log('切換收藏狀態時發生錯誤');
+									}
+								});
+							});
+						});
+					});
+
+				</script>
 
 </body>
 

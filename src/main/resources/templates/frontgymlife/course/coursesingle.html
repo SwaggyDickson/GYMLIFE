@@ -141,7 +141,7 @@
 							<div class="latest-large set-bg" th:data-setbg="'http://localhost:8080/gymlife/courseImage/'+${topThreeBuy.images[0].imageId}">
 								<div class="ll-text">
 									<h5 style="background-color:#151515;width:60%">
-										<a href="#" th:text="${topThreeBuy.courseName}"></a>
+										<a th:href="@{/front/coursesingle/{courseId}(courseId=${topThreeBuy.courseId})}" th:text="${topThreeBuy.courseName}"></a>
 									</h5>
 								</div>
 							</div>

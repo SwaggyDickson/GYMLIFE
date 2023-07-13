@@ -16,6 +16,8 @@
 	<script src="https://kit.fontawesome.com/fdf42e9c64.js" crossorigin="anonymous"></script>
 	<!-- --------------------------------------------------------------------------------------- -->
 	<!-- JSP CSS -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 </head>
 
 <body class="adminbody">
@@ -33,6 +35,23 @@
 
 			<nav class="navbar-custom">
 				<ul class="list-inline float-right mb-0">
+					<li class="list-inline-item dropdown notif">
+                            <a class="nav-link dropdown-toggle arrow-none " data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
+                                <i class="fa fa-fw fa-envelope-o mail"></i>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right dropdown-arrow dropdown-arrow-success dropdown-lg">
+                                <!-- item-->
+                                <div class="dropdown-item noti-title">
+                                    <h5><small><span class="label label-danger pull-xs-right" id="noread"></span>未讀訊息</small></h5>
+                                </div>
+								<div id="mailitem"></div>
+                                <!-- All-->
+<!--                                 <a href="#" class="dropdown-item notify-item notify-all"> -->
+<!--                                     View All -->
+<!--                                 </a> -->
+
+                            </div>
+                        </li>
 					<li class="list-inline-item dropdown notif">
 						<a class="nav-link dropdown-toggle nav-user" data-toggle="dropdown" href="#" role="button"
 							aria-haspopup="false" aria-expanded="false">
@@ -55,6 +74,7 @@
 							</a>
 						</div>
 					</li>
+					
 				</ul>
 
 				<ul class="list-inline menu-left mb-0">
@@ -179,8 +199,9 @@
 	<script th:src="@{http://localhost:8080/gymlife/assets/js/jquery.nicescroll.js}"></script>
 
 	<!-- App js -->
+	<script th:src="@{http://localhost:8080/gymlife/JS/axios.min.js}"></script>
 	<script th:src="@{http://localhost:8080/gymlife/assets/js/pikeadmin.js}"></script>
-
+	<script th:src="@{http://localhost:8080/gymlife/gym/course/back/websocketcall.js}"></script>
 
 
 </body>

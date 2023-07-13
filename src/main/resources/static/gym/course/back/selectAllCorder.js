@@ -39,14 +39,18 @@ function memberModalMaker(data){
 function updateCorderBtn(corderId){
 	let updateinput = document.getElementById(corderId);
 	updateinput.disabled = false;
+	let cost = $('#courseCost-'+corderId).val();
 	$(updateinput).on('change',function(e){
 	$('#updatebtn-'+corderId).css('display','none');
 	$('#updateclick-'+corderId).css('display','block');
+	let quantity = $(updateinput).val()
+	$('#corderCost-'+corderId).val(quantity*cost);
 })
 }
 //更新訂單數量ajax
 function updateCorder(corderId){
 	let updateQuantity = document.getElementById(corderId).value
+	let corderCost = document.getElementById('corderCost-'+corderId).value
 	console.log(updateQuantity);
 	Swal.fire({
 		title: '確定要更新數量嗎?',
@@ -60,7 +64,8 @@ function updateCorder(corderId){
 		url:'http://localhost:8080/gymlife/course/corder/update',
 		params:{
 			'corderId': corderId,
-			'corderQuantity':updateQuantity
+			'corderQuantity':updateQuantity,
+			'corderCost':corderCost
 		}
 	})
 	.then(res=>{
@@ -96,14 +101,15 @@ function AllCorderHtml(data){
 									<td >${data[i].corderPayment}</td>
 									<td >${data[i].corderTime}</td>
 									<td >${corderUpdateTime}</td>
-									<td><input id="${data[i].corderId}" class="form-control w-50"type="number" name="corderQuantity" value="${data[i].corderQuantity}" disabled></td>
-									<td >${data[i].corderCost}</td>
-									<td >${data[i].corderState}</td>
+									<td><input id="${data[i].corderId}" class="form-control"type="number" min="1"name="corderQuantity" value="${data[i].corderQuantity}" disabled></td>
+									<td ><input id="corderCost-${data[i].corderId}"class="form-control " value="${data[i].corderCost}" disabled></td>
+									<td ><p style="color:${data[i].corderState ==0?'black':'red'}">${data[i].corderState ==0?'完成':'待修改'}</p></td>
 									<td class="updatebtn"><button
 											class="btn btn-outline-primary btn-sm"
 											id="updatebtn-${data[i].corderId}"
 											onclick="updateCorderBtn(${data[i].corderId})">
 											更新</button>
+											<input type="hidden" id="courseCost-${data[i].corderId}" value="${data[i].courseCost}">
 										<button class="btn btn-outline-primary btn-sm"
 											id="updateclick-${data[i].corderId}" onclick="updateCorder(${data[i].corderId})" style="display:none;">提交</button>
 									</td>

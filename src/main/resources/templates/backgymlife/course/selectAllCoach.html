@@ -5,6 +5,7 @@
 	<meta charset="UTF-8">
 	<title>coach</title>
 	<link th:href="@{/gym/course/back/selectAllCoach.css}" rel="stylesheet">
+	
 </head>
 
 <body class="adminbody">
@@ -40,7 +41,7 @@
 							</button>
 							<button class="btn btn-primary  mt-3" id="insertbtn" style="float: left">
 								<div data-toggle="modal" data-target="#insertstaticBackdrop">
-								<b>+</b> <span>新增課程</span></div>
+								<b>+</b> <span>新增教練</span></div>
 							</button>
 						</div>
 					</div>
@@ -78,7 +79,7 @@
 									<td th:text="${chbean.coachBirthday}" th:id="'CoachBirthday-'+${chbean.coachId}"></td>
 									<td th:text="${chbean.coachHeight}" th:id="'CoachHeight-'+${chbean.coachId}"></td>
 									<td th:text="${chbean.coachWeight}" th:id="'CoachWeight-'+${chbean.coachId}"></td>
-									<td th:text="${chbean.coachIntroduce}" th:id="'CoachIntroduce-'+${chbean.coachId}"></td>
+									<td th:text="${chbean.coachIntroduce}" th:id="'CoachIntroduce-'+${chbean.coachId}" data-toggle="tooltip" data-placement="bottom" th:title="${chbean.coachIntroduce}"></td>
 									
 									<td class="updatebtn"><button class="btn btn-outline-primary btn-sm"
 											th:onclick="updateCoach([[${chbean.coachId}]])">

@@ -14,6 +14,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -30,7 +32,8 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
-
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import jakarta.servlet.annotation.MultipartConfig;
 import tw.gymlife.course.model.CoachBean;
 import tw.gymlife.course.model.CorderBean;
@@ -58,7 +61,8 @@ public class CourseController_Back {
 	private corderService oservice;
 	@Autowired
 	private convertDTO convertDTO;
-	
+	@Autowired
+	private JavaMailSender javaMailSender;
 	//新增教練
 	@ResponseBody
 	@PostMapping("/course/coach/insert")
@@ -279,17 +283,43 @@ public class CourseController_Back {
 			List<CorderBean> corders = oservice.selectAllCorder();
 			return convertDTO.convertCorderDTOList(corders);
 		}
-		//修改訂單
+		
+		//修改訂單數量
 		@ResponseBody
 		@PutMapping("/course/corder/update")
-		public List<CourseDTO> updateCorder(@RequestParam(name="corderId")Integer corderId,@RequestParam(name="corderQuantity")Integer corderQuantity) {
+		public List<CourseDTO> updateCorder(@RequestParam(name="corderId")Integer corderId,@RequestParam(name="corderQuantity")Integer corderQuantity,@RequestParam(name="corderCost")Integer corderCost) throws MessagingException {
 			System.out.println(corderId);
 			System.out.println(corderQuantity);
 			// 建立 SimpleDateFormat 物件，指定日期時間的格式
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 			// 取得現在的日期時間
 			String currentDate = sdf.format(new Date());
-			oservice.updateCorder(corderId, currentDate, corderQuantity);
+			oservice.updateCorder(corderId, currentDate, corderQuantity,corderCost);
+			CorderBean obean = oservice.selectCorderBycorderId(corderId);
+			MimeMessage message = javaMailSender.createMimeMessage();
+			    MimeMessageHelper helper = new MimeMessageHelper(message, true);
+			    helper.setTo(obean.getMember().getUserEmail());
+			    helper.setSubject("GYMLIFE");
+			    helper.setText("<html>\r\n"
+			    		+ "<head>\r\n"
+			    		+ "  <meta charset=\"UTF-8\">\r\n"
+			    		+ "  <title>健身課程修改訂單確認</title>\r\n"
+			    		+ "</head>\r\n"
+			    		+ "<body>\r\n"
+			    		+ "  <h2>健身課程訂單確認</h2>\r\n"
+			    		+ "\r\n"
+			    		+ "  <p>親愛的 "+obean.getMember().getUserName()+"，</p>\r\n"
+			    		+ "  <p>我們已審核完您提出的健身課程訂單修改!</p>\r\n"
+			    		+ "  <p>如有任何問題或需要進一步的協助，請隨時與我們聯繫。我們的客戶服務團隊將竭誠為您服務。</p>\r\n"
+			    		+ "\r\n"
+			    		+ "  <p>再次感謝您的選擇和支持！</p>\r\n"
+			    		+ "\r\n"
+			    		+ "  <p>祝您健康愉快！</p>\r\n"
+			    		+ "\r\n"
+			    		+ "  <p>GYMLIFE</p>\r\n"
+			    		+ "</body>\r\n"
+			    		+ "</html>", true);
+			    javaMailSender.send(message);
 			return selectAllCorder();
 		}
 		//刪除訂單

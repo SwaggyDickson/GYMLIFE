@@ -313,3 +313,26 @@ function submitForm() {
 	})
 }
 
+//var stompClient = null;
+//	var socket = new SockJS('/gymlife/websocket');
+//	stompClient = Stomp.over(socket);
+//	stompClient.connect({ }, function(frame) {
+//		console.log("開啟連線");
+////		stompClient.send(destination, {}, message);
+//		stompClient.subscribe('/reply/back', function(updatebean) {
+//			let corder = updatebean.body
+//			console.log(corder);
+//			console.log(corder.courseId);
+////			var notificationText = notification.body;
+////			console.log(notificationText);
+////			disconnect();
+//		});
+//	}, function(error) {
+//		console.log("連線失敗：" + error);
+//	});
+//	function disconnect() {
+//		if (stompClient !== null) {
+//			stompClient.disconnect();
+//		}
+//		console.log("斷開連線");
+//	}

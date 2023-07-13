@@ -89,10 +89,12 @@
                             	</ul>
                             </li>
 							
-							<li><a th:href="@{/front/coursesingle}">課程</a></li>
-							
+							<li><a th:href="@{/front/coursesingle}">課程</a>
+							<ul class="dropdown">
+                            		<li><a th:href="@{/course/membercorder}">課程訂單</a></li>
+                            	</ul>
+							</li>
 	<li><a th:href="@{/activityHome}">活動</a></li>							
-							
                              <th:block th:with="userLoggedIn=${session.userLoggedIn != null}">
 							    
 							    <li><a href="#">論壇</a>

@@ -8,6 +8,8 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 import ecpay.payment.integration.AllInOne;
@@ -32,11 +34,13 @@ public class corderService {
 	private MemberRepository mRepo;
 	@Autowired
 	private courseService cservice;
+//	 @Autowired
+//	    private JavaMailSender javaMailSender;
 
-//	// 新增訂單
-//	public void insertCorder(CorderBean obean) {
-//		oRepo.save(obean);
-//	}
+	// 新增訂單
+	public void insertCorder(CorderBean obean) {
+		oRepo.save(obean);
+	}
 	//查詢訂單
 	public Member selectMemberByuserId(Integer userId) {
 		Optional<Member> optional = mRepo.findById(userId);
@@ -69,46 +73,50 @@ public class corderService {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		// 取得現在的日期時間
 		String currentDate = sdf.format(new Date());
-		System.out.println(userId);
-		System.out.println(courseId);
-		System.out.println(corderPayment);
-		System.out.println(corderQuantity);
-		System.out.println(corderCost);
+//		System.out.println(userId);
+//		System.out.println(courseId);
+//		System.out.println(corderPayment);
+//		System.out.println(corderQuantity);
+//		System.out.println(corderCost);
 		AioCheckOutALL obj = new AioCheckOutALL();
 		obj.setMerchantTradeNo(uuId);
 		obj.setMerchantTradeDate(currentDate);
 		obj.setTotalAmount(corderCost.toString());
 		obj.setTradeDesc("test Description");
 		obj.setItemName(courseName + " * " + corderQuantity + "堂");
-		// 新增到訂單
-		Member member = selectMemberByuserId(userId);
-		CourseBean cbean = cservice.selectCourseById(courseId);
-		CorderBean obean = new CorderBean();
-		obean.setMember(member);
-		obean.setCourse(cbean);
-		obean.setCorderPayment(corderPayment);
-		obean.setCorderQuantity(corderQuantity);
-		obean.setCorderCost(corderCost);
-		obean.setCorderState(0);
-		oRepo.save(obean);
-		cservice.insertCourseBuyers(courseId);
 		// 結束後跳轉
 		obj.setReturnURL("http://localhost:8080/gymlife/front/coursesingle");
 //		obj.setClientRedirectURL("http://localhost:8080/gymlife/front/course");
-		obj.setClientBackURL("http://localhost:8080/gymlife/front/coursesingle");
+//		System.out.println(uuId);
+//		obj.setClientBackURL("http://localhost:8080/gymlife/front/coursesingle/corderenter?MerchantTradeNo="+uuId);
+		obj.setClientBackURL("http://localhost:8080/gymlife/front/coursecoder/complete?MerchantTradeNo="+uuId+"&userId="+userId+"&courseId="+courseId+"&corderPayment="+corderPayment+"&corderQuantity="+corderQuantity+"&corderCost="+corderCost);
 //		obj.setOrderResultURL("http://localhost:8080/gymlife/course/order/insert?userId="+userId+"&courseId="+courseId+"&corderPayment="+corderPayment+"&corderQuantity="+corderQuantity+"&corderCost="+corderCost);
 		obj.setNeedExtraPaidInfo("N");
 		String form = all.aioCheckOut(obj, null);
+		
+		
 		return form;
 	}
-	//更新訂單
+	
+	//更新訂單狀態
 	@Transactional
-	public void updateCorder(Integer corderId,String corderUpdateTime,Integer corderQuantity) {
+	public void updateCorderState(Integer corderId,Integer corderState) {
+		Optional<CorderBean> optional = oRepo.findById(corderId);
+		if(optional.isPresent()) {
+			CorderBean obean = optional.get();
+			obean.setCorderState(corderState);
+		}
+	}
+	//更新訂單數量
+	@Transactional
+	public void updateCorder(Integer corderId,String corderUpdateTime,Integer corderQuantity,Integer corderCost) {
 		Optional<CorderBean> optional = oRepo.findById(corderId);
 		if(optional.isPresent()) {
 			CorderBean obean = optional.get();
 			obean.setCorderUpdateTime(corderUpdateTime);
 			obean.setCorderQuantity(corderQuantity);
+			obean.setCorderCost(corderCost);
+			obean.setCorderState(0);
 		}
 	}
 	//刪除訂單

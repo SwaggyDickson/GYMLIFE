@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.springframework.stereotype.Component;
 
+import tw.gymlife.member.model.Member;
+
 @Component
 public class convertDTO {
 	//轉ListCourseBean
@@ -69,6 +71,7 @@ public class convertDTO {
 			cdto.setCorderUpdateTime(obean.getCorderUpdateTime());
 			cdto.setCorderQuantity(obean.getCorderQuantity());
 			cdto.setCorderCost(obean.getCorderCost());
+			cdto.setCourseCost(obean.getCourse().getCourseCost());
 			cdto.setCorderState(obean.getCorderState());
 			cdto.setCourseName(obean.getCourse().getCourseName());
 			cdtos.add(cdto);
@@ -76,6 +79,25 @@ public class convertDTO {
 		
 		return cdtos;
 	}
+	//轉Member
+		public CourseDTO convertMemberDTO(Member member) {
+			CourseDTO cdto = new CourseDTO();
+			cdto.setUserId(member.getUserId());
+			cdto.setUserName(member.getUserName());
+			cdto.setUserTel(member.getUserTel());
+			cdto.setUserEmail(member.getUserEmail());
+			cdto.setCorder(member.getCorder());
+			List<String> courseName = new ArrayList<>();
+			List<Integer> courseCost = new ArrayList<>();
+			for(CorderBean obean :member.getCorder()) {
+				courseName.add(obean.getCourse().getCourseName());
+				courseCost.add(obean.getCourse().getCourseCost());
+			}
+			cdto.setCourseNameOrder(courseName);
+			cdto.setCourseCostOrder(courseCost);
+			
+			return cdto;
+		}
 //	public List<CoachDTO> convertCoachDTO(List<CoachBean> chbeans) {
 //		List<CoachDTO> chdtos = new ArrayList<>();
 //		for(CoachBean chbean:chbeans) {

@@ -1,9 +1,11 @@
 package tw.gymlife.course.model;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,6 +38,12 @@ public class CourseDTO {
 	private Integer corderState;
 	private Integer courseViewers;
 	private Integer courseBuyers;
+    private String userName;
+    private String userTel;
+    private String userEmail;
+    private List<CorderBean> corder;
+    private List<String> courseNameOrder;
+    private List<Integer> courseCostOrder;
 	public int getAge(String birthday) {
         if (birthday != null) {
         	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");

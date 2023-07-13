@@ -101,7 +101,6 @@ public class Member {
 	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
 	private List<ArticleSave> articleSaves = new ArrayList<>();
 	
-
 	// 會員一對多商品訂單
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "members", cascade = CascadeType.ALL)
 	private List<Orders> orders = new ArrayList<>(); 

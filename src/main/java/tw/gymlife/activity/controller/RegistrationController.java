@@ -32,46 +32,46 @@ public class RegistrationController {
 	@Autowired
 	public ActivityService aService;
 
-	@GetMapping("/goRegistration")
-	public String showRegistrationForm(@RequestParam("activityId") Integer activityId, HttpSession httpsession, Model m) {
-	    // 判斷是否存在 session
-	    Integer userId = (Integer) httpsession.getAttribute("userId");
-	    
-	    // 根據會員ID獲取會員資訊
-	    if (userId!=null) {
-	    	Member member = mService.getMemberById(userId);
-	        // 根據活動ID取得活動資訊
-	        Activity activity = aService.getActivityById(activityId);
-	        if (activity != null) {
-	        m.addAttribute("activity", activity);
-	        m.addAttribute("member", member);
-	        // 如果存在session跳轉到報名頁面
-	        return "frontgymlife/activity/Registration";
-	    	}
-	    }
-	    
-	    // 不存在session，使用SweetAlert彈出提示框後跳轉到登入頁面
-	    String alertMessage = "請先登入或註冊會員";
-	    return "redirect:/Login?alert=" + URLEncoder.encode(alertMessage, StandardCharsets.UTF_8);
-	}
-
-	// 創建報名記錄
-	@PostMapping
-	public ResponseEntity<Registration> createRegistration(@RequestParam("userId") Integer userId,
-			@RequestBody Registration registration) {
-		// 根據會員ID查詢會員
-		Member member = mService.getMemberById(userId);
-		if (member == null) {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		}
-
-		// 設定報名記錄的會員ID
-		registration.setUserId(member.getUserId());
-
-		// 創建報名記錄
-		Registration createdRegistration = rService.insertRegistration(registration);
-		return new ResponseEntity<>(createdRegistration, HttpStatus.CREATED);
-	}
+//	@GetMapping("/goRegistration")
+//	public String showRegistrationForm(@RequestParam("activityId") Integer activityId, HttpSession httpsession, Model m) {
+//	    // 判斷是否存在 session
+//	    Integer userId = (Integer) httpsession.getAttribute("userId");
+//	    
+//	    // 根據會員ID獲取會員資訊
+//	    if (userId!=null) {
+//	    	Member member = mService.getMemberById(userId);
+//	        // 根據活動ID取得活動資訊
+//	        Activity activity = aService.getActivityById(activityId);
+//	        if (activity != null) {
+//	        m.addAttribute("activity", activity);
+//	        m.addAttribute("member", member);
+//	        // 如果存在session跳轉到報名頁面
+//	        return "frontgymlife/activity/Registration";
+//	    	}
+//	    }
+//	    
+//	    // 不存在session，使用SweetAlert彈出提示框後跳轉到登入頁面
+//	    String alertMessage = "請先登入或註冊會員";
+//	    return "redirect:/Login?alert=" + URLEncoder.encode(alertMessage, StandardCharsets.UTF_8);
+//	}
+//
+//	// 創建報名記錄
+//	@PostMapping
+//	public ResponseEntity<Registration> createRegistration(@RequestParam("userId") Integer userId,
+//			@RequestBody Registration registration) {
+//		// 根據會員ID查詢會員
+//		Member member = mService.getMemberById(userId);
+//		if (member == null) {
+//			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+//		}
+//
+//		// 設定報名記錄的會員ID
+//		registration.setUserId(member.getUserId());
+//
+//		// 創建報名記錄
+//		Registration createdRegistration = rService.insertRegistration(registration);
+//		return new ResponseEntity<>(createdRegistration, HttpStatus.CREATED);
+//	}
 
 	// 根據報名ID獲取報名記錄
 	@GetMapping("/{registrationId}")

@@ -299,22 +299,24 @@
 
 // })
 
-
 $(document).ready(function() {
-    // 從 localStorage 獲取 Google 數據
-    let googleData = JSON.parse(localStorage.getItem('googleData'));
+    setTimeout(function(){
+        // 從 localStorage 獲取 Google 數據
+        let googleData = JSON.parse(localStorage.getItem('googleData'));
+        console.log(localStorage.getItem('googleData')); // 移至這裡
 
-    // 將數據填入到表單中
-    if (googleData) {
-        $('#userName').val(googleData.name);
-        $('#userEmail').val(googleData.email);
-        $('#userGender').val(googleData.gender == 'Male' ? 'male' : 'female');
-        $('#userBirthDay').val(googleData.birthday);
+        // 將數據填入到表單中
+        if (googleData) {
+            $('#userName').val(googleData.name);
+            $('#userEmail').val(googleData.email);
+            $('#userGender').val(googleData.gender == 'Male' ? 'male' : 'female');
+            $('#userBirthDay').val(googleData.birthday);
 
-        console.log(googleData.gender);
-    }
+            console.log(googleData.gender);
+        }
+    });
 });
-console.log(localStorage.getItem('googleData'))
+
 
 
 

@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.configurationprocessor.json.JSONException;
+import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -20,6 +22,7 @@ import tw.gymlife.com.model.OrdersDTO;
 import tw.gymlife.com.service.ComFrontService;
 import tw.gymlife.com.service.ComFrontUtilService;
 import tw.gymlife.com.service.ComOrderService;
+import tw.gymlife.com.service.LinePayService;
 
 @RestController
 public class ComECPayController {
@@ -32,15 +35,17 @@ public class ComECPayController {
 
 	@Autowired
 	ComFrontUtilService comFUtilService;
+	
+	@Autowired
+	private LinePayService linePayService;
 
 	@PostMapping("/checkoutCom")
 	public String checkOutCom(HttpSession session, @RequestParam("payment") String payment,
 			@RequestParam("orderId") int orderId, @RequestParam("orderUserId") int userId,
 			@RequestParam("orderTime") String orderTime, @RequestParam("orderUuid") String orderUuid,
-			@RequestParam("orderTotalPrice") String totalPrice,Model model) {
+			@RequestParam("orderTotalPrice") String totalPrice, Model model) {
 
-	    model.addAttribute("merchantId", "2000132");
-	    
+
 		if (payment.equals("green")) {
 			String ecpayCheckoutFrom = ecpayCheckout(session, payment, orderId, userId, orderTime, orderUuid,
 					totalPrice);
@@ -54,7 +59,6 @@ public class ComECPayController {
 			String orderUuid, String totalPrice) {
 
 		List<Orders> orderList = orderService.findOneOrderByOrderId(orderId);
-		System.out.println("單筆OrderList:" + orderList);
 
 		List<Commoditys> returnComList = new ArrayList<>();
 		Set<Integer> addedComIds = new HashSet<>(); // 用來記錄已經加入的商品ID
@@ -73,49 +77,32 @@ public class ComECPayController {
 
 		List<CommodityDTO> commodityDTOList = comFUtilService.convertOneCOmPicDTOList(returnComList);
 
-		System.out.println("所有商品表DTO: " + commodityDTOList);
 		List<OrdersDTO> ordersDTOList = comFUtilService.convertOrderToOrdersDTO(orderList, commodityDTOList);
 
-		System.out.println("改造後的訂單DTO: " + ordersDTOList);
 
 		String aioCheckOutALLForm = orderService.ecpayCheckout(ordersDTOList);
 
 		return aioCheckOutALLForm;
 	}
 
-	@PostMapping("/testAPI")
-	public String test(HttpSession session, @RequestParam("orderId") int orderId, @RequestParam("orderUserId") int userId,
-			@RequestParam("orderTime") String orderTime, @RequestParam("orderUuid") String orderUuid,
-			@RequestParam("orderTotalPrice") String totalPrice) {
 
+	@PostMapping("/getLinePay")
+	public ResponseEntity<Object> getLinePay(HttpSession session,@RequestParam("orderId") int orderId) throws JSONException {
+
+		orderService.updateOrderCheckStatus(orderId); //更新狀態為已付款
+
+		//更新購買數量
+		List<Orders> oneOrderList = orderService.findOneOrderByOrderId(orderId);
+		for(Orders orders:oneOrderList ) {
+			for(OrderDetails odetails: orders.getOrderDetails()) {
+				int comID=odetails.getComId();
+				int comBuyNum= odetails.getPurchaseNumber();
+				comFService.updateComBuyNumber(comID, comBuyNum);
+			}
+		}
 		
-		List<Orders> orderList = orderService.findOneOrderByOrderId(orderId);
-		System.out.println("單筆OrderList:" + orderList);
-
-		List<Commoditys> returnComList = new ArrayList<>();
-		Set<Integer> addedComIds = new HashSet<>(); // 用來記錄已經加入的商品ID
-		for (Orders orders : orderList) {
-			for (OrderDetails odts : orders.getOrderDetails()) {
-				int comId = odts.getComId();
-				// 判斷商品是否已經加入過，如果是則跳過
-				if (addedComIds.contains(comId)) {
-					continue;
-				}
-				Commoditys commodity = comFService.getCommoditys(comId);
-				returnComList.add(commodity);
-				addedComIds.add(comId); // 將已經加入的商品ID記錄起來
-			}
-		}
-
-		List<CommodityDTO> commodityDTOList = comFUtilService.convertOneCOmPicDTOList(returnComList);
-
-		System.out.println("所有商品表DTO: " + commodityDTOList);
-		List<OrdersDTO> ordersDTOList = comFUtilService.convertOrderToOrdersDTO(orderList, commodityDTOList);
-
-		System.out.println("改造後的訂單DTO: " + ordersDTOList);
-
-		String aioCheckOutALLForm = orderService.ecpayCheckout(ordersDTOList);
-
-		return aioCheckOutALLForm;
+		return linePayService.setupLinePay();
 	}
+	
+
 }

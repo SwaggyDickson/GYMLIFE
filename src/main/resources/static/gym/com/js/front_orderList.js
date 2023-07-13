@@ -56,6 +56,7 @@ $('.checkOutBtn').on('click', function(e) {
 		orderTotalPrice: totalPriceValue,
 		payment: paymentMethod
 	};
+
 	if (paymentMethod == "green") {
 		$.ajax({
 			url: 'http://localhost:8080/gymlife/checkoutCom', // 綠界科技方方法 URL
@@ -74,6 +75,28 @@ $('.checkOutBtn').on('click', function(e) {
 
 	} else {
 
+		$.ajax({
+			url: 'http://localhost:8080/gymlife/getLinePay',
+			type: 'POST',
+			data: data,
+			success: function(response) {
+				console.log("res: "+response);
+				
+				//等待service層的cooonfirmURL
+				// 提取支付链接并执行相应的操作
+				var responseJson = JSON.parse(response);
+				console.log("resJSON: "+responseJson);
+				var webPaymentUrl = responseJson.webPaymentUrl;
+				var appPaymentUrl = responseJson.appPaymentUrl;
+
+				// 在这里执行跳转或其他操作
+				// 例如，跳转到webPaymentUrl
+				window.location.href = webPaymentUrl;// 跳转到支付链接
+			},
+			error: function(error) {
+				console.log(error)
+			}
+		});
 	}
 	// 发送 AJAX 请求到控制器
 
@@ -81,25 +104,31 @@ $('.checkOutBtn').on('click', function(e) {
 
 /* 判斷打哪裡的JS結束 */
 
+
+
 /* 更改文字顏色JS開始 */
 // 取得目標Span元素
 var spanElements = $('.orderDataContentState');
-
 for (var i = 0; i < spanElements.length; i++) {
 	// 取得文字內容
 	var paymentStatus = spanElements.eq(i).text();
 	console.log(paymentStatus);
-
+	
 	// 判斷文字內容並更改CSS樣式
 	if (paymentStatus === '處理中') {
 		spanElements.eq(i).css('color', 'red'); // 更改文字顏色為紅色
 	} else if (paymentStatus === '已付款') {
 		spanElements.eq(i).css('color', 'green'); // 更改文字顏色為綠色
-		spanElements.eq(i).closest('.orderData').next('#dissapear1').css('display', 'none');
-		spanElements.eq(i).closest('.orderData').next('#dissapear1').next('#dissapear2').css('display', 'none');
+		
+		spanElements.eq(i).closest('.orderData').next('#dissapear2').css('display', 'none');
+		
+		  // 同時更改orderDataContent的文字顏色
+        var orderDataContent = spanElements.eq(i).closest('.orderData').find('.orderDataContent');
+        orderDataContent.css('color', 'green'); // 更改文字顏色為綠色
+	}else if(paymentStatus === '已發貨'){
+		spanElements.eq(i).css('color', 'red'); // 更改文字顏色為紅色
 	}
 
-	// 隱藏靠近的dissapear1和dissapear2元素
 }
 
 

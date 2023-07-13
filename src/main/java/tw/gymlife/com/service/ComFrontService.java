@@ -104,7 +104,7 @@ public class ComFrontService {
 		Optional<Commoditys> option = comFrontRepo.findById(comId);
 		if(option.isPresent()) {
 			Commoditys comBean = option.get();
-			comBean.setComBuyNumber(comBuyNumber);
+			comBean.setComBuyNumber(comBean.getComBuyNumber()+ comBuyNumber);
 			comFrontRepo.save(comBean);
 		}
 		

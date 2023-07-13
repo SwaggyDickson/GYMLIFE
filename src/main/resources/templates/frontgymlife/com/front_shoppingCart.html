@@ -43,7 +43,7 @@
 															</td>
 															<td class="desc">
 																<h3>
-																	<a href="#" class="text-navy"> [[${com.comName}]] </a>
+																	<a th:href="@{'/com/'+${com.comId}}" class="text-navy"> [[${com.comName}]] </a>
 																</h3>
 																<p class="small">[[${com.comType}]]</p>
 																<dl class="small m-b-none">
@@ -51,7 +51,7 @@
 																	<dd>[[${com.comContent}]]</dd>
 																</dl>
 																<div class="m-t-sm">
-																	<button type="submit" class="text-muted">
+																	<button  type="submit" class="btn btn-primary">
 																		<i class="fa fa-trash"></i> Remove item
 																	</button>
 																</div>
@@ -83,7 +83,7 @@
 						</div>
 
 						<div class="col-md-3">
-							<form th:action="@{/test.func}" method="post">
+							<form th:action="@{/getOrder.func}" method="post">
 								<div class="ibox">
 									<div class="ibox-title">
 										<h5>Cart Summary</h5>

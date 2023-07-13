@@ -57,8 +57,6 @@ $('.notifyBtn').on('click', () => {
 					orderPayment = item.orderPayment;
 
 					showToast(userId, orderId, orderStatusTime, orderPayment);
-
-					
 				});
 
 			},
@@ -132,12 +130,12 @@ function showToast(userId, orderId, orderStatusTime, orderPayment) {
 	var toastContent = $('<div class="toast-body">')
 		.html(adjustContent)
 		.appendTo(toast); // 将 Toast 内容添加到 Toast 组件中
-	/* 
+	 
 	 // 设置 Toast 的自动关闭
 	 setTimeout(function() {
 	   toast.remove(); // 关闭 Toast
 	 }, 3000); // 3秒后自动关闭
-	 */
+	 
 }
 
 //關閉按鈕

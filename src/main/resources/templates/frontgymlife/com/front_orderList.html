@@ -66,38 +66,7 @@
                                                 <p style="color:white;">付款金額: $ <span class="orderDataContent"
                                                         th:text="${order.totalPrice}"></span>
                                             </div>
-                                            <div id="dissapear1">
-                                                <form th:action="@{/testAPI}" method="POST" class="orderBtn">
-
-                                                    <input type="hidden" name="orderId" th:value="${order.orderId}">
-                                                    <input type="hidden" name="orderUserId" th:value="${order.userId}">
-                                                    <input type="hidden" name="orderTime" th:value="${order.orderTime}">
-                                                    <input type="hidden" name="orderUuid" th:value="${order.orderUuid}">
-                                                    <input type="hidden" name="orderTotalPrice"
-                                                        th:value="${order.totalPrice}">
-
-                                                    <button type="submit" class="btn myBtn"
-                                                        style="color:white; background-color:darkgreen; display:flex;">
-                                                        <span class="btnSpan">綠界結帳 :</span><i
-                                                            class="fa fa-cc-visa fa-2x" aria-hidden="true"></i>
-                                                    </button>
-                                                </form>
-                                                <form th:action="@{/testAPI}" method="POST" class="orderBtn">
-
-                                                    <input type="hidden" name="orderId" th:value="${order.orderId}">
-                                                    <input type="hidden" name="orderUserId" th:value="${order.userId}">
-                                                    <input type="hidden" name="orderTime" th:value="${order.orderTime}">
-                                                    <input type="hidden" name="orderUuid" th:value="${order.orderUuid}">
-                                                    <input type="hidden" name="orderTotalPrice"
-                                                        th:value="${order.totalPrice}">
-
-                                                    <button type="submit" class="btn myBtn"
-                                                        style="color:white; background-color:darkgreen; display:flex;">
-                                                        <span class="btnSpanss"
-                                                            style="background-image: url('http://localhost:8080/gymlife/gym/com/img/Line-PayPng.png');"></span>
-                                                    </button>
-                                                </form>
-                                            </div>
+                                           
                                             <div id="dissapear2">
                                                 <div class="orderBtn">
                                                     <!-- Button trigger modal -->

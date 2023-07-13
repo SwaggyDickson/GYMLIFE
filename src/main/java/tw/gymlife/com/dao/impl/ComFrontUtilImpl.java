@@ -36,8 +36,8 @@ import tw.gymlife.com.model.OrdersDetailsDTO;
 public class ComFrontUtilImpl implements ComFrontUtil {
 	
 	private String pathAll="C:\\testGym\\gymproject\\src\\main\\resources\\static\\gym\\com\\cart";
-	 
-	
+	private String path = "C:\\springBoot\\workspace\\springBootGym\\src\\main\\resources\\static\\gym\\com\\cart";
+
 	// 將Bean轉成DTO
 	@Override
 	public List<CommodityDTO> convertCommodityDTOList(List<Commoditys> comList) {
@@ -72,7 +72,7 @@ public class ComFrontUtilImpl implements ComFrontUtil {
 		}
 		return comDTOList;
 	}
-	
+
 	@Override
 	public List<CommodityDTO> convertOneCOmPicDTOList(List<Commoditys> comList) {
 
@@ -175,13 +175,12 @@ public class ComFrontUtilImpl implements ComFrontUtil {
 				cartDTO.setComContent(com.getComContent()); // 商品描述
 				cartDTO.setComStatus(com.getComStatus()); // 商品狀態
 				cartDTO.setComBuyNumber(com.getComBuyNumber()); // 商品總購買數
-				
+
 				Map<Integer, byte[]> comPicInfo = new HashMap<>();
 				for (ComPic comPic : com.getComPics()) {
 					comPicName = comPic.getComPicName();
 //					String comPicBase64 = convertImageToBase64(comPic.getComPicFile());
-					
-					
+
 //					cartDTO.setComPicBase64(comPicBase64); // 圖片
 					comPicInfo.put(comPic.getComPicId(), comPic.getComPicFile());
 
@@ -205,7 +204,7 @@ public class ComFrontUtilImpl implements ComFrontUtil {
 
 		ObjectMapper objectMapper = new ObjectMapper();
 		List<Cart> existingCartList = new ArrayList<>();
-		String path = "C:\\springBoot\\workspace\\springBootGym\\src\\main\\resources\\static\\gym\\com\\cart";
+		
 		existingCartList = null;
 		try {
 			File file = new File(pathAll + "\\" + userId + ".json");
@@ -245,11 +244,12 @@ public class ComFrontUtilImpl implements ComFrontUtil {
 
 	// 進入購物車去讀取Json檔案
 	@Override
-	public List<Cart> goIntoCart( int userId) {
+	public List<Cart> goIntoCart(int userId) {
 
 		ObjectMapper objectMapper = new ObjectMapper();
 		List<Cart> existingCartList = new ArrayList<>();
-		String path = "C:\\springBoot\\workspace\\springBootGym\\src\\main\\resources\\static\\gym\\com\\cart";
+//		String path = "C:\\springBoot\\workspace\\springBootGym\\src\\main\\resources\\static\\gym\\com\\cart";
+		
 		existingCartList = null;
 		try {
 			File file = new File(pathAll + "\\" + userId + ".json");
@@ -267,11 +267,12 @@ public class ComFrontUtilImpl implements ComFrontUtil {
 
 	// 刪除購物車商品按鈕
 	@Override
-	public List<Cart> deleteCart( int userId, int comId) {
+	public List<Cart> deleteCart(int userId, int comId) {
 
 		ObjectMapper objectMapper = new ObjectMapper();
 		List<Cart> existingCartList = new ArrayList<>();
-		String path = "C:\\springBoot\\workspace\\springBootGym\\src\\main\\resources\\static\\gym\\com\\cart";
+//		String path = "C:\\springBoot\\workspace\\springBootGym\\src\\main\\resources\\static\\gym\\com\\cart";
+		
 		existingCartList = null;
 		try {
 			File file = new File(pathAll + "\\" + userId + ".json");
@@ -301,86 +302,64 @@ public class ComFrontUtilImpl implements ComFrontUtil {
 		return null;
 	}
 
-	//生成訂單DTO
+	// 生成訂單DTO
 	@Override
 	public List<OrdersDTO> convertOrderToOrdersDTO(List<Orders> orderList, List<CommodityDTO> returnComList) {
 
-	    List<OrdersDTO> comDTOList = new ArrayList<>();
-	    //將Hibernate訂單裝入客製化訂單DTO
-	    for (Orders order : orderList) {
-	        OrdersDTO ordersDTO = new OrdersDTO();
-	        ordersDTO.setOrderId(order.getOrderId()); //訂單ID
-	        ordersDTO.setUserId(order.getUserId()); //userID
-	        ordersDTO.setOrderTime(order.getOrderTime()); //訂單成立時間
-	        ordersDTO.setOrderStatusTime(order.getOrderStatusTime()); //訂單狀態時間
-	        if (order.getOrderPayment() == 0) {
-	            ordersDTO.setOrderPayment("處理中");
-	        } else if (order.getOrderPayment() == 1) {
-	            ordersDTO.setOrderPayment("已付款");
-	        } else if(order.getOrderPayment() == 2) {
-	        	ordersDTO.setOrderPayment("貨物已寄出");
-	        }
-	        ordersDTO.setTotalPrice(order.getOrderTotalPrice()); //總價
-	        ordersDTO.setOrderUuid(order.getOrderUuid()); //訂單的UUID
+		List<OrdersDTO> comDTOList = new ArrayList<>();
+		// 將Hibernate訂單裝入客製化訂單DTO
+		for (Orders order : orderList) {
+			OrdersDTO ordersDTO = new OrdersDTO();
+			ordersDTO.setOrderId(order.getOrderId()); // 訂單ID
+			ordersDTO.setUserId(order.getUserId()); // userID
+			ordersDTO.setOrderTime(order.getOrderTime()); // 訂單成立時間
+			ordersDTO.setOrderStatusTime(order.getOrderStatusTime()); // 訂單狀態時間
+			switch (order.getOrderPayment()) {
+			case 0:
+				ordersDTO.setOrderPayment("處理中");
+				break;
+			case 1:
+				ordersDTO.setOrderPayment("已付款");
+				break;
+			case 2:
+				ordersDTO.setOrderPayment("商家確認訂單中");
+				break;
+			case 3:
+				ordersDTO.setOrderPayment("訂單已更新");
+				break;
+			case 4:
+				ordersDTO.setOrderPayment("已發貨");
+				break;
+			default:
+				ordersDTO.setOrderPayment("未知狀態");
+				break;
+			}
+			ordersDTO.setTotalPrice(order.getOrderTotalPrice()); // 總價
+			ordersDTO.setOrderUuid(order.getOrderUuid()); // 訂單的UUID
 
-	        List<OrdersDetailsDTO> ordersDetailsDTOsList = new ArrayList<>();
-	        //將Hibernate的訂單明細裝入客製化訂單明細+商品明細DTO
-	        for (OrderDetails ordersDetails : order.getOrderDetails()) {
-	            OrdersDetailsDTO ordersDetailsDTO = new OrdersDetailsDTO();
-	            for (CommodityDTO commodityDTO : returnComList) {
-	                if (ordersDetails.getComId() == commodityDTO.getComId()) {
-	                    ordersDetailsDTO.setComId(commodityDTO.getComId()); //商品ID
-	                    ordersDetailsDTO.setComName(commodityDTO.getComName()); //商品名稱
-	                    ordersDetailsDTO.setComPrice(commodityDTO.getComPrice()); //商品價格
-	                    for (Integer comPicId : commodityDTO.getComPicInfo().keySet()) {
-	                        ordersDetailsDTO.setComPicId(comPicId);  //圖片ID
-	                        break;
-	                    }
-	                    ordersDetailsDTO.setPurchaseNumber(ordersDetails.getPurchaseNumber()); //購買數量
-	                    ordersDetailsDTOsList.add(ordersDetailsDTO);
-	                }
-	            }
-	        }
-	        ordersDTO.setOrderDetailsList(ordersDetailsDTOsList);
-	        comDTOList.add(ordersDTO);
-	    }
+			List<OrdersDetailsDTO> ordersDetailsDTOsList = new ArrayList<>();
+			// 將Hibernate的訂單明細裝入客製化訂單明細+商品明細DTO
+			for (OrderDetails ordersDetails : order.getOrderDetails()) {
+				OrdersDetailsDTO ordersDetailsDTO = new OrdersDetailsDTO();
+				for (CommodityDTO commodityDTO : returnComList) {
+					if (ordersDetails.getComId() == commodityDTO.getComId()) {
+						ordersDetailsDTO.setComId(commodityDTO.getComId()); // 商品ID
+						ordersDetailsDTO.setComName(commodityDTO.getComName()); // 商品名稱
+						ordersDetailsDTO.setComPrice(commodityDTO.getComPrice()); // 商品價格
+						for (Integer comPicId : commodityDTO.getComPicInfo().keySet()) {
+							ordersDetailsDTO.setComPicId(comPicId); // 圖片ID
+							break;
+						}
+						ordersDetailsDTO.setPurchaseNumber(ordersDetails.getPurchaseNumber()); // 購買數量
+						ordersDetailsDTOsList.add(ordersDetailsDTO);
+					}
+				}
+			}
+			ordersDTO.setOrderDetailsList(ordersDetailsDTOsList);
+			comDTOList.add(ordersDTO);
+		}
 
-	    return comDTOList;
+		return comDTOList;
 	}
 
-//	@Async
-	@Override
-	public  CompletableFuture<Boolean> sendMail(List<OrdersDTO> orderDtoList) {
-		return null;
-//		
-//        // 邮件主题和内容
-//        int totalPrice=0;	
-//        StringBuilder comNames = new StringBuilder();
-//        for(OrdersDTO odto :orderDtoList) {
-//        	totalPrice= odto.getTotalPrice();
-//        	for(OrdersDetailsDTO odetails:odto.getOrderDetailsList()) {
-//        		comNames.append(odetails.getComName()).append(",");
-//        	}
-//        	comNames.setLength(comNames.length() -2 );
-//        }
-//        String emailSubject = "Hello, World!";
-//        String emailContent = "This is a test email. 您購買的商品: "+ comNames+"已建立訂單請 7 日內結帳"
-//        		+ "; /r 結帳金額為: "+ totalPrice;
-//
-//        MimeMessagePreparator messagePreparator = mimeMessage -> {
-//            MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
-//            messageHelper.setFrom("qqww5576843@gmail.com");
-//            messageHelper.setTo("danny61200@gmail.com");
-//            messageHelper.setSubject("訂單建立");  // set the subject
-//            messageHelper.setText(emailContent);  // set the content
-//        };
-//      
-//        try {
-//            mailSender.send(messagePreparator);
-//            return CompletableFuture.completedFuture(true);
-//        } catch (MailException e) {
-//            return CompletableFuture.completedFuture(false);
-//        }
-//        
-	}
 }

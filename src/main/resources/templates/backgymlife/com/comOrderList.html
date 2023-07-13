@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- --------------------------------------------------------------------------------------- -->
+    <!-- SweetAlert2框框 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- JQ -->
+    <script th:src="@{Js/jquery-3.6.4.min.js}"></script>
+      <!-- dataTable -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.css" />
+    <!-- BS JS -->
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    
+    <!-- MY CSS -->
+  <link rel="stylesheet" th:href="@{gym/com/css/comOrder.css}">
+    
+<title>訂單總攬</title>
+</head>
+<body class="adminbody">
+    <div id="main">
+        <div th:replace="~{layout/navbar}"></div>
+
+        <div class="content-page">
+
+            <!-- Start content -->
+            <div class="content">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <div class="breadcrumb-holder">
+                                <h1 class="main-title float-left">分析列表</h1>
+                                <ol class="breadcrumb float-right">
+                                    <li class="breadcrumb-item">Home</li>
+                                    <li class="breadcrumb-item active">分析列表</li>
+                                </ol>
+                                <div class="clearfix"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- -------------------------內文-------------------------------------------------------------- -->
+                    <div id="toastContainer"></div>
+                    
+                       <div class="row" id="myDiv">
+                        <div  class="col-xs-12 col-sm-12 col-md-12">
+                            <div class="card mb-3 myCard">
+                                <div class="card-header">
+                                    <h3><i class="fa fa-table"></i> 數據分析 </h3>
+                                </div>
+
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table id="myTable" class="table table-bordered table-hover display">
+                                            <thead>
+                                                <tr>
+                                                    <th>訂單ID</th>
+                                                    <th>會員ID</th>
+                                                    <th>訂單時間</th>
+                                                    <th>訂單狀態</th>
+                                                    <th>總金額</th>
+                                                    <th>button</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="tbody">
+                                                <tr>
+                                                    <td class="orderUuid"></td>
+                                                    <td class="orderUserId"></td>
+                                                    <td class="orderTime"></td>
+                                                    <td class="orderPayment"></td>
+                                                    <td class="orderTotalPrice"></td>
+                                                    <td class="changeStatus"></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                      </div>
+                <!-- END container-fluid -->
+            </div>
+            <!-- END content -->
+        </div>
+        <!-- END content-page -->
+        <button id="back-to-top-btn" class="notifyBtn" title="回到頁面頂端">
+                        <i class="fa fa-bell" aria-hidden="true" style="position: absolute; top: 17px; left: 17px;"></i>
+                        <span class="notif-bullet"></span>
+                    </button>
+        <div th:replace="~{layout/footer}"></div>
+    </div>
+    <!-- My JS -->
+    <script th:src="@{gym/com/js/comOrder.js}"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <!-- Datatable -->
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.js"></script>
+    
+<!-- 
+<script th:inline="javascript">
+    // 使用Thymeleaf的each指令遍歷每個訂單
+    /*<![CDATA[*/
+    var orders = /*[[${orderList}]]*/ [];
+    for (var i = 0; i < orders.length; i++) {
+        var order = orders[i];
+        var paymentStatus = order.orderPayment;
+        var buttonHtml = '';
+        if (paymentStatus === '處理中') {
+            // 生成按鈕並綁定點擊事件
+            buttonHtml = '<button class="btn btn-primary" onclick="doSomething(' + order.orderId + ')">按鈕</button>';
+        }
+        // 將按鈕HTML插入到對應的<td>元素中
+        var td = document.querySelector('#myTable tbody tr:nth-child(' + (i + 1) + ') .changeStatus');
+        td.innerHTML = buttonHtml;
+    }
+
+    // 按鈕點擊事件的處理函數
+    function doSomething(orderId) {
+        // 在這裡執行你想要觸發的JavaScript功能
+        console.log('點擊了按鈕，訂單ID為: ' + orderId);
+    }
+    /*]]>*/
+</script>
+ -->
+</body>
+</html>

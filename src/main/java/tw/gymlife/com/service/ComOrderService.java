@@ -9,6 +9,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import tw.gymlife.com.dao.OrderRepository;
@@ -121,7 +122,7 @@ public class ComOrderService {
 		obj.setTotalAmount(totalPrice);
 		obj.setTradeDesc("test Description");
 		obj.setReturnURL("http://127.0.0.1:4040");
-		obj.setClientBackURL("http://localhost:8080/gymlife/payBackorder.func?orderId=" + orderId);
+		obj.setClientBackURL("http://localhost:8080/gymlife/payBackorder.func?orderId=" + orderId+"&uuid="+ uuId);
 		obj.setNeedExtraPaidInfo("N");
 		obj.setItemName(itemNames.toString());
 
@@ -130,14 +131,37 @@ public class ComOrderService {
 
 		return form;
 	}
-	
-	
-	//通知
-	public List<Orders> getAllOrders(){
-		
+
+	// 通知，找出所有除了未付款的所有訂單
+	public List<Orders> getAllPayedOrders() {
+
 		List<Orders> orderList = orderRepo.findOrdersWithPaymentNotEqualToOneOrderByStatusTime();
-		
+
 		return orderList;
 	}
 
+	// 訂單總覽
+	public List<Orders> getAllOrders() {
+
+		Sort sort = Sort.by(Sort.Direction.DESC, "orderId");
+		List<Orders> allOrderList = orderRepo.findAll(sort);
+		return allOrderList;
+	}
+
+	//用UUID查找訂單
+	public Orders getOrdersByUuid(String uuid) {
+		
+		Optional<Orders> optional = orderRepo.findByOrderUuid(uuid);
+		if(optional.isPresent()) {
+			Orders orders = optional.get();
+			return orders;
+		}
+		return null;
+	}
+	
+	//出貨按鈕更改訂單狀態
+	public void setOrderStatusByAdmin(Orders orders) {
+		
+		orderRepo.save(orders);
+	}
 }

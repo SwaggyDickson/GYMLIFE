@@ -64,6 +64,7 @@
                                                     <th>商品價格</th>
                                                     <th onclick="getChatByBuyNumber()">購賣人數</th>
                                                     <th onclick="getCharByClickTime()">觀看次數</th>
+                                                    <th onclick="getCharBySellPrice()">銷售金額</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -71,9 +72,10 @@
                                                 <tr>
                                                     <td>[[${com.comId}]]</td>
                                                     <td>[[${com.comName}]]</td>
-                                                    <td>[[${com.comPrice}]]</td>
-                                                    <td>[[${com.comBuyNumber}]]</td>
+                                                    <td class="comPrice">[[${com.comPrice}]]</td>
+                                                    <td class="buyNumber">[[${com.comBuyNumber}]]</td>
                                                     <td>[[${com.clickTime}]]</td>
+                                                    <td class="totalSell"></td>
                                                 </tr>
 											</th:block>
                                             </tbody>
@@ -85,9 +87,12 @@
 
 						  <div class="col-xs-12 col-sm-12 col-md-12 col-lg-6 col-xl-6 ">
 						                            <div class="chart-box dark">
-						
 						                                <div class="chart-header dark">
-						                                    <span>subtitle</span>
+															<div class="importBtns">
+																<button class="btn btn-info importBtn" onclick="importImg()"> 輸出圖表</button>
+																<button class="btn btn-info importBtn"> 輸出CSV</button>
+																<button class="btn btn-info importBtn"> 輸出JSON</button>
+															</div>
 						                                    <h3 class="title"></h3>
 						                                    <div id="tagDiv">
 						                                    <button class="btn myBtn" style="display:flex;" onclick="getChatByBuyNumber()">
@@ -95,6 +100,9 @@
 						                                    </button>
 						                                    <button class="btn myBtn" style="display:flex;" onclick="getCharByClickTime()">
 						                                    	<span class="btnSpan" style="color:	#FF8000;">#瀏覽人次分析</span><i class="fa fa-pie-chart fa-2x" aria-hidden="true"></i>
+						                                    </button>
+						                                    <button class="btn myBtn" style="display:flex;" onclick="getCharBySellPrice()">
+						                                    	<span class="btnSpan" style="color:	#FF8000;">#銷售金額分析</span><i class="fa fa-pie-chart fa-2x" aria-hidden="true"></i>
 						                                    </button>
 						                                    </div>
 						                                </div>

@@ -49,6 +49,5 @@ public interface ComFrontUtil {
 	public List<OrdersDTO> convertOrderToOrdersDTO(List<Orders> orderList, List<CommodityDTO> returnComList);
 	
 	//發送信件
-	public CompletableFuture<Boolean> sendMail(List<OrdersDTO> orderDtoList);
 		
 }

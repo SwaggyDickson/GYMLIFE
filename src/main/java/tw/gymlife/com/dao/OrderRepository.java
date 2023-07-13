@@ -17,7 +17,10 @@ public interface OrderRepository extends JpaRepository<Orders, Integer> {
 	// 找出該會員的所有訂單資訊
 	List<Orders> findByUserId(int userId);
 
-	// 找出除了以付款的所有訂單資訊
-	@Query(" FROM Orders  WHERE orderPayment <> 1 ORDER BY orderStatusTime")
+	// 找出除了 已付款(1)與 已出貨(4)的所有訂單資訊  //0=處理中, 1=已付款, 2=商家確認訂單中, 3=訂單已更新, 4=已發貨
+	@Query("FROM Orders WHERE orderPayment NOT IN (1, 4, 3) ORDER BY orderStatusTime")
 	List<Orders> findOrdersWithPaymentNotEqualToOneOrderByStatusTime();
+	
+	//用UUID找訂單
+	Optional<Orders> findByOrderUuid(String uuid);
 }

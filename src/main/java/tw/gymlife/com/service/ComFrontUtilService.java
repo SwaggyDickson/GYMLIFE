@@ -2,8 +2,14 @@ package tw.gymlife.com.service;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.MailException;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.mail.javamail.MimeMessagePreparator;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import tw.gymlife.com.dao.ComFrontUtil;
@@ -18,6 +24,9 @@ public class ComFrontUtilService {
 
 	@Autowired
 	private ComFrontUtil userUtil;
+	
+	@Autowired
+	private JavaMailSender mailSender;
 
 	// 將Bean轉成DTO
 	public List<CommodityDTO> convertCommodityDTOList(List<Commoditys> comList) {
@@ -70,7 +79,28 @@ public class ComFrontUtilService {
 		return userUtil.convertOrderToOrdersDTO(orderList, returnComList);
 	}
 	
-	public CompletableFuture<Boolean> sendMail(List<OrdersDTO> orderDtoList) {
-		return userUtil.sendMail(orderDtoList);
+	//信箱
+	@Async
+	public CompletableFuture<Boolean> prepareAndSend(String recipient, String title, String messages) {
+	       MimeMessagePreparator messagePreparator = mimeMessage -> {
+	    	   MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
+//	             messageHelper.setFrom("hgdthhff@gmail.com");
+	             
+	             messageHelper.setTo(recipient);
+	             messageHelper.setSubject(title);
+	             messageHelper.setText(messages);
+	         };
+	         CompletableFuture<Boolean> future = new CompletableFuture<>();
+
+	         Executors.newSingleThreadExecutor().submit(() -> {
+	             try {
+	                 mailSender.send(messagePreparator);
+	                 future.complete(true);
+	             } catch (MailException e) {
+	                 future.complete(false);
+	             }
+	         });
+
+	         return future;
 	}
 }

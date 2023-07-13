@@ -67,8 +67,8 @@
 
 					</div>
 				</div>
-				<div class="col-lg-4" style="height:774px">
-				<div style="border: 1px solid rgb(192, 192, 192);height:650px;text-align:center">
+				<div class="col-lg-4">
+				<div style="border: 1px solid rgb(192, 192, 192);text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center; padding: 100px 0;margin:100px 0">
 				<div class="mb-3"><h5 style="background-color:gray">訂購人資料</h5>
 				</div>
 				<div class="mb-3"><h5>姓名:<span th:text="${userName}"></span></h5>
@@ -79,6 +79,7 @@
 				</div>
 				<div class="mb-3"><h5>地址:<span th:text="${member.userAddress}"></span></h5>
 				</div>
+				<br>
 				
 <!-- 					<div class="row"> -->
 <!-- 					<div > -->
@@ -96,9 +97,9 @@
 <!-- 					<div > -->
 						<div class="col-lg-12 d-flex" style="justify-content: center;align-items: center;">
 							<span>購買堂數</span>
-														<i class="fa-solid fa-plus" style="color: #000000;"></i>
+<!-- 														<i class="fa-solid fa-plus" style="color: #000000;"></i> -->
 							<input type="number" min="1" step="1" value="1" id="buynumber" name="corderQuantity">
-														<i class="fa-solid fa-minus" style="color: #000000;"></i>
+<!-- 														<i class="fa-solid fa-minus" style="color: #000000;"></i> -->
 						</div><br>
 						<div class="col-lg-12 d-flex" style="justify-content: center;align-items: center;">
 							<input type="hidden" th:value="${cbean.courseCost}" id="courseCost">

@@ -2,127 +2,218 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title th:text="${activity.activityName}"></title>
+<link
+	th:href="@{http://localhost:8080/gymlife/gym/activity/fontawesome/css/all.css}"
+	rel="stylesheet">
+<link
+	th:href="@{http://localhost:8080/gymlife/gym/activity/fontawesome/css/brands.css}"
+	rel="stylesheet">
+<link
+	th:href="@{http://localhost:8080/gymlife/gym/activity/fontawesome/css/solid.css}"
+	rel="stylesheet">
+<link rel="stylesheet"
+	th:href="@{http://localhost:8080/gymlife/gym/activity/css/countdown.css}">
 </head>
 <body style="background-color: black;">
 	<div th:replace="~{layout/front_nav}"></div>
-
-	<!-- Breadcrumb Section Begin -->
-	<section class="breadcrumb-section set-bg"
-		th:data-setbg="@{http://localhost:8080/gymlife/gym/activity/img/home2.jpg}">
-		<div class="container">
-			<div class="row">
-				<div class="col-lg-12 text-center">
-					<div class="breadcrumb-text">
-						<h2>All Activity</h2>
-						<div class="bt-option">
-							<a th:href="@{/}">Home</a> <span>Activity</span>
+	<!-- Add a space with margin -->
+	<div style="margin-top: 150px;"></div>
+	<div class="carousel-container">
+		<div id="carouselExample" class="carousel slide" data-ride="carousel">
+			<div class="carousel-inner">
+				<img class="card-img-top" width="300px" height="500px"
+					th:src="@{'/dowloadImageActivity/' + ${activity.activityId}}">
+			</div>
+		</div>
+	</div>
+	<div style="margin-top: 40px;"></div>
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-9">
+				<div class="class-details-text">
+					<div style="margin-top: 40px;"></div>
+					<div class="card mb-12">
+						<div class="form-color">
+							<div class="card-header">
+								<h3>
+									<i class="fa fa-hand-pointer-o"></i> 個人基本資料
+								</h3>
+							</div>
+							<div class="card-body">
+								<form
+									th:action="@{/submitRegistration(activityId=${activity.activityId})}"
+									method="post" id="registrationForm">
+									<div class="form-group">
+										<label for="userName">姓名<span class="text-danger">*</span></label>
+										<input type="text" name="userName" required
+											class="form-control" id="userName"
+											th:value="${member.userName}">
+									</div>
+									<div class="form-group">
+										<label for="userGender">性别<span class="text-danger">*</span></label>
+										<div class="col-sm-10">
+											<div class="form-check">
+												<input class="form-check-input" type="radio"
+													name="userGender" id="gridRadios1" value="男"
+													th:checked="${member.userGender == '男'}" /> <label
+													class="form-check-label" for="gridRadios1">男</label>
+											</div>
+											<div class="form-check">
+												<input class="form-check-input" type="radio"
+													name="userGender" id="gridRadios2" value="女"
+													th:checked="${member.userGender == '女'}" /> <label
+													class="form-check-label" for="gridRadios2">女</label>
+											</div>
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="userBirthDay">出生年月日<span
+											class="text-danger">*</span></label> <input type="date"
+											name="userBirthDay" class="form-control"
+											th:value="${#dates.format(member.userBirthDay, 'yyyy-MM-dd')}"
+											th:attr="value=${#dates.format(member.userBirthDay, 'yyyy-MM-dd')}"
+											min="1900-01-01" max="2023-01-01" required="required">
+									</div>
+									<div class="form-group">
+										<label for="userTel">手機<span class="text-danger">*</span></label>
+										<input type="tel" required="required" id="userTel"
+											name="userTel" class="form-control" maxlength="11"
+											pattern="09\d{2}\d{6}" th:value="${member.userTel}">
+									</div>
+									<div class="form-group">
+										<label for="userEmail">E-mail<span class="text-danger">*</span></label>
+										<input type="email" required="required" class="form-control"
+											name="userEmail" id="userEmail"
+											th:value="${member.userEmail}">
+									</div>
+									<div class="form-group">
+										<label for="userAddress">地址</label><span class="text-danger">*</span>
+										<div>
+											<input type="text" class="form-control" id="userAddress"
+												name="userAddress" th:value="${member.userAddress}"
+												required="required">
+										</div>
+									</div>
+									<div class="form-group">
+										<label>緊急聯絡人</label><span class="text-danger">*</span>
+										<div>
+											<input type="text" class="form-control"
+												name="emergencyContact" id="emergencyContact" required="required" />
+										</div>
+										<label>電話</label><span class="text-danger">*</span>
+										<div>
+											<input type="text" class="form-control"
+												name="emergencyContactPhone" id="emergencyContactPhone"  required="required"
+												maxlength="11" pattern="09\d{2}\d{6}" />
+										</div>
+										<label>與報名者關係</label><span class="text-danger">*</span>
+										<div>
+											<input type="text" class="form-control" name="relationship"
+												id="relationship" required="required" />
+										</div>
+									</div>
+									<div class="form-group text-right m-b-0">
+										<button class="btn btn-primary" type="submit">送出</button>
+										<button type="reset" class="btn btn-secondary m-l-5">
+											取消</button>
+										<button type="button" class="btn btn-success"
+										id="fill-form-btn" onclick="selectMale()">一鍵輸入</button>
+									</div>
+								</form>
+							</div>
 						</div>
 					</div>
 				</div>
 			</div>
-		</div>
-	</section>
-	<!-- Breadcrumb Section End -->
-	<!-- Add a space with margin -->
-	<div style="margin-top: 40px; margin-bottom: 50px;"></div>
-	<div class="container">
-		<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-12">
-			<div class="card mb-3">
-				<div class="card-header">
-					<h3>
-						<i class="fa fa-hand-pointer-o"></i> 線上報名
-					</h3>
+			<div class="col-lg-3 sideright">
+				<div class="info-all">
+					<!-- 倒計時顯示區域 -->
+					<div class="countdown-wrapper">
+						<div id="countdownElementIdEndDate"
+							th:attr="data-remaining-seconds=${remainingSecondsEndDate}"></div>
+						<div id="countdownElementIdDate"
+							th:attr="data-remaining-seconds=${remainingSecondsDate}"></div>
+					</div>
+					<span class="info-title" th:text="${activity.activityName}"
+						style="color: white;"></span>
+					<div style="color: white;">
+						<i class="far fa-calendar-alt" style="margin-left: 20px"></i> <span
+							class="info-subtitle"
+							th:text="${#dates.format(activity.activityDate, 'yyyy/MM/dd') + ' (' + #dates.format(activity.activityDate, 'EEEE') + ')'}"
+							style="display: inline; margin-right: 10px;"></span>
+					</div>
+					<div style="color: white;">
+						<i class="fas fa-map-marker-alt" style="margin-left: 20px" /></i> <span
+							class="info-subtitle" th:text="${activity.activityLocation}"
+							style="display: inline; color: white;"></span>
+					</div>
 				</div>
-
-				<div class="card-body">
-
-					<form action="#">
-						<div class="form-group">
-							<label for="userName">報名者姓名<span class="text-danger">*</span></label>
-							<input type="text" name="nick" required class="form-control"
-								id="userName" th:value="${member.userName}">
-						</div>
-						<div class="form-group">
-							<label for="userName">性别<span class="text-danger">*</span></label>
-							<div class="col-sm-10">
-								<div class="form-check">
-									<input class="form-check-input" type="radio" name="gender"
-										id="gridRadios1" value="男"
-										th:checked="${member.userGender == '男'}" /> <label
-										class="form-check-label" for="gridRadios1">男</label>
-								</div>
-								<div class="form-check">
-									<input class="form-check-input" type="radio" name="gender"
-										id="gridRadios2" value="女"
-										th:checked="${member.userGender == '女'}" /> <label
-										class="form-check-label" for="gridRadios2">女</label>
-								</div>
-							</div>
-						</div>
-						<div class="form-group">
-							<label for="emailAddress">身分證字號<span class="text-danger">*</span></label>
-							<input type="text" name="idcode" maxlength="10"
-								pattern="[a-z,A-Z]{1}[1-2,8-9]\d{8}" class="form-control"
-								id="identityCard" required="required">
-						</div>
-						<div class="form-group">
-							<label for="userBirthDay">出生年月日<span class="text-danger">*</span></label>
-							<input type="date" name="userBirthDay" class="form-control"
-								th:value="${#dates.format(member.userBirthDay, 'yyyy-MM-dd')}"
-								th:attr="value=${#dates.format(member.userBirthDay, 'yyyy-MM-dd')}"
-								min="1900-01-01" max="2023-01-01" required="required">
-						</div>
-						<div class="form-group">
-							<label for="userTel">聯絡電話<span class="text-danger">*</span></label>
-							<input type="tel" required="required" id="userTel"
-								class="form-control" maxlength="11" pattern="09\d{2}\d{6}"
-								th:value="${member.userTel}">
-						</div>
-						<div class="form-group">
-							<label for="userEmail">E-mail<span class="text-danger">*</span></label>
-							<input type="email" required="required" class="form-control"
-								id="userEmail" th:value="${member.userEmail}">
-						</div>
-						<div class="form-group">
-							<label for="userAddress">地址</label>
-							<div>
-								<input type="text" class="form-control" id="userAddress"
-									th:value="${member.userAddress}" required="required">
-							</div>
-						</div>
-						<div class="form-group">
-							<label>緊急聯絡人</label>
-							<div>
-								<input type="text" class="form-control" required="required" />
-							</div>
-						</div>
-						<div class="form-group">
-							<label>Textarea</label>
-							<div>
-								<textarea class="form-control" required="required"></textarea>
-							</div>
-						</div>
-						<div class="form-group">
-							<div class="checkbox">
-								<input id="remember-1" type="checkbox"> <label
-									for="remember-1"> Remember me </label>
-							</div>
-						</div>
-
-						<div class="form-group text-right m-b-0">
-							<button class="btn btn-primary" type="submit">Submit</button>
-							<button type="reset" class="btn btn-secondary m-l-5">
-								Cancel</button>
-						</div>
-
-					</form>
-
+				<div class="button-wrapper">
+					<a th:href="@{/goRegistration(activityId=${activity.activityId})}"
+						class="custom-button go-button">我要報名</a>
+					 <a th:href="@{/goRegistrationRecord}" class="custom-button go-button">報名查詢</a>
 				</div>
 			</div>
-			<!-- end card-->
 		</div>
 	</div>
 	<div th:replace="~{layout/front_footer}"></div>
+	<script th:inline="javascript">
+
+    // 獲取倒計時剩餘秒數 
+    var remainingSecondsEndDate = /*[[${remainingSecondsEndDate}]]*/ 0;
+    var remainingSecondsDate = /*[[${remainingSecondsDate}]]*/ 0;
+
+    // 倒計時邏輯
+    function countdownTimer() {
+        var countdownElementEndDate = document.getElementById('countdownElementIdEndDate');
+        var countdownElementDate = document.getElementById('countdownElementIdDate');
+
+        // 更新倒計時
+        function updateCountdown() {
+            if (remainingSecondsEndDate <= 0) {
+                // 如果時間差小於等於0，表示倒計時結束,則顯示活動日期倒計時
+                var days = Math.floor(remainingSecondsDate / (24 * 60 * 60));
+                var hours = Math.floor((remainingSecondsDate % (24 * 60 * 60)) / (60 * 60));
+                var minutes = Math.floor((remainingSecondsDate % (60 * 60)) / 60);
+                var seconds = remainingSecondsDate % 60;
+
+                countdownElementEndDate.textContent = '';
+                countdownElementDate.textContent = "活動日期: " + days + "天 " + hours + "小時 " + minutes + "分鐘 " + seconds + "秒";
+                // 進行其他邏輯
+            } else {
+                var days = Math.floor(remainingSecondsEndDate / (24 * 60 * 60));
+                var hours = Math.floor((remainingSecondsEndDate % (24 * 60 * 60)) / (60 * 60));
+                var minutes = Math.floor((remainingSecondsEndDate % (60 * 60)) / 60);
+                var seconds = remainingSecondsEndDate % 60;
+
+                countdownElementEndDate.textContent = "報名截止: " + days + "天 " + hours + "小時 " + minutes + "分鐘 " + seconds + "秒";
+                countdownElementDate.textContent = '';
+                remainingSecondsEndDate--; // 更新剩餘秒數
+            }
+        }
+
+        // 每秒鐘更新一次倒計時
+        setInterval(updateCountdown, 1000);
+    }
+
+    // 調用倒計時函數
+    countdownTimer();
+    
+      function selectMale() {
+    document.getElementById("gridRadios1").checked = true;
+  }
+    
+    // 一鍵輸入按鈕點擊事件處理函式
+    $('#fill-form-btn').click(function() {
+        // 設定表單欄位的值
+        $('#gridRadios1').val('男');
+        $('#emergencyContact').val('王小明');
+        $('#emergencyContactPhone').val('0956103921');
+        $('#relationship').val('兄弟');
+    });
+</script>
+
+
 </body>
 </html>

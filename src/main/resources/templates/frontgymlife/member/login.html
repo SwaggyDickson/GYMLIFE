@@ -196,6 +196,21 @@
             document.getElementById('userAccount').value = 'TestAccount2';
             document.getElementById('userPassword').value = 'TestPassword';
         })
+        
+    // 未登入/註冊會員想報名跳出的SweetAlert提示框
+	// 獲取URL中的alert參數
+	const urlParams = new URLSearchParams(window.location.search);
+	const alertMessage = urlParams.get('alert');
+
+	// 如果存在alert参数，使用SweetAlert显示提示框
+	if (alertMessage) {
+	Swal.fire({
+ 	 title: '提示',
+  	text: alertMessage,
+  	icon: 'warning',
+ 	confirmButtonText: '確定'
+});
+}
 
        
 

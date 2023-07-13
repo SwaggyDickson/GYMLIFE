@@ -34,6 +34,7 @@ import tw.gymlife.forum.model.CommentBean;
 import tw.gymlife.forum.model.ArticleReport;
 import tw.gymlife.forum.model.CommentReport;
 import tw.gymlife.forum.model.ArticleSave;
+import tw.gymlife.activity.model.Registration;
 
 @Data
 @Entity
@@ -122,6 +123,13 @@ public class Member {
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "member", cascade = CascadeType.ALL)
 	@JsonIgnore
 	private List<CorderBean> corder;
+	
+	// 會員一對多報名
+	@JsonIgnore
+	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+	private List<Registration> registrations = new ArrayList<>();
+	
+	
 
 }
 // 接收登入資料

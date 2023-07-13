@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>報名紀錄</title>
+<style>
+.class-details-timetable_title {
+	margin-top: 40px;
+}
+
+table {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+table th,
+table td {
+	padding: 8px;
+	border: 1px solid #ccc;
+	text-align: center;
+}
+
+table thead th {
+	background-color: #f2f2f2;
+}
+
+</style>
+</head>
+<body>
+	<div th:replace="~{layout/front_nav}"></div>
+	<!-- Breadcrumb Section Begin -->
+	<section class="breadcrumb-section set-bg"
+		th:data-setbg="@{http://localhost:8080/gymlife/gym/activity/img/home2.jpg}">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-12 text-center">
+					<div class="breadcrumb-text">
+						<h2>報名紀錄</h2>
+						<div class="bt-option">
+							<a th:href="@{/}">首頁</a> <a href="#">會員</a> <span>報名紀錄</span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	<!-- Breadcrumb Section End -->
+	<!-- Class Timetable Section Begin -->
+	<section class="class-timetable-section class-details-timetable spad">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-12">
+					<div class="class-details-timetable_title">
+						<h5>您的報名紀錄</h5>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-lg-12">
+					<div class="class-timetable details-timetable">
+						<table>
+							<thead>
+								<tr>
+									<th>活動名稱</th>
+									<th>活動日期</th>
+									<th>活動地點</th>
+									<th>報名狀態</th>
+									<th>報名日期</th>
+									<th>緊急聯絡人</th>
+									<th>緊急聯絡人電話</th>
+									<th>與報名者關係</th>
+								</tr>
+							</thead>
+							<tbody>
+								<th:block th:each="registration, row : ${registrations}">
+									<tr style="color:white;">
+										<td th:text="${registration.activity.activityName}"></td>
+										<td
+											th:text="${#dates.format(registration.activity.activityDate, 'yyyy/MM/dd')}"></td>
+										<td th:text="${registration.activity.activityLocation}"></td>
+										<td th:text="${registration.registrationStatus}"></td>
+										<td
+											th:text="${#dates.format(registration.registrationDate, 'yyyy/MM/dd HH:mm')}"></td>
+										<td th:text="${registration.emergencyContact}"></td>
+										<td th:text="${registration.emergencyContactPhone}"></td>
+										<td th:text="${registration.relationship}"></td>
+									</tr>
+								</th:block>
+
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	<!-- Class Timetable Section End -->
+
+
+
+	<div th:replace="~{layout/front_footer}"></div>
+</body>
+</html>

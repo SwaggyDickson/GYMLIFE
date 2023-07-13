@@ -1,6 +1,9 @@
 package tw.gymlife.activity.controller;
 
 import java.io.IOException;
+import tw.gymlife.activity.model.Registration;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -8,6 +11,7 @@ import java.util.Optional;
 import java.util.HashMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,6 +32,7 @@ import tw.gymlife.activity.dao.ActivityImageRepository;
 import tw.gymlife.activity.model.Activity;
 import tw.gymlife.activity.model.ActivityImage;
 import tw.gymlife.activity.service.ActivityService;
+import tw.gymlife.activity.service.RegistrationService;
 
 @Controller
 public class ActivityBackController {
@@ -37,14 +42,9 @@ public class ActivityBackController {
 	
 	@Autowired
 	private ActivityImageRepository imageRepo;
-
-
-	// 後台首頁
-//	@GetMapping("/backHomePage")
-//	public String getBackHomePage() {
-//
-//		return "backgymlife/activity/backHomePage";
-//	}
+	
+	@Autowired
+	public RegistrationService rService;
 
 	// 顯示新增活動頁面
 	@GetMapping("/activity/insert")
@@ -56,11 +56,12 @@ public class ActivityBackController {
 	//新增活動
 	@PostMapping("/activity/insert")
 	public String insertActivity(@RequestParam("activityName") String activityName,
-	        @RequestParam("activityDate") Date activityDate, @RequestParam("activityLocation") String activityLocation,
+	        @RequestParam("activityDate")@DateTimeFormat(pattern = "yyyy-MM-dd") Date activityDate, @RequestParam("activityLocation") String activityLocation,
 	        @RequestParam("activityCategory") String activityCategory,
 	        @RequestParam("activityCover") MultipartFile activityCover,
-	        @RequestParam("registrationStartDate") Date registrationStartDate,
-	        @RequestParam("registrationEndDate") Date registrationEndDate, @RequestParam("organizer") String organizer,
+	        @RequestParam("registrationStartDate")@DateTimeFormat(pattern = "yyyy-MM-dd") Date registrationStartDate,
+	        @RequestParam("registrationEndDate") @DateTimeFormat(pattern = "yyyy-MM-dd") Date registrationEndDate, @RequestParam("organizer") String organizer,
+	        @RequestParam("activityStatus") String activityStatus,
 	        @RequestParam("activityInfo") String activityInfo,
 	        @RequestParam("applicantLimitedQty") Integer applicantLimitedQty,
 	        @RequestParam("activityApplicantsQty") Integer activityApplicantsQty, Model m) throws IOException {
@@ -75,6 +76,7 @@ public class ActivityBackController {
 	    activity.setRegistrationStartDate(registrationStartDate);
 	    activity.setRegistrationEndDate(registrationEndDate);
 	    activity.setOrganizer(organizer);
+	    activity.setActivityStatus(activityStatus);
 	    activity.setActivityInfo(activityInfo);
 	    activity.setApplicantLimitedQty(applicantLimitedQty);
 	    activity.setActivityApplicantsQty(activityApplicantsQty);
@@ -100,7 +102,6 @@ public class ActivityBackController {
 
 	}
 	
-
 	// 查詢所有活動
 	@GetMapping("/activity/getAll")
 	public String getAllActivity(Model m) {
@@ -146,12 +147,13 @@ public class ActivityBackController {
 	@Transactional
 	@PostMapping("/activity/update")
 	public String updateActivity(@RequestParam("activityId") Integer activityId,
-			@RequestParam("activityName") String activityName, @RequestParam("activityDate") Date activityDate,
+			@RequestParam("activityName") String activityName, @RequestParam("activityDate")@DateTimeFormat(pattern = "yyyy-MM-dd")  Date activityDate,
 			@RequestParam("activityLocation") String activityLocation,
 			@RequestParam("activityCategory") String activityCategory,
 			@RequestParam("activityCover") MultipartFile activityCover,
-			@RequestParam("registrationStartDate") Date registrationStartDate,
-			@RequestParam("registrationEndDate") Date registrationEndDate, @RequestParam("organizer") String organizer,
+			@RequestParam("registrationStartDate")@DateTimeFormat(pattern = "yyyy-MM-dd")  Date registrationStartDate,
+			@RequestParam("registrationEndDate")@DateTimeFormat(pattern = "yyyy-MM-dd")  Date registrationEndDate, @RequestParam("organizer") String organizer,
+			@RequestParam("activityStatus") String activityStatus,
 			@RequestParam("activityInfo") String activityInfo,
 			@RequestParam("applicantLimitedQty") Integer applicantLimitedQty,
 			@RequestParam("activityApplicantsQty") Integer activityApplicantsQty, Model m) {
@@ -171,7 +173,7 @@ public class ActivityBackController {
 		// 更新活動訊息
 		Activity updateActivityById = aService.updateActivityById(activityId, activityName, activityDate,
 				activityLocation, activityCategory, activityCoverBytes, registrationStartDate, registrationEndDate,
-				organizer, activityInfo, applicantLimitedQty, activityApplicantsQty);
+				organizer,activityStatus,activityInfo, applicantLimitedQty, activityApplicantsQty);
 
 		// 判斷更新是否成功
 		if (updateActivityById != null) {
@@ -187,36 +189,64 @@ public class ActivityBackController {
 			return "error-page";
 		}
 	}
-	 
+	
+	//處理CKEditor插入圖片 - 上傳圖片進資料庫並取得URL
 	@PostMapping("/activity/api/upload")
 	public ResponseEntity<?> ckEditorUploadImage(@RequestParam("file") MultipartFile file) throws IOException {
+		// 建立一個新的 ActivityImage 物件
 		ActivityImage image = new ActivityImage();
-
+		
+		// 將上傳的檔案的位元組陣列設定到 ActivityImage 物件的 photoFile 屬性
 		image.setPhotoFile(file.getBytes());
-
+		
+	    // 將 ActivityImage 物件保存到資料庫中並獲取保存後的 imageId
 		ActivityImage reImage = imageRepo.save(image);
 
+		// 構建圖片的 URL
 		String imageUrl = "http://localhost:8080/gymlife/activity/api/imgdownload/" + reImage.getImageId();
 
+		// 建立一個 Map 物件，將圖片的 URL 存入其中
 		Map<String, String> urlMap = new HashMap<String, String>();
 		urlMap.put("url", imageUrl);
 
+		// 使用 ResponseEntity 返回包含 URL 的 Map，並設定狀態碼為 HttpStatus.OK
 		return new ResponseEntity<Map<String, String>>(urlMap, HttpStatus.OK);
 	}
-
+	
+	//處理CKEditor插入圖片- 下載上傳的圖片的後端API
 	@ResponseBody
 	@GetMapping("/activity/api/imgdownload/{imageId}")
 	public ResponseEntity<byte[]> downloadCKEditorImage(@PathVariable Integer imageId) {
+
+		// 根據 imageId 從資料庫中查詢對應的 ActivityImage
 		Optional<ActivityImage> option = imageRepo.findById(imageId);
 
 		if (option.isPresent()) {
+			// 如果找到了對應的 ActivityImage
 			ActivityImage photo = option.get();
 			byte[] photoFile = photo.getPhotoFile();
+			// 返回圖片檔案的 Response，設定檔案類型為 IMAGE_JPEG
 			return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(photoFile);
 		}
-
+		// 如果找不到對應的 ActivityImage，返回 null
 		return null;
 
+	}
+
+
+//	// ajax查詢所有
+//    @GetMapping("/activity/api/getAll")
+//    public List<Activity> getAllActivity() {
+//        List<Activity> getallActivity = aService.getAllActivity();
+//        return getallActivity;
+//    }
+	
+	// ajax刪除
+	@ResponseBody
+	@DeleteMapping("/activity/api/delete")
+	public List<Activity> deleteAjax(@RequestParam("activityId") Integer activityId, Model m){
+		aService.deleteActivityByid(activityId);
+		return getAllActivity();
 	}
 
 	

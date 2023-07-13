@@ -4,18 +4,19 @@
 <head>
 <meta charset="UTF-8">
 <title>所有活動</title>
+<link rel="stylesheet"
+	href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.css" />
+<link rel="stylesheet"
+	href="https://cdn.datatables.net/plug-ins/1.10.25/i18n/Chinese-traditional.json" />
 <!-- SweetAlert -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<style>
-.dataTables_wrapper .dataTables_filter {
-	text-align: right;
-	margin-right: 10px;
-}
-</style>
+
+
 </head>
 
 <body>
 	<div th:replace="~{layout/navbar}"></div>
+
 	<div class="content-page">
 		<!-- Start content -->
 		<div class="content">
@@ -28,35 +29,39 @@
 							</h1>
 							<ol class="breadcrumb float-right">
 								<li class="breadcrumb-item">Home</li>
-								<li class="breadcrumb-item active">All</li>
+								<li class="breadcrumb-item active">Activity</li>
 							</ol>
 							<div class="clearfix"></div>
 						</div>
 					</div>
-					<!-- table-->
+				</div>
+				<!-- end row -->
 
+				<div class="row">
 					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
 						<div class="card mb-3">
-							<div style="margin-left: 35px; margin-top: 20px;">
+							<div class="card-header">
 								<form th:action="@{/activity/insert}">
 									<button class="btn btn-primary" type="submit" value="新增">
 										<i class="fa-solid fa-plus"></i> 新增
 									</button>
 								</form>
 							</div>
+
 							<div class="card-body">
 								<div class="table-responsive">
-									<table id="example1"
+									<table id="activity-table"
 										class="table table-bordered table-hover display">
 										<thead>
 											<tr>
-												<th>活動名稱 <i class="fa-solid fa-sort"></i></th>
-												<th>活動封面 <i class="fa-solid fa-sort"></i></th>
-												<th>活動類型 <i class="fa-solid fa-sort"></i></th>
-												<th>活動日期 <i class="fa-solid fa-sort"></i></th>
-												<th>活動地點 <i class="fa-solid fa-sort"></i></th>
-												<th>主辦單位 <i class="fa-solid fa-sort"></i></th>
-												<th>最後修改時間 <i class="fa-solid fa-sort"></i></th>
+												<th>活動名稱</th>
+												<th>活動封面</th>
+												<th>活動類型</th>
+												<th>活動日期</th>
+												<th>活動地點</th>
+												<th>主辦單位</th>
+												<th>報名狀態</th>
+												<th>最後修改時間</th>
 												<th>操作</th>
 											</tr>
 										</thead>
@@ -64,7 +69,7 @@
 											<th:block th:each=" oneActivity : ${allActivity}">
 												<tr>
 													<td th:text="${oneActivity.activityName}"></td>
-													<td><img width="300px" height="200px"
+													<td><img width="250px" height="150px"
 														th:src="@{'/dowloadImageActivity/' + ${oneActivity.activityId}}">
 													</td>
 													<td th:text="${oneActivity.activityCategory}"></td>
@@ -73,6 +78,7 @@
 													</td>
 													<td th:text="${oneActivity.activityLocation}"></td>
 													<td th:text="${oneActivity.organizer}"></td>
+													<td th:text="${oneActivity.activityStatus}"></td>
 													<td
 														th:text="${#dates.format(oneActivity.updateTime,'yyyy/MM/dd HH:mm:ss')}"></td>
 													<td>
@@ -93,6 +99,14 @@
 																	class="btn btn-outline-secondary delete-btn-activity"
 																	onclick="submitTest(event)" id="deleteBtn">刪除</button>
 															</form>
+															<div style="margin-left: 10px;"></div>
+															<form th:action="@{/goBackRegistrationRecord}"
+																method="get">
+																<input name="activityId"
+																	th:value="${oneActivity.activityId}" type="hidden" />
+																<button class="btn btn-outline-success" type="submit">查看報名</button>
+															</form>
+
 														</div>
 													</td>
 												</tr>
@@ -104,21 +118,29 @@
 						</div>
 					</div>
 				</div>
-				<!-- end card-->
 			</div>
 			<!-- END container-fluid -->
 		</div>
 		<!-- END content -->
 	</div>
-	<!-- END content-page -->
 	<div th:replace="~{layout/footer}"></div>
+	<!-- END content-page -->
+
 	<!-- BEGIN Java Script for this page -->
+	<script
+		src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+	<script
+		src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap4.min.js"></script>
+	<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.js"></script>
+	<script
+		src="https://cdn.datatables.net/plug-ins/1.10.25/i18n/Chinese-traditional.json"></script>
 	<script>
-		// START CODE FOR BASIC DATA TABLE 
-		$(document).ready(function () {
-			$('#example1').DataTable();
-});
-		// END CODE FOR BASIC DATA TABLE
+$('#activity-table').DataTable({
+            "language": {
+                url: "https://cdn.datatables.net/plug-ins/1.10.25/i18n/Chinese-traditional.json"
+            }
+        });
+
 
 function submitTest(event) {
   event.preventDefault(); // 阻止表單提交
@@ -151,13 +173,21 @@ function submitTest(event) {
 }
 
 $('#deleteBtn').click(submitTest);
-	</script>
-	<script
-		src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
-	<script
-		src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap4.min.js"></script>
 
+ 	// 該活動報名紀錄為空 跳出的提示訊息
+	// 獲取URL中的alert參數
+	const urlParams = new URLSearchParams(window.location.search);
+	const alertMessage = urlParams.get('alert');
 
+	// 如果存在alert参数，使用SweetAlert顯示提示框 (報名失敗)
+	if (alertMessage) {
+	Swal.fire({
+ 	 title: '不好意思',
+  	text: alertMessage,
+  	icon: 'warning',
+ 	confirmButtonText: '確定'
+});
+}
+</script>
 </body>
-
 </html>

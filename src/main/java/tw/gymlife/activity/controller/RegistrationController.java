@@ -1,8 +1,6 @@
 package tw.gymlife.activity.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +17,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.List;
+import java.util.ArrayList;
 
 @Controller
 public class RegistrationController {
@@ -32,90 +31,159 @@ public class RegistrationController {
 	@Autowired
 	public ActivityService aService;
 
-//	@GetMapping("/goRegistration")
-//	public String showRegistrationForm(@RequestParam("activityId") Integer activityId, HttpSession httpsession, Model m) {
-//	    // 判斷是否存在 session
-//	    Integer userId = (Integer) httpsession.getAttribute("userId");
-//	    
-//	    // 根據會員ID獲取會員資訊
-//	    if (userId!=null) {
-//	    	Member member = mService.getMemberById(userId);
-//	        // 根據活動ID取得活動資訊
-//	        Activity activity = aService.getActivityById(activityId);
-//	        if (activity != null) {
-//	        m.addAttribute("activity", activity);
-//	        m.addAttribute("member", member);
-//	        // 如果存在session跳轉到報名頁面
-//	        return "frontgymlife/activity/Registration";
-//	    	}
-//	    }
-//	    
-//	    // 不存在session，使用SweetAlert彈出提示框後跳轉到登入頁面
-//	    String alertMessage = "請先登入或註冊會員";
-//	    return "redirect:/Login?alert=" + URLEncoder.encode(alertMessage, StandardCharsets.UTF_8);
-//	}
-//
-//	// 創建報名記錄
-//	@PostMapping
-//	public ResponseEntity<Registration> createRegistration(@RequestParam("userId") Integer userId,
-//			@RequestBody Registration registration) {
-//		// 根據會員ID查詢會員
-//		Member member = mService.getMemberById(userId);
-//		if (member == null) {
-//			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-//		}
-//
-//		// 設定報名記錄的會員ID
-//		registration.setUserId(member.getUserId());
-//
-//		// 創建報名記錄
-//		Registration createdRegistration = rService.insertRegistration(registration);
-//		return new ResponseEntity<>(createdRegistration, HttpStatus.CREATED);
-//	}
+	@GetMapping("/goRegistration")
+	public String showRegistrationForm(@RequestParam("activityId") Integer activityId, HttpSession httpsession, Model m) {
+	    // 判斷是否存在 session
+	    Integer userId = (Integer) httpsession.getAttribute("userId");
+	    
+	    // 根據會員ID獲取會員資訊
+	    if (userId!=null) {
+	    	Member member = mService.getMemberById(userId);
+	        // 根據活動ID取得活動資訊
+	        Activity activity = aService.getActivityById(activityId);
+	        if (activity != null) {
+	        m.addAttribute("activity", activity);
+	        m.addAttribute("member", member);
+	        
+	        // 計算倒計時時間差 報名截止日 & 活動日期倒數計時器
+	        Date now = new Date();
+	        Date registrationEndDate = activity.getRegistrationEndDate();
+	        Date activityDate = activity.getActivityDate();
+	        long remainingMillisecondsEndDate = registrationEndDate.getTime() - now.getTime();
+	        long remainingSecondsEndDate = remainingMillisecondsEndDate / 1000;
+	        long remainingMillisecondsDate = activityDate.getTime() - now.getTime();
+	        long remainingSecondsDate = remainingMillisecondsDate / 1000;
+	        
 
-	// 根據報名ID獲取報名記錄
-	@GetMapping("/{registrationId}")
-	public ResponseEntity<Registration> getRegistrationById(@PathVariable int registrationId) {
-		Registration registration = rService.getRegistrationById(registrationId);
-		if (registration != null) {
-			return new ResponseEntity<>(registration, HttpStatus.OK);
-		} else {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		}
+	        // 將倒數計時器時間差傳給前端
+	        m.addAttribute("remainingSecondsEndDate", remainingSecondsEndDate);
+	        m.addAttribute("remainingSecondsDate", remainingSecondsDate);
+	        
+
+	        // 如果存在session跳轉到報名頁面
+	        return "frontgymlife/activity/Registration";
+	    	}
+	    }
+	    
+	    // 不存在session，使用SweetAlert彈出提示框後跳轉到登入頁面
+	    String alertMessage = "請先登入或註冊會員";
+	    return "redirect:/Login?alert=" + URLEncoder.encode(alertMessage, StandardCharsets.UTF_8);
 	}
 
-	// 根據活動ID獲取報名記錄列表
-	@GetMapping("/activity/{activityId}")
-	public ResponseEntity<List<Registration>> getRegistrationsByActivityId(@PathVariable int activityId) {
-		List<Registration> registrations = rService.getRegistrationsByActivityId(activityId);
-		return new ResponseEntity<>(registrations, HttpStatus.OK);
+
+	@PostMapping("/submitRegistration")
+	public String submitRegistrationForm(@ModelAttribute Registration registration, @RequestParam("activityId") Integer activityId, HttpSession httpsession, Model m) {
+	    // 判斷是否存在 session
+	    Integer userId = (Integer) httpsession.getAttribute("userId");
+
+	    // 根據會員ID獲取會員資訊
+	    Member member = mService.getMemberById(userId);
+
+	    // 根據活動ID取得活動資訊
+	    Activity activity = aService.getActivityById(activityId);
+
+	    // 檢查會員和活動是否存在，以及其他驗證邏輯...
+	    if (member != null && activity != null) {
+	    	// 检查会员是否已经报名过该活动
+	        boolean isRegistered = rService.isMemberRegisteredForActivity(userId, activityId);
+	        if (isRegistered) {
+	            // 會員已經報名過該活動，跳轉到報名失敗頁面或其他適當的處理...使用SweetAlert弹出提示框后跳转到登录页面
+	            String alertMessage = "您已經報名過該活動，不允許重複報名";
+	            return "redirect:/activityHome?alert=" + URLEncoder.encode(alertMessage, StandardCharsets.UTF_8);
+	        }
+
+	    	
+	        // 檢查報名人數是否已滿
+	        if (activity.getActivityApplicantsQty() < activity.getApplicantLimitedQty()) {
+	            // 創建報名紀錄並保存到資料庫...
+	            Registration newRegistration = new Registration();
+	            newRegistration.setMember(member);
+	            newRegistration.setActivity(activity);
+	            newRegistration.setRegistrationStatus("報名成功");
+	            newRegistration.setRegistrationDate(new Date());
+	            newRegistration.setEmergencyContact(registration.getEmergencyContact());
+	            newRegistration.setEmergencyContactPhone(registration.getEmergencyContactPhone());
+	            newRegistration.setRelationship(registration.getRelationship());
+	            
+	            // 儲存報名紀錄到資料庫...
+	            rService.insertRegistration(newRegistration);
+
+	            // 更新活動報名人數
+	            activity.setActivityApplicantsQty(activity.getActivityApplicantsQty() + 1);
+	            aService.insertActivity(activity);
+	            
+	            // 傳遞報名紀錄到前端
+	            m.addAttribute("registration", newRegistration);
+	            m.addAttribute("activity", activity);
+
+	            // 跳轉到報名成功頁面或其他適當的處理...
+	            String alertMessage = "您已成功報名！";
+	            return "redirect:/activityDetails?activityId=" + activityId + "&alert=" + URLEncoder.encode(alertMessage, StandardCharsets.UTF_8);
+	            
+	        } else {
+	            // 報名人數已滿，跳轉到報名失敗頁面或其他適當的處理...使用SweetAlert彈出提示框後跳轉到登入頁面
+	    	    String alertMessage = "報名人數已滿，請參考其他活動";
+	    	    return "redirect:/activityHome?alert=" + URLEncoder.encode(alertMessage, StandardCharsets.UTF_8);
+	        }
+	    } else {
+	        // 無法報名，跳轉到報名失敗頁面或其他適當的處理...使用SweetAlert彈出提示框後跳轉到登入頁面
+    	    String alertMessage = "無法報名，請再試一次";
+    	    return "redirect:/activityHome?alert=" + URLEncoder.encode(alertMessage, StandardCharsets.UTF_8);
+	    }
+		
+	}
+	
+	//跳轉報名紀錄頁面
+	@GetMapping("/goRegistrationRecord")
+	public String goRegistrationRecord(HttpSession session, Model model) {
+	    // 判斷是否存在 session
+	    Integer userId = (Integer) session.getAttribute("userId");
+
+	    // 根據會員ID獲取報名記錄列表
+	    List<Registration> registrations = rService.getRegistrationsByMemberId(userId);
+
+	    // 獲取每個報名記錄對應的活動資訊
+	    List<Activity> allactivity = new ArrayList<>();
+	    for (Registration registration : registrations) {
+	        Activity activity = aService.getActivityById(registration.getActivityId());
+	        allactivity.add(activity);
+	    }
+
+	    model.addAttribute("registrations", registrations);
+	    model.addAttribute("allactivity", allactivity);
+	    return  "frontgymlife/activity/RegistrationRecord"; 
+	}
+	
+	// 後台-該活動有報名紀錄的會員
+	@GetMapping("/goBackRegistrationRecord") 
+	public String getActivityDetails(@RequestParam("activityId") Integer activityId, Model m) {
+	    // 根據活動ID獲取活動資訊
+	    Activity activity = aService.getActivityById(activityId);
+
+	    // 根據活動ID獲取會員報名記錄列表
+	    List<Registration> registrations = rService.getRegistrationsByActivityId(activityId);
+
+	    // 獲取會員資訊
+	    List<Member> members = new ArrayList<>();
+	    for (Registration registration : registrations) {
+	        Integer userId = registration.getUserId();
+	        Member member = mService.getMemberById(userId);
+	        members.add(member);
+	    }
+
+	    m.addAttribute("activity", activity);
+	    m.addAttribute("registrations", registrations);
+	    m.addAttribute("members", members);
+	    
+	    // 檢查報名紀錄是否為空
+	    if (registrations.isEmpty()) {
+	    	// 該活動目前無報名紀錄，使用SweetAlert彈出提示框後跳轉到登入頁面
+    	    String alertMessage = "該活動目前無報名紀錄";
+    	    return "redirect:/activity/getAll?alert=" + URLEncoder.encode(alertMessage, StandardCharsets.UTF_8);
+	    }
+
+	  return "backgymlife/activity/backRegistrationRecord"; 
 	}
 
-	// 根據會員ID獲取報名記錄列表
-	@GetMapping("/member/{userId}")
-	public ResponseEntity<List<Registration>> getRegistrationsByMemberId(@PathVariable int userId) {
-		List<Registration> registrations = rService.getRegistrationsByMemberId(userId);
-		return new ResponseEntity<>(registrations, HttpStatus.OK);
-	}
-
-	// 更新報名記錄
-	@PutMapping("/{registrationId}")
-	public ResponseEntity<Registration> updateRegistration(@PathVariable int registrationId,
-			@RequestParam("status") String registrationStatus, @RequestParam("date") Date registrationDate) {
-		Registration updatedRegistration = rService.updateRegistrationById(registrationId, registrationStatus,
-				registrationDate);
-		if (updatedRegistration != null) {
-			return new ResponseEntity<>(updatedRegistration, HttpStatus.OK);
-		} else {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		}
-	}
-
-	// 刪除報名記錄
-	@DeleteMapping("/{registrationId}")
-	public ResponseEntity<Void> deleteRegistration(@PathVariable int registrationId) {
-		rService.deleteRegistration(registrationId);
-		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-	}
-
+	
 }

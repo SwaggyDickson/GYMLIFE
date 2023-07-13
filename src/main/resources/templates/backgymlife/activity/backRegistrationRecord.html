@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>報名名單</title>
+<link rel="stylesheet"
+	href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.css" />
+<link rel="stylesheet"
+	href="https://cdn.datatables.net/plug-ins/1.10.25/i18n/Chinese-traditional.json" />
+<!-- SweetAlert -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<style>
+th, td{
+font-size:18px;
+}
+.title{
+font-size:24px;
+}
+
+.card-header {
+font-size:20px;
+}
+
+
+
+</style>
+</head>
+<body>
+	<div th:replace="~{layout/navbar}"></div>
+
+	<div class="content-page">
+		<!-- Start content -->
+		<div class="content">
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-xl-12">
+						<div class="breadcrumb-holder">
+							<span class="main-title float-left">
+								<i class="fa fa-table"></i> 報名總覽
+							</span>
+							<ol class="breadcrumb float-right">
+								<li class="breadcrumb-item">Home</li>
+								<li class="breadcrumb-item active">RegistrationRecord</li>
+							</ol>
+							<div class="clearfix"></div>
+						</div>
+					</div>
+				</div>
+				<!-- end row -->
+
+				<div class="row">
+					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+						<div class="card mb-3">
+							<div class="card-header">
+								<span class="title" th:text="${activity.activityName}"></span></br>
+								<i class="far fa-calendar-alt"></i> <span th:text="${activity.activityDate}"></span></br>
+								<i class="fas fa-map-marker-alt"></i> <span th:text="${activity.activityLocation}"></span>
+							</div>
+
+							<div class="card-body">
+								<div class="table-responsive">
+									<table id="signUptable"
+										class="table table-bordered table-hover display">
+										<thead>
+											<tr>
+												<th>報名序號</th>
+												<th>姓名</th>
+												<th>電話</th>
+												<th>E-mail</th>
+												<th>報名狀態</th>
+												<th>報名時間</th>
+											</tr>
+										</thead>
+										<tbody>
+											<th:block th:each="registration : ${registrations}">
+												<tr>
+													<td th:text="${registration.registrationId}"></td>
+													<td th:text="${registration.member.userName}"></td> 
+													<td th:text="${registration.member.userTel}"></td>
+													<td th:text="${registration.member.userEmail}"></td>
+													<td th:text="${registration.registrationStatus}"></td>
+													<td th:text="${registration.registrationDate}"></td>
+												</tr>
+											</th:block>
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- END container-fluid -->
+		</div>
+		<!-- END content -->
+	</div>
+	<div th:replace="~{layout/footer}"></div>
+	<!-- END content-page -->
+
+	<!-- BEGIN Java Script for this page -->
+	<script
+		src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+	<script
+		src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap4.min.js"></script>
+	<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.js"></script>
+	<script
+		src="https://cdn.datatables.net/plug-ins/1.10.25/i18n/Chinese-traditional.json"></script>
+	<script>
+$('#signUptable').DataTable({
+            "language": {
+                url: "https://cdn.datatables.net/plug-ins/1.10.25/i18n/Chinese-traditional.json"
+            }
+        });
+
+
+</script>
+</body>
+</html>

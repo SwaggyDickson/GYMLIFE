@@ -125,8 +125,11 @@ public class Member {
 	private List<CorderBean> corder;
 	
 	// 會員一對多報名
+	@JsonIgnore
 	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
 	private List<Registration> registrations = new ArrayList<>();
+	
+	
 
 }
 // 接收登入資料

@@ -6,56 +6,103 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 
 <style>
-.test {
-	display: flex;
-	flex-direction: column;
-	min-height: 100vh;
-	background-color: black;
-	color: white
-}
-</style>
-<!-- CSS only -->
+		.test {
+			display: flex;
+			flex-direction: column;
+			min-height: 100vh;
+			background-color: black;
+			color: white;
+			align-items: center;
+		}
+
+		#container {
+			width: 100%;
+			margin: 0 auto;
+		}
+
+		.ck-editor__editable[role="textbox"] {
+			min-height: 200px;
+			max-width: 100%;
+			box-sizing: border-box;
+		}
+
+		.ck-content .image {
+			max-width: 80%;
+			margin: 20px auto;
+		}
+
+		.form-container {
+			max-width: 800px;
+			background-color: #1c1c1c;
+			border-radius: 10px;
+			padding: 30px;
+			margin: 30px auto;
+			box-sizing: border-box;
+			width: 100%;
+		}
+
+		.form-container .btn {
+			margin-top: 15px;
+		}
+
+		form {
+			width: 100%;
+		}
+
+		form input, form select, form textarea {
+			width: 100%;
+			box-sizing: border-box;
+		}
+	</style>
 </head>
 <body class="test">
-<div th:replace="~{layout/front_nav}"></div>
-	
-<!---------------------------內文---------------------------------------------------------------->
-<div align="center">
-				<!-- 	th:onsubmit="return confirm('確定要更新這篇文章嗎？')" -->
-<form th:method="post" th:action="@{/front/articleEdit}"  enctype="multipart/form-data" id="editForm">
-    <input type="hidden" name="_method" value="PUT" />
-    <input type="hidden" name="articleId" th:value="${article.articleId}" />
-    <div class="container" style="padding-top: 100px;">
-        <div class="row">
-            <div class="col-6">
-                <div class="card">
-                    <h2>更新文章資料</h2>
-<!-- readonly="readonly" -->
-					<div style="text-align: center;color:black;"><br/>
-                    文章編號<input type="text"  th:value="${article.articleId}" name="articleId" disabled> <br/>
-                    文章標題<input type="text" th:value="${article.articleTitle}" name="articleTitle" > <br/>
-                    <label for="content">內容：</label><br>
-                    <textarea type="text" id="content"  th:value="${article.articleContent}" name="articleContent" rows="10"
-							cols="50"> </textarea><br/>
-                    時間<input type="text"  th:value="${#dates.format(article.articleTime,'yyyy-MM-dd, HH:mm:ss')}"  name="articleTime" disabled> <br/>
-                    文章分類<input type="text" th:value="${article.articleType}" name="articleType"> <br/>
-                    
-                    文章圖片<img th:src="@{'/downloadImage/'+${article.articleId}}" style="width: 100px;">
-                    <input type="file" name="articleImg" ><br><br>
-                    <input type="submit" value="確定" id="editButton" class="btn btn-warning"  style="width:200px;color:black;"/>
-                    <input type="button" name="Submit" value="取消" class="btn btn-danger"  style="width:200px;color:black;" th:onclick="history.back()" >
-                </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    		
-    
-    
-    
-</form>
-</div>
+
+	<div th:replace="~{layout/front_nav}"></div>
+
+	<div class="container" style="padding-top: 100px;">
+		<div class="row">
+			<div class="col-2"></div>
+			<div class="col-8">
+				<div class="form-container">
+					<h1 style="color: white; text-align: center">更新文章</h1>
+					<form th:method="post" th:action="@{/front/articleEdit}"  enctype="multipart/form-data" id="editForm">
+						<input type="hidden" name="_method" value="PUT" />
+						<input type="hidden" name="articleId" th:value="${article.articleId}" />
+						
+						<label for="articleType">文章分類：</label>
+						<select id="articleType" name="articleType" required>
+						    <option value="0">請選擇主題分類</option>
+						    <option value="健身" th:selected="${article.articleType == '健身'}">健身</option>
+						    <option value="購物" th:selected="${article.articleType == '購物'}">購物</option>
+						    <option value="課程" th:selected="${article.articleType == '課程'}">課程</option>
+						    <option value="活動" th:selected="${article.articleType == '活動'}">活動</option>
+						    <option value="會員" th:selected="${article.articleType == '會員'}">會員</option>
+						</select>
+						<br><br>
+
+
+						<label for="articleTitle">標題：</label>
+						<input type="text" id="title" name="articleTitle" th:value="${article.articleTitle}" required >
+						<br><br>
+
+						<div class="st1">
+							<label for="articleImg" class="t1">照片</label>
+							<img th:src="@{'/downloadImage/'+${article.articleId}}" style="width: 100px;">
+							<input type="file" name="articleImg" id="articleImg" accept="image/*">
+						</div>
+
+						<br>
+						<label for="content">內容：</label>
+						<textarea id="content" name="articleContent" rows="10" cols="50" th:value="${article.articleContent}" required ></textarea>
+						<br><br>
+
+						<button type="submit" class="btn btn-dark">確定</button>
+						<button type="button" class="btn btn-secondary" th:onclick="history.back()">取消</button>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
 <!---------------------------內文---------------------------------------------------------------->	
 	
 <div th:replace="~{layout/front_footer}"></div>

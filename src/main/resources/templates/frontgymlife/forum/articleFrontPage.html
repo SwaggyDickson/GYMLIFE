@@ -2,169 +2,190 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head>
-<meta charset="UTF-8">
-<title>前台論壇首頁 articleFrontPage</title>
-<style>
-.test {
-	display: flex;
-	flex-direction: column;
-	min-height: 100vh;
-	background-color: black;
-	color: white
-}
+	<meta charset="UTF-8">
+	<title>前台論壇首頁 articleFrontPage</title>
+	<style>
+		.test {
+			display: flex;
+			flex-direction: column;
+			min-height: 100vh;
+			background-color: black;
+			color: white
+		}
 
-* {
-	margin: 0;
-	padding: 0;
-	box-sizing: border-box;
-}
+		* {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+		}
 
-body {
-	font-family: Arial, sans-serif;
-	color: #333;
-	background-color: black;
-}
+		body {
+			font-family: Arial, sans-serif;
+			color: #333;
+			background-color: black;
+		}
 
-.container-fluid {
-	padding: 20px;
-}
+		.container-fluid {
+			padding: 20px;
+		}
 
-.container {
-	/* background-color: #fff; */
-	border-radius: 4px;
-	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-	padding: 20px;
-}
+		.container {
+			/* background-color: #fff; */
+			border-radius: 4px;
+			box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+			padding: 20px;
+		}
 
-h2 {
-	font-size: 24px;
-	color: #333;
-	margin-bottom: 20px;
-}
+		h2 {
+			font-size: 24px;
+			color: #333;
+			margin-bottom: 20px;
+		}
 
-.list-group-item {
-	color: #333;
-	/* background-color: #f4f4f4; */
-	border: none;
-}
+		.list-group-item {
+			color: #333;
+			/* background-color: #f4f4f4; */
+			border: none;
+		}
 
-.list-group-item:hover {
-	background-color: #e9ecef;
-}
+		.list-group-item:hover {
+			background-color: #e9ecef;
+		}
 
-.link-warning5 {
-	color: #f8f9fa; /* 文字顏色改為淺灰色，以增加對比度 */
-	background-color: #dc3545; /* 背景顏色改為深紅色，更為突出 */
-	border-color: #dc3545; /* 邊框顏色與背景顏色保持一致 */
-	padding: 20px;
-	margin: 10px 0;
-	border-radius: 4px;
-	transition: background-color 0.3s ease;
-}
+		.link-warning5 {
+			color: black;
+			/* 文字顏色改為淺灰色，以增加對比度 */
+			background-color:  white;
+			/* 背景顏色改為深紅色，更為突出 */
+			border-color:  white; 
+			/* 邊框顏色與背景顏色保持一致 */
+			padding: 20px;
+			margin: 10px 0;
+			border-radius: 4px;
+			transition: background-color 0.3s ease;
+		}
 
-.link-warning5:hover {
-	background-color: #c82333; /* 滑過時的背景顏色稍微暗一點 */
-}
+		.link-warning5:hover {
+			background-color: white;
+			/* 滑過時的背景顏色稍微暗一點 */
+		}
 
-p {
-	font-size: 16px;
-	line-height: 1.5;
-	margin: 0 0 20px;
-}
+		p {
+			color: black;
+			font-size: 16px;
+			line-height: 1.5;
+			margin: 0 0 20px;
+		}
+		span p {
+	    color: black; /* 或者任何你想要的顏色 */
+		}
+		div p {
+	    color: black; /* 或者任何你想要的顏色 */
+		}
 
-img {
-	max-width: 100%;
-	height: auto;
-}
+		img {
+			max-width: 100%;
+			height: auto;
+		}
 
-.btn {
-	color: #fff;
-	background-color: #007bff;
-	border: none;
-	border-radius: 4px;
-	padding: 10px 20px;
-	transition: background-color 0.3s ease;
-}
+		.btn {
+			color: black;
+			background-color:#fff;
+			border: none;
+			border-radius: 4px;
+			padding: 10px 20px;
+			transition: background-color 0.3s ease;
+		}
 
-.btn:hover {
-	background-color: #0056b3;
-}
-</style>
-<link
-	href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css"
-	rel="stylesheet"
-	integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU"
-	crossorigin="anonymous">
+		.btn:hover {
+			background-color: #fff;
+		}
+	</style>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"
+		integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
 </head>
 
 <body class="test">
 	<div th:replace="~{layout/front_nav}"></div>
 	<div class="container-fluid">
+		<section class="breadcrumb-section set-bg" th:data-setbg="@{/front/img/breadcrumb-bg.jpg}">
+			<div class="container">
+				<div class="row">
+					<div class="col-lg-12 text-center">
+						<div class="breadcrumb-text">
+							<h2>論壇專區</h2>
+							<div class="bt-option">
+								<a th:href="@{/}">Home</a>
+								<span>論壇專區</span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
 
-		<div class="container" style="padding-top: 100px;">
+
+
+		<div class="container">
 			<div class="row">
 				<div class="col-2">
+
+					<div class="filter-section">
+						<i class="fas fa-filter"></i>
+						<select id="sortOrder">
+							<option value="newest">新到舊</option>
+							<option value="oldest">舊到新</option>
+							<!-- <option value="mostLiked">最多讚</option> -->
+							<option value="mostViews">熱門貼文</option>
+							<!-- <option value="recommended">推薦貼文</option> -->
+						</select>
+					</div>
+
 					<h2 style="color: white">主題分類</h2>
 					<div id="list-example" class="list-group">
-						<a class="list-group-item list-group-item-action"
-							th:href="@{/front/active/健身}">健身</a> <a
-							class="list-group-item list-group-item-action"
-							th:href="@{/front/active/購物}">購物</a> <a
-							class="list-group-item list-group-item-action"
-							th:href="@{/front/active/課程}">課程</a> <a
-							class="list-group-item list-group-item-action"
-							th:href="@{/front/active/活動}">活動</a> <a
-							class="list-group-item list-group-item-action"
-							th:href="@{/front/active/會員}">會員</a>
+						<a class="list-group-item list-group-item-action" th:href="@{/front/active/健身}">健身</a> <a
+							class="list-group-item list-group-item-action" th:href="@{/front/active/購物}">購物</a> <a
+							class="list-group-item list-group-item-action" th:href="@{/front/active/課程}">課程</a> <a
+							class="list-group-item list-group-item-action" th:href="@{/front/active/活動}">活動</a> <a
+							class="list-group-item list-group-item-action" th:href="@{/front/active/會員}">會員</a>
 					</div>
 				</div>
 				<div class="col-10">
 
 					<section>
-						<h2 style="color: white">Latest Articles</h2>
+						<h2 style="color: black">Latest Articles</h2>
 						<!-- 	<ul>     -->
-						<th:block th:each="article:${articleBeans.content}">
-							<!-- original
-								<li >
-										<h2>
-										<a th:href="@{/front/{articleId}(articleId=${article.articleId})}" th:text="${article}?${article.articleTitle}">文章標題</a>
-										</h2>
-										<div th:text="${article}?${article.articleId}">文章編號:</div>
-										<div th:text="${article}?${article.articleType}">文章種類</div>
-										<div th:text="${article}?${article.articleContent}">文章內容</div>
-										<div><img width="200px" th:src="@{'/downloadImage/'+${article.articleId}}">圖片</div>
-										<div
-											th:text="${article}?${#dates.format(article.articleTime,'yyyy-MM-dd, HH:mm:ss')}">發文時間</div>
-									</li>   -->
+						<div id="articleList">
+							<th:block th:each="article:${articleBeans.content}">
+								<div style="border: 1px solid white; border-radius: 1px;" class="link-warning5">
+									<h2 style="color: black;">
+										<a th:href="@{/front/{articleId}(articleId=${article.articleId})}"
+											th:text="${article}?${article.articleTitle}" style="color: black;"></a>
+									</h2>
+									<p style="color: black;"><span th:text="${article.member?.userName}"></span></p>
+									<i class="fa-solid fa-tag"><span class="badge rounded-pill bg-warning text-dark"
+											th:text="${article}?${ article.articleType}"></span></i>
+									<span style="color: black;" th:utext="${article}?${article.articleContent}"></span>
+									
+									
+									<img width="200px" th:src="@{'/downloadImage/'+${article.articleId}}" th:if="${article.hasImage}">
+								<p th:unless="${article.hasImage}"></p>
 
-
-							<!-- data-bs-toggle="modal" th:data-bs-target="'#articleId'+ ${article.articleId}" -->
-							<div style="border: 1px solid white; border-radius: 1px;" class="link-warning5">
-								<h2 style="color: #f8f9fa;">
-									<a
-										th:href="@{/front/{articleId}(articleId=${article.articleId})}"
-										th:text="${article}?${article.articleTitle}"
-										class="link-light"></a>
-								</h2>
-								
-								<div th:text="${article}?${'#'+article.articleType}"
-									style="color: #f8f9fa;"></div>
-								<div th:text="${article}?${article.articleContent}"
-									style="color: #f8f9fa;"></div>
-								<div>
-									<img width="200px"
-										th:src="@{'/downloadImage/'+${article.articleId}}">
-								</div>
-							
-								<div
-									th:text="${article}?${#dates.format(article.articleTime,'yyyy-MM-dd, HH:mm:ss')}">
+									<div
+										th:text="${article}?${#dates.format(article.articleTime,'yyyy-MM-dd, HH:mm:ss')}">
 									</div>
-							</div>
+
+									<div class="view-count">
+										<span>瀏覽次數：</span> <span th:text="${article.viewCount}"></span>
+									</div>
+
+								</div>
 
 
 
-							<br />
-						</th:block>
+								<br />
+							</th:block>
+						</div>
 
 
 						<div class="pagination">
@@ -174,39 +195,34 @@ img {
 								<!-- 往前一頁 -->
 								<th:block th:switch="${articleBeans.number == 0}">
 									<li th:case=${true} class="page-item disabled">
-										<!-- 前端寫法 (p=${page.number})--> <!-- 後端寫法 name="p" --> <span
-										class="page-link"
-										th:href="@{/front/active?(p=${articleBeans.number})}"
-										aria-label="Previous"> <span aria-hidden="true"
-											style="user-select: none">這是第一頁</span>
-									</span>
+										<!-- 前端寫法 (p=${page.number})--> <!-- 後端寫法 name="p" --> <span class="page-link"
+											th:href="@{/front/active?(p=${articleBeans.number})}" aria-label="Previous">
+											<span aria-hidden="true" style="user-select: none">&laquo;</span>
+										</span>
 									</li>
 
-									<li th:case=${false} class="page-item"><a
-										class="page-link"
-										th:href="@{/front/active?(p=${articleBeans.number})}"
-										aria-label="Previous"> <span aria-hidden="true">&laquo;</span>
-									</a></li>
+									<li th:case=${false} class="page-item"><a class="page-link"
+											th:href="@{/front/active?(p=${articleBeans.number})}" aria-label="Previous">
+											<span aria-hidden="true">&laquo;</span>
+										</a></li>
 
 
 									<!-- 中間每一頁 -->
 									<!-- for each  左邊是從:右邊的集合物件中取出其中一個loop的物件來跑 -->
 									<!-- #numbers.sequence是thymeleaf的用法 -->
-									<th:block
-										th:each=" pageNumber : ${#numbers.sequence(1, articleBeans.totalPages)}">
+									<th:block th:each=" pageNumber : ${#numbers.sequence(1, articleBeans.totalPages)}">
 										<!--page.number 就是getNumber() ，從0開始 ，pageNumber則是從1開始印  -->
 										<th:block th:switch="${articleBeans.number != pageNumber-1}">
 
-											<li th:case=${true} class="page-item">
-												<!-- 不是在本頁印連結 --> <a class="page-link"
-												th:href="@{/front/active?(p=${pageNumber})}">[[${pageNumber}]]</a>
-												<!-- th:text="${pageNumber}"  = [[${pageNumber}]] -->
-											</li>
+											 <li th:case=${true} class="page-item">
+												 <a class="page-link"
+													th:href="@{/front/active?(p=${pageNumber})}">[[${pageNumber}]]</a>
+											</li> 
 
 											<!-- 1==1 false 表示在當前頁面，就不能點擊 -->
 											<li th:case=${false} class="page-item active">
 												<!-- 是在本頁印字串給他，拿page數字做判斷，pageNumber是頁數/for each 迴圈的頁碼 --> <span
-												class="page-link" th:text="${pageNumber}"></span>
+													class="page-link" th:text="${pageNumber}"></span>
 											</li>
 
 										</th:block>
@@ -215,36 +231,35 @@ img {
 
 									<!-- 往後一頁 -->
 									<!-- 前面+1或是後面-1 -->
-									<th:block
-										th:switch="${articleBeans.number == articleBeans.totalPages-1}">
-										<li th:case=${true} class="page-item disabled"><span
-											class="page-link" aria-label="Next"> <span
-												aria-hidden="true">最後一頁了哦</span>
-										</span></li>
+									<th:block th:switch="${articleBeans.number == articleBeans.totalPages-1}">
+										<li th:case=${true} class="page-item disabled"><span class="page-link"
+												aria-label="Next"> <span aria-hidden="true">&raquo;</span>
+											</span></li>
 
-										<li th:case=${false} class="page-item"><a
-											class="page-link"
-											th:href="@{/front/active?(p=${articleBeans.number+2})}"
-											aria-label="Next"> <span aria-hidden="true">&raquo;</span>
-										</a></li>
+										<li th:case=${false} class="page-item"><a class="page-link"
+												th:href="@{/front/active?(p=${articleBeans.number+2})}"
+												aria-label="Next"> <span aria-hidden="true">&raquo;</span>
+											</a></li>
 									</th:block>
 							</ul>
 
 
 						</div>
-						<!-- 		</ul> -->
+
+
+
+
 					</section>
 					<!-- modal -->
 					<th:block th:each="article:${articleBeans}">
-						<div class="modal fade" th:id="'articleId'+${article.articleId}"
-							data-bs-keyboard="false" tabindex="-1">
-							<div
-								class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+						<div class="modal fade" th:id="'articleId'+${article.articleId}" data-bs-keyboard="false"
+							tabindex="-1">
+							<div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
 								<div class="modal-content">
 									<div class=" modal-header">
 										<!--    <h1 class="modal-title fs-5" th:text=${'會員編號:'+article.memberNum}></h1> -->
-										<button type="button" class="btn-close"
-											data-bs-dismiss="modal" aria-label="Close"></button>
+										<button type="button" class="btn-close" data-bs-dismiss="modal"
+											aria-label="Close"></button>
 									</div>
 									<div class="modal-body">
 										<div>
@@ -276,7 +291,8 @@ img {
 														placeholder="留言...."></textarea>
 												</div>
 												<div class="col-auto">
-													<button class="insert-comment-btn btn btn-secondary">send新增留言</button>
+													<button
+														class="insert-comment-btn btn btn-secondary">send新增留言</button>
 												</div>
 											</div>
 										</div>
@@ -294,12 +310,66 @@ img {
 
 
 	<div th:replace="~{layout/front_footer}"></div>
-	<script
-		src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"
 		integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ"
 		crossorigin="anonymous"></script>
-	<script src="https://kit.fontawesome.com/0a9f356c66.js"
-		crossorigin="anonymous"></script>
+	<script src="https://kit.fontawesome.com/0a9f356c66.js" crossorigin="anonymous"></script>
+
+
+	<script>
+		
+		$(document).ready(function () {
+			
+		//篩選器
+	$("#sortOrder").change(function () {
+		var sort = $(this).val();
+		var url = "/gymlife/front/active/json?p=1&pageSize=3&sort=" + sort;
+
+		$.ajax({
+			url: url,
+			type: 'GET',
+			//參數放到網址或是放到data
+			// 			data:{
+			// 				p:1,
+			// 				pageSize:3,
+			// 				sort:sort
+			// 			},
+			success: function (data) {
+				$('#articleList').empty();
+
+				for (var i = 0; i < data.length; i++) {
+					var article = data[i];
+
+					// Use JavaScript to format date
+					var date = new Date(article.articleTime);
+					var formattedDate = date.getFullYear() + '-' +
+						('0' + (date.getMonth()+1)).slice(-2) + '-' +
+						('0' + date.getDate()).slice(-2) + ', ' +
+						('0' + date.getHours()).slice(-2) + ':' +
+						('0' + date.getMinutes()).slice(-2) + ':' +
+						('0' + date.getSeconds()).slice(-2);
+
+					var articleElement = '<div style="border: 1px solid white; border-radius: 1px;" class="link-warning5">' +
+						'<h2 style="color: #f8f9fa;"><a style="color: black;" href="/gymlife/front/' + article.articleId + '">' + article.articleTitle + '</a></h2>' +
+						'<p style="color: black;">' + article.memberName + '</p>' +
+						'<i class="fa-solid fa-tag"><span class="badge rounded-pill bg-warning text-dark">' + article.articleType + '</span></i>' +
+						'<div style="color: black;">' + article.articleContent + '</div>' +
+						'<div><img width="200px" src="/gymlife/downloadImage/' + article.articleId + '"></div>' +
+						'<div>' + formattedDate + '</div>' +
+						'<div class="view-count"><span>瀏覽次數：</span> <span>' + article.viewCount + '</span></div>' +
+						'</div><br />';
+
+					$('#articleList').append(articleElement);
+				}
+			}
+		});
+	});
+});
+
+	</script>
+
+
+
 </body>
 
 </html>

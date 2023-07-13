@@ -1,5 +1,6 @@
 package tw.gymlife.forum.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Entity;
@@ -25,11 +26,13 @@ public class CommentLike {
 
 	@JsonIgnore
 	@ManyToOne
+	@JsonBackReference
 	@JoinColumn(name = "userId")
 	private Member member;
 
 	@JsonIgnore
 	@ManyToOne
+	@JsonBackReference
 	@JoinColumn(name = "commentId")
 	private CommentBean comment;
 

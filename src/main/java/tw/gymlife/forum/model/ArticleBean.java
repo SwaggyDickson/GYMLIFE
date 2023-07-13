@@ -7,6 +7,8 @@ import java.util.Date;
 import org.springframework.format.annotation.DateTimeFormat;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -35,9 +37,6 @@ public class ArticleBean {
 	@Column(name = "articleId")
 	private Integer articleId;
 
-//	@Column(name="userId")
-//	private Integer userId;
-
 	@Column(name = "articleTitle")
 	private String articleTitle;
 
@@ -47,6 +46,8 @@ public class ArticleBean {
 	@Column(name = "articleContent")
 	private String articleContent;
 
+	private Boolean hasImage;
+	
 	@Lob
 	@Column(name = "articleImg")
 	private byte[] articleImg; // 待修正 byte[]
@@ -56,10 +57,6 @@ public class ArticleBean {
 	private int reportCount;
 	
 	private int viewCount; //文章瀏覽次數
-
-//	@Column(name="photoName")
-//	private String photoName;
-//	private String articleImgMimeType;
 
 	@DateTimeFormat(pattern = "yyyy/MM/dd HH:mm:ss")
 	@Temporal(TemporalType.TIMESTAMP)
@@ -71,17 +68,14 @@ public class ArticleBean {
 	@Column(name = "articleUpdateTime")
 	private Date articleUpdateTime; // 文章編輯時間
 
-//	private Integer articleLikes;    //按讚
-//	private Integer articleUnLikes;	 //倒讚
 //	private Integer articleFollow; //追蹤貼文
-//	private Integer ariticleSave;  //收藏貼文
-//  private Integer articleReport;  //檢舉貼文
 
 	// 文章狀態
 	@Column(name = "status", nullable = false)
 	private String status = "Active"; // 默认状态为 Active (預設值)
 
 	@OneToMany(mappedBy = "article", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JsonManagedReference
 	private List<CommentBean> comments;
 
 	@JsonIgnore
@@ -91,9 +85,11 @@ public class ArticleBean {
 	private Member member;
 
 	@OneToMany(mappedBy = "article", cascade = CascadeType.ALL)
+	@JsonManagedReference
 	private List<ArticleLike> articleLikes = new ArrayList<>();
 
 	@OneToMany(mappedBy = "article", cascade = CascadeType.ALL)
+	@JsonManagedReference
 	private List<ArticleReport> articleReports = new ArrayList<>();
 	
 	@PrePersist // 當物件轉換成persist狀態以前，要做的事情放在方法裡面
@@ -103,7 +99,6 @@ public class ArticleBean {
 		}
 
 	}
-
 	@Override
 	public String toString() {
 		return "ArticleBean [articleId=" + articleId + ", articleTitle=" + articleTitle + ", articleType=" + articleType
@@ -111,18 +106,4 @@ public class ArticleBean {
 				+ likeCount + ", articleTime=" + articleTime + ", articleUpdateTime=" + articleUpdateTime + ", status="
 				+ status + ", comments=" + comments + ", member=" + member + ", articleLikes=" + articleLikes + "]";
 	}
-	
-//	@Override
-//	public String toString() {
-//	    return "ArticleBean [articleId=" + articleId + ", articleTitle=" + articleTitle + ", articleType=" + articleType
-//	            + ", articleContent=" + articleContent + ", articleImg=" + Arrays.toString(articleImg) + ", likeCount="
-//	            + likeCount + ", articleTime=" + articleTime + ", articleUpdateTime=" + articleUpdateTime + ", status="
-//	            + status + ", memberId=" + (member != null ? member.getUserId() : null)
-//	            // Note: Not including 'comments', 'articleLikes' here
-//	            + "]";
-//	}
-
-	
-	
-
 }

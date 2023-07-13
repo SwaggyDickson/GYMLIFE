@@ -21,11 +21,23 @@ public class ArticleService {
 
 	@Autowired
 	private ArticleRepository articleRepository;
-
-	public List<ArticleBean> findAllByMemberUserId(int userId) {
-	    return articleRepository.findAllByMemberUserId(userId);
+	
+	public ArticleBean findByMemberUserIdAndArticleId(Integer userId, Integer articleId) {
+		ArticleBean article = articleRepository.findByMemberUserIdAndArticleId(userId, articleId);
+	    return article;
 	}
 	
+	// 透過會員編號查詢該會員文章按最新到最舊排列，會員個人頁面
+	public Page<ArticleBean> findByMemberUserIdOrderByArticleIdDesc(Integer userId, int pageNumber, int pageSize) {
+	    Pageable pageable = PageRequest.of(pageNumber - 1, pageSize, Sort.Direction.DESC, "articleId");
+	    Page<ArticleBean> articles = articleRepository.findByMemberUserId(userId, pageable);
+	    return articles;
+	}
+
+	public List<ArticleBean> findAllByMemberUserId(int userId) {
+		return articleRepository.findAllByMemberUserId(userId);
+	}
+
 	// 新增
 	public void insert(ArticleBean articleBean) {
 		articleRepository.save(articleBean);
@@ -58,14 +70,63 @@ public class ArticleService {
 		Page<ArticleBean> page = articleRepository.findByArticleTypeAndStatus(articleType, "active", pageable);
 		return page;
 	}
+	
+	// ------------------------------篩選----------------------------------
+
 
 	// 在前台論壇首頁只查看active狀態的文章
+	// desc
 	public Page<ArticleBean> findActiveArticles(int pageNumber, int pageSize) {
 		Pageable pageable = PageRequest.of(pageNumber - 1, 3, Sort.Direction.DESC, "articleTime");
 		Page<ArticleBean> page = articleRepository.findByStatus("Active", pageable);
 		return page;
 	}
 
+	//asc
+	public Page<ArticleBean> findOlderArticles(int pageNumber, int pageSize) {
+		Pageable pageable = PageRequest.of(pageNumber - 1, 3, Sort.Direction.ASC, "articleTime");
+		Page<ArticleBean> page = articleRepository.findByStatus("Active", pageable);
+		return page;
+	}
+
+	//mostViews
+	public Page<ArticleBean> findMostViews(int pageNumber, int pageSize) {
+		Pageable pageable = PageRequest.of(pageNumber - 1, 3, Sort.Direction.DESC, "viewCount");
+		Page<ArticleBean> page = articleRepository.findByStatus("Active", pageable);
+		return page;
+	}
+	
+//	public Page<ArticleBean> findMostViews(int pageNumber, int pageSize) {
+//	    Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
+//	    Page<ArticleBean> page = articleRepository.findByStatusOrderByViewCountDesc("Active", pageable);
+//	    return page;
+//	}
+	
+	//mostLikes
+	public Page<ArticleBean> findMostLikedArticles(int pageNumber, int pageSize) {
+		Pageable pageable = PageRequest.of(pageNumber - 1, 3, Sort.Direction.DESC, "likeCount");
+		Page<ArticleBean> page = articleRepository.findByStatus("Active", pageable);
+		return page;
+	}
+	
+//	public Page<ArticleBean> findMostLikedArticles(int pageNumber, int pageSize) {
+//	    Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
+//	    return articleRepository.findByStatusOrderByLikeCountDesc("Active", pageable);
+//	}
+
+	
+	
+	
+	// 為推薦功能添加的方法，需要根據你的推薦算法來實現   隨機推薦相關主題的
+//	public Page<ArticleBean> findRecommendedArticles(int pageNumber, int pageSize) {
+//	    Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
+//	    return articleRepository.findByStatusAndRecommended("Active", pageable);
+//	}
+
+	
+	// ------------------------------篩選----------------------------------
+
+	
 	// 單筆查詢
 	public ArticleBean findById(Integer articleId) {
 		Optional<ArticleBean> optional = articleRepository.findById(articleId);
@@ -139,15 +200,4 @@ public class ArticleService {
 
 	// ------------------------------刪除----------------------------------
 
-	
-	//透過會員編號查詢該會員文章按最新到最舊排列
-//		public List<ArticleBean> findByMemberNumOrderByArticleIdDesc(String memberNum){
-//			List<ArticleBean> articles = articleRepository.findByMemberNumOrderByArticleIdDesc(memberNum);
-//			return articles;
-//		}
-	
-//	public ArticleBean findLastest() {
-//		return aRepo.findFirstByOrderByAddedDesc();
-//	}
-//	
 }

@@ -22,11 +22,32 @@ public class CommentService {
 
 	@Autowired
 	private CommentRepository commentRepository;
-	
-	
-	public List<CommentBean> findAllByMemberUserId(int userId) {
-	    return commentRepository.findAllByMemberUserId(userId);
+
+	public int countTotalComments(ArticleBean article) {
+		// 實際上應該是用 repository 或 DAO 查詢資料庫中的總評論數
+		return commentRepository.countByArticle(article);
 	}
+
+	public int calculateFloorNumber(CommentBean comment) {
+		// 這裡只是一個簡單的例子，你可能需要根據你的需求來實現這個方法
+		// 例如，你可以比較評論的時間戳來計算樓層數
+		return commentRepository.findByCommentTimeLessThanEqual(comment.getCommentTime()).size();
+	}
+
+	public List<CommentBean> findAllByMemberUserId(int userId) {
+		return commentRepository.findAllByMemberUserId(userId);
+	}
+	
+	public CommentBean findByMemberUserIdAndCommentId(Integer userId, Integer commentId) {
+		CommentBean comment = commentRepository.findByMemberUserIdAndCommentId(userId, commentId);
+	    return comment;
+	}
+	
+	public List<CommentBean> findByMemberUserIdAndParentCommentId(Integer userId, Integer parentCommentId) {
+		List<CommentBean> reply = commentRepository.findByMemberUserIdAndParentCommentId(userId, parentCommentId);
+	    return reply;
+	}
+	
 
 	// ------------------------------巢狀留言----------------------------------
 
@@ -45,31 +66,44 @@ public class CommentService {
 
 	// Update a reply
 	public CommentBean updateReply(Integer replyId, CommentBean updatedReply) {
-	    // Check if the reply exists
-	    if (!commentRepository.existsById(replyId)) {
-	        throw new NoSuchElementException("Reply not found");
-	    }
-	    // Get the existing reply from the database
-	    CommentBean existingReply = commentRepository.findById(replyId).get();
-	    // Update the reply content
-	    existingReply.setCommentContent(updatedReply.getCommentContent());
-	    // Save the updated reply to the database
-	    return commentRepository.save(existingReply);
+		// Check if the reply exists
+		if (!commentRepository.existsById(replyId)) {
+			throw new NoSuchElementException("Reply not found");
+		}
+		// Get the existing reply from the database
+		CommentBean existingReply = commentRepository.findById(replyId).get();
+		// Update the reply content
+		existingReply.setCommentContent(updatedReply.getCommentContent());
+		// Save the updated reply to the database
+		return commentRepository.save(existingReply);
 	}
 
 	// Delete a reply
-	public void deleteReply(Integer replyId) {
-		// Delete the reply from the database
-		commentRepository.deleteById(replyId);
+//	public void deleteReply(Integer replyId) {
+//		// Delete the reply from the database
+//		commentRepository.deleteById(replyId);
+//	}
+	
+	@Transactional
+	public void deleteReply(Integer parentCommentId) {
+	    // Find all child comments
+	    List<CommentBean> childComments = commentRepository.findByParentCommentId(parentCommentId);
+
+	    // Set the parentCommentId of child comments to null
+	    for (CommentBean childComment : childComments) {
+	        childComment.setParentCommentId(null);
+	        commentRepository.save(childComment);
+	    }
+	    // Delete the reply from the database
+	    commentRepository.deleteById(parentCommentId);
 	}
+
 
 	// ----------------------------評論新增----------------------------------
 
-	
 	// 新增
-	public void insert(CommentBean CommentBean) {
-		// CommentBean.setCommentTime(new Date()); // 设置评论时间
-		commentRepository.save(CommentBean);
+	public CommentBean insert(CommentBean CommentBean) {
+		return commentRepository.save(CommentBean);
 	}
 
 	// ------------------------------查詢----------------------------------

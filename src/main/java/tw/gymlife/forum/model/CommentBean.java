@@ -9,6 +9,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -32,7 +33,6 @@ import tw.gymlife.member.model.Member;
 @Table(name = "comment")
 public class CommentBean {
 	
-	@JsonIgnore
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer commentId;
@@ -46,15 +46,7 @@ public class CommentBean {
 	
 	private int reportCount;
 
-	private Integer parentCommentId; // new
-
-	public int getLikeCount() {
-		return this.likeCount;
-	}
-
-	public void setLikeCount(int likeCount) {
-		this.likeCount = likeCount;
-	}
+	private Integer parentCommentId; 
 
 	@DateTimeFormat(pattern = "yyyy/MM/dd HH:mm:ss")
 	@Temporal(TemporalType.TIMESTAMP)
@@ -68,7 +60,9 @@ public class CommentBean {
 	@Column(name = "status", nullable = false)
 	private String status = "Active"; // 默认状态为 Active (預設值)
 
+	@JsonIgnore
 	@ManyToOne
+	@JsonBackReference
 	@JoinColumn(name = "articleId")
 	private ArticleBean article;
 
@@ -77,11 +71,13 @@ public class CommentBean {
 	@ManyToOne
 	@JoinColumn(name = "userId")
 	private Member member;
-
+	
 	@OneToMany(mappedBy = "comment", cascade = CascadeType.ALL)
+	@JsonManagedReference
 	private List<CommentLike> commentLikes = new ArrayList<>();
 	
 	@OneToMany(mappedBy = "comment", cascade = CascadeType.ALL)
+	@JsonManagedReference
 	private List<CommentReport> commentReports = new ArrayList<>();
 
 	@PrePersist // 當物件轉換成persist狀態以前，要做的事情放在方法裡面
@@ -110,6 +106,5 @@ public class CommentBean {
 	            // Note: Not including 'article' here
 	            '}';
 	}
-
 
 }

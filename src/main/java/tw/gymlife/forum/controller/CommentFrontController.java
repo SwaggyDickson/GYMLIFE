@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
 
+import tw.gymlife.forum.model.ArticleBean;
 import tw.gymlife.forum.model.CommentBean;
 import tw.gymlife.forum.model.CommentLike;
 import tw.gymlife.forum.service.ArticleReportService;
@@ -48,6 +49,10 @@ public class CommentFrontController {
 	@Autowired
 	private CommentReportService commentReportService;
 
+	
+	
+	
+	
 	// 留言按讚
 	@PostMapping("/comment/{commentId}/likes")
 	public ResponseEntity<Map<String, Object>> toggleCommentLike(@PathVariable Integer commentId, HttpSession session) {
@@ -110,12 +115,16 @@ public class CommentFrontController {
 	// Create a reply
 	@PostMapping("/parent/add/{parentCommentId}")
 	public String addReply(@RequestParam("articleId") Integer articleId, @PathVariable Integer parentCommentId,
-			@RequestParam("commentContent") String commentContent, Model model) {
-
+			@RequestParam("commentContent") String commentContent, Model model,HttpSession session) {
+		
+		Member member = (Member) session.getAttribute("member");
+		ArticleBean article = articleService.findById(articleId);
+		
 		CommentBean newReply = new CommentBean();
 		newReply.setCommentContent(commentContent);
-		// Set other properties as needed...
-
+		
+		newReply.setArticle(article);
+		newReply.setMember(member);
 		CommentBean reply = commentService.addReply(parentCommentId, newReply);
 		model.addAttribute("reply", reply);
 		return "redirect:/front/" + articleId; // returns reply view
@@ -125,10 +134,14 @@ public class CommentFrontController {
 	@PutMapping("/parent/update/{replyId}")
 	@ResponseBody
 	public CommentBean updateReply(@RequestParam("articleId") Integer articleId, @PathVariable Integer replyId,
-			@RequestParam("commentContent") String commentContent) {
+			@RequestParam("commentContent") String commentContent,HttpSession session) {
+		Member member = (Member) session.getAttribute("member");
+		ArticleBean article = articleService.findById(articleId);
+
 		CommentBean updatedReply = new CommentBean();
+		updatedReply.setMember(member);
+		updatedReply.setArticle(article);
 		updatedReply.setCommentContent(commentContent);
-		// Set other properties as needed...
 
 		return commentService.updateReply(replyId, updatedReply);
 	}
@@ -136,6 +149,8 @@ public class CommentFrontController {
 	// Delete a reply
 	@DeleteMapping("/parent/delete/{replyId}")
 	public String deleteReply(@RequestParam("articleId") Integer articleId, @PathVariable Integer replyId) {
+//		Member member = (Member) session.getAttribute("member");
+//		ArticleBean article = articleService.findById(articleId);
 		commentService.deleteReply(replyId);
 		return "redirect:/front/" + articleId; // redirect to comments view
 	}

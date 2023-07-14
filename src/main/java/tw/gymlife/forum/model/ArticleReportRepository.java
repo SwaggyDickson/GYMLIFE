@@ -9,5 +9,7 @@ public interface ArticleReportRepository extends JpaRepository<ArticleReport, In
 	ArticleReport findByMemberUserIdAndArticleArticleId(Integer userId, Integer articleId);
 	
 	List<ArticleReport> findByArticleArticleId(Integer articleId);
+	
+	 List<ArticleReport> findAllByMemberUserId(int userId);
 
 }

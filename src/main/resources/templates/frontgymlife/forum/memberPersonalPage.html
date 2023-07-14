@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<title>前台論壇首頁 articleFrontPage</title>
+	<style>
+		.test {
+			display: flex;
+			flex-direction: column;
+			min-height: 100vh;
+			background-color: black;
+			color: white
+		}
+
+		* {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+		}
+
+		body {
+			font-family: Arial, sans-serif;
+			color: #333;
+			background-color: black;
+		}
+
+		.container-fluid {
+			padding: 20px;
+		}
+
+		.container {
+			/* background-color: #fff; */
+			border-radius: 4px;
+			box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+			padding: 20px;
+		}
+
+		h2 {
+			font-size: 24px;
+			color: #333;
+			margin-bottom: 20px;
+		}
+
+		.list-group-item {
+			color: #333;
+			/* background-color: #f4f4f4; */
+			border: none;
+		}
+
+		.list-group-item:hover {
+			background-color: #e9ecef;
+		}
+
+		.link-warning5 {
+			color: black;
+			/* 文字顏色改為淺灰色，以增加對比度 */
+			background-color:  white;
+			/* 背景顏色改為深紅色，更為突出 */
+			border-color:  white; 
+			/* 邊框顏色與背景顏色保持一致 */
+			padding: 20px;
+			margin: 10px 0;
+			border-radius: 4px;
+			transition: background-color 0.3s ease;
+		}
+
+		.link-warning5:hover {
+			background-color: white;
+			/* 滑過時的背景顏色稍微暗一點 */
+		}
+
+		p {
+			color: black;
+			font-size: 16px;
+			line-height: 1.5;
+			margin: 0 0 20px;
+		}
+		span p {
+	    color: black; /* 或者任何你想要的顏色 */
+		}
+		div p {
+	    color: black; /* 或者任何你想要的顏色 */
+		}
+
+		img {
+			max-width: 100%;
+			height: auto;
+		}
+
+		.btn {
+			color: black;
+			background-color:#fff;
+			border: none;
+			border-radius: 4px;
+			padding: 10px 20px;
+			transition: background-color 0.3s ease;
+		}
+
+		.btn:hover {
+			background-color: #fff;
+		}
+	</style>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"
+		integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+</head>
+
+<body class="test">
+	<div th:replace="~{layout/front_nav}"></div>
+	<div class="container-fluid">
+	 <section class="breadcrumb-section set-bg" th:data-setbg="@{/front/img/breadcrumb-bg.jpg}">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <div class="breadcrumb-text">
+                        <h2>論壇會員中心</h2>
+                        <div class="bt-option">
+                            <a th:href="@{/}">Home</a>
+                            <span>論壇會員中心</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+		<div class="container" >
+			<div class="row">
+				<div class="col-2">
+					<h2 style="color: white">會員中心</h2>
+				<div id="list-example" class="list-group">
+				 <!-- 這邊a連結要在綁定各自的controller -->
+						<a class="list-group-item list-group-item-action" th:href="@{/front/active/健身}">我的收藏</a> 
+						<a class="list-group-item list-group-item-action" th:href="@{/front/active/購物}">發表過的文章</a> 
+						<a class="list-group-item list-group-item-action" th:href="@{/front/active/購物}">回覆過的留言</a> 
+						<a class="list-group-item list-group-item-action" th:href="@{/front/active/活動}">按讚過的文章</a> 
+						<a class="list-group-item list-group-item-action" th:href="@{/front/active/活動}">按讚過的留言</a> 
+						<a class="list-group-item list-group-item-action" th:href="@{/front/active/活動}">檢舉過的文章</a> 
+				</div>
+				</div>
+				<div class="col-10">
+				
+					<section>
+						<h2 style="color: black">Latest Articles</h2>
+						<th:block th:each="article:${articles.content}">
+							<div style="border: 1px solid white; border-radius: 1px;" class="link-warning5">
+								<h2 style="color: #f8f9fa;">
+									<a style="color: black" th:href="@{/front/{articleId}(articleId=${article.articleId})}"
+										th:text="${article}?${article.articleTitle}" class="link-light"></a>
+								</h2>
+<p style="color: black"><span th:text="${article.member?.userName}"></span></p>
+
+
+				<i class="fa-solid fa-tag"><span class="badge rounded-pill bg-warning text-dark" th:text="${article}?${ article.articleType}"></span></i>
+								<div th:utext="${article}?${article.articleContent}" style="color: black"></div>
+								<div>
+									<img width="200px" th:src="@{'/downloadImage/'+${article.articleId}}">
+								</div>
+
+								<div th:text="${article}?${#dates.format(article.articleTime,'yyyy-MM-dd, HH:mm:ss')}">
+								</div>
+
+								<div class="view-count">
+									<span>瀏覽次數：</span> <span th:text="${article.viewCount}"></span>
+								</div>
+
+							</div>
+
+
+
+							<br />
+						</th:block>
+
+
+						<div class="pagination">
+
+							<ul class="pagination">
+
+								<!-- 往前一頁 -->
+								<th:block th:switch="${articles.number == 0}">
+									<li th:case=${true} class="page-item disabled">
+										<!-- 前端寫法 (p=${page.number})--> <!-- 後端寫法 name="p" --> <span class="page-link"
+											th:href="@{/front/active?(p=${articles.number})}" aria-label="Previous">
+											<span aria-hidden="true" style="user-select: none">&laquo;</span>
+										</span>
+									</li>
+
+									<li th:case=${false} class="page-item"><a class="page-link"
+											th:href="@{/front/active?(p=${articles.number})}" aria-label="Previous">
+											<span aria-hidden="true">&laquo;</span>
+										</a></li>
+
+
+									<!-- 中間每一頁 -->
+									<!-- for each  左邊是從:右邊的集合物件中取出其中一個loop的物件來跑 -->
+									<!-- #numbers.sequence是thymeleaf的用法 -->
+									<th:block th:each=" pageNumber : ${#numbers.sequence(1, articles.totalPages)}">
+										<!--page.number 就是getNumber() ，從0開始 ，pageNumber則是從1開始印  -->
+										<th:block th:switch="${articles.number != pageNumber-1}">
+
+											<li th:case=${true} class="page-item">
+												 <a class="page-link"
+													th:href="@{/front/active?(p=${pageNumber})}">[[${pageNumber}]]</a>
+											</li> 
+
+											<li th:case=${false} class="page-item active">
+												 <span class="page-link" th:text="${pageNumber}"></span>
+											</li>
+
+										</th:block>
+									</th:block>
+
+
+									<!-- 往後一頁 -->
+									<!-- 前面+1或是後面-1 -->
+									<th:block th:switch="${articles.number == articles.totalPages-1}">
+										<li th:case=${true} class="page-item disabled"><span class="page-link"
+												aria-label="Next"> <span aria-hidden="true">&raquo;</span>
+											</span></li>
+
+										<li th:case=${false} class="page-item"><a class="page-link"
+												th:href="@{/front/active?(p=${articles.number+2})}"
+												aria-label="Next"> <span aria-hidden="true">&raquo;</span>
+											</a></li>
+									</th:block>
+							</ul>
+
+
+						</div>
+						<!-- 		</ul> -->
+					</section>
+					<!-- modal -->
+					<th:block th:each="article:${articles}">
+						<div class="modal fade" th:id="'articleId'+${article.articleId}" data-bs-keyboard="false"
+							tabindex="-1">
+							<div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+								<div class="modal-content">
+									<div class=" modal-header">
+										<!--    <h1 class="modal-title fs-5" th:text=${'會員編號:'+article.memberNum}></h1> -->
+										<button type="button" class="btn-close" data-bs-dismiss="modal"
+											aria-label="Close"></button>
+									</div>
+									<div class="modal-body">
+										<div>
+											<h3 th:text=${article.articleTitle}></h3>
+										</div>
+
+										<div th:text=${'發布時間:'+article.articleTime}></div>
+										<span><a href="#" th:text=${article.articleType}></a>・</span>
+
+										<div class="row">
+											<img class=" img-thumbnail" alt="..."
+												th:src="@{'/downloadImage/'+${article.articleId}}" />
+										</div>
+										<p th:text=${article.articleContent}></p>
+										<div>
+											<i class="fa-regular fa-heart"
+												style="background-color: blue;"></i><span>like
+												count按讚統計</span>
+										</div>
+
+										<div class="commentArea"></div>
+									</div>
+									<div class="modal-footer p-0">
+										<div class="container">
+
+											<div class="row g-1">
+												<div class="col">
+													<textarea class="form-control" id="message" rows="1"
+														placeholder="留言...."></textarea>
+												</div>
+												<div class="col-auto">
+													<button
+														class="insert-comment-btn btn btn-secondary">send新增留言</button>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</th:block>
+					<!--modal  -->
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+
+	<div th:replace="~{layout/front_footer}"></div>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"
+		integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ"
+		crossorigin="anonymous"></script>
+	<script src="https://kit.fontawesome.com/0a9f356c66.js" crossorigin="anonymous"></script>
+</body>
+
+</html>

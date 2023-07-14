@@ -2,6 +2,9 @@ package tw.gymlife.forum.model;
 
 
 import java.util.Date;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -34,10 +37,12 @@ public class ArticleReport {
     private String reportStatus;
     
     @ManyToOne
+    @JsonBackReference
     @JoinColumn(name = "articleId")
     private ArticleBean article;
     
     @ManyToOne
+    @JsonBackReference
     @JoinColumn(name = "userId")
     private Member member;
     

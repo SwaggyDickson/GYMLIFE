@@ -15,10 +15,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.http.HttpSession;
 import tw.gymlife.forum.model.ArticleBean;
+import tw.gymlife.forum.model.ArticleReport;
+import tw.gymlife.forum.service.ArticleReportService;
 import tw.gymlife.forum.service.ArticleService;
 import tw.gymlife.forum.service.CommentService;
 import tw.gymlife.member.model.Member;
@@ -33,24 +36,54 @@ public class ArticleBackController {
 
 	@Autowired
 	private CommentService commentService;
-
+	
+	@Autowired
+	private ArticleReportService articleReportService;
+	
+	//更新檢舉狀態
+	@PostMapping("/updateReportStatus")
+    public String updateReportStatus(Integer reportId, String newStatus, RedirectAttributes redirectAttributes) {
+		articleReportService.updateReportStatus(reportId, newStatus);
+        redirectAttributes.addFlashAttribute("message", "檢舉狀態已更新");
+        return "redirect:/report/page";
+    }
+	
+	
+	//檢舉後台
+	@GetMapping("/report/page")
+	public String reportManagePage(Model m, HttpSession session) {
+	    Member member = (Member) session.getAttribute("member");
+	    List<ArticleReport> articleReports;
+//	    if (member != null) {
+//	        if (member.getUserPermission().equals("1")) {
+	        	articleReports = articleReportService.findAll();
+////	        } else {
+//	        	articleReports = articleReportService.findAllByMemberUserId(member.getUserId());
+//	        }
+	        m.addAttribute("articleReports", articleReports);
+//	        m.addAttribute("member", member);  // Add member to the model
+	        return "backgymlife/forum/reportManagePage";
+//	    } else {
+//	        return "redirect:/Login";
+//	    }
+	}
+	
+	
+	
 
 	//文章後台
 	@GetMapping("/forum/page")
 	public String forumManagePage(Model m, HttpSession session) {
 	    Member member = (Member) session.getAttribute("member");
 	    List<ArticleBean> articleBeans;
-
 	    if (member != null) {
 	        if (member.getUserPermission().equals("1")) {
 	            articleBeans = articleService.findAll();
 	        } else {
 	            articleBeans = articleService.findAllByMemberUserId(member.getUserId());
 	        }
-
 	        m.addAttribute("articleBeans", articleBeans);
 	        m.addAttribute("member", member);  // Add member to the model
-
 	        return "backgymlife/forum/articleManagePage";
 	    } else {
 	        return "redirect:/Login";

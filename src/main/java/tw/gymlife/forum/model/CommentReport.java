@@ -3,6 +3,8 @@ package tw.gymlife.forum.model;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -38,14 +40,17 @@ public class CommentReport {
     private boolean isNestedComment;
     
     @ManyToOne
+    @JsonBackReference
     @JoinColumn(name = "commentId")
     private CommentBean comment;
     
     @ManyToOne
+    @JsonBackReference
     @JoinColumn(name = "parentCommentId")
     private CommentBean parentComment;
     
     @ManyToOne
+    @JsonBackReference
     @JoinColumn(name = "userId")
     private Member member;
 }

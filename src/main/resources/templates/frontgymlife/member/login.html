@@ -30,8 +30,10 @@
                     <div id="errMsg" th:if="${errors.containsKey('msg')}" th:text="${errors.msg}"></div>
                     <div id="failedAttemptsMsg" th:if="${failedAttempts != null}" th:text="'Failed login attempts: ' + ${failedAttempts}"></div>
                     <div class="login">
-                        <button id="autoFill" type="button" class="btn btn-primary btn-auto">一鍵輸入</button>
+                        <button id="autoFillAdmin" type="button" class="btn btn-primary btn-auto">管理員</button>
+                        <button id="autoFillMember" type="button" class="btn btn-primary btn-auto">會員</button>
                         <button id="loginBtn" type="submit" value="Login"class="btn btn-primary btn-login">登入</button>
+                        
 
                     </div>
                     <input type="hidden" id="recaptchaToken" name="recaptchaToken">
@@ -192,10 +194,15 @@
     }
         }
 
-        document.getElementById('autoFill').addEventListener('click', (e)=>{
+        document.getElementById('autoFillAdmin').addEventListener('click', (e)=>{
             document.getElementById('userAccount').value = 'TestAccount2';
             document.getElementById('userPassword').value = 'TestPassword';
         })
+        document.getElementById('autoFillMember').addEventListener('click', (e)=>{
+            document.getElementById('userAccount').value = 'TestAccount3';
+            document.getElementById('userPassword').value = 'TestPassword';
+        })
+
         
     // 未登入/註冊會員想報名跳出的SweetAlert提示框
 	// 獲取URL中的alert參數
@@ -265,8 +272,23 @@
                     // 顯示帳號資訊
                     listAccountInfo();
                     setTimeout(function() {
-        window.location.href = "http://localhost:8080/gymlife/RegisterForGoogle";
-    }, 200);
+                        let googleData = JSON.parse(localStorage.getItem('googleData'));
+                        let email = googleData.email;
+                        // 傳送 Email 到你的 /GoogleLogin endpoint
+                        $.ajax({
+                            url: "http://localhost:8080/gymlife/GoogleLogin",
+                            type: "POST",
+                            contentType: "application/json",
+                            data: JSON.stringify({ googleMail: email }),
+                            success: function(response) {
+                                if (response.status === 'success') {
+                                    window.location.href = "http://localhost:8080/gymlife/";
+                                } else if (response.status === 'notRegistered') {
+                                    window.location.href = "http://localhost:8080/gymlife/RegisterForGoogle";
+                                }
+                            }
+                        });
+                    }, 200);
                 }
             }
 

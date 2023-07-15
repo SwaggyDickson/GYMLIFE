@@ -43,7 +43,14 @@
     #myButtonGroup{
         text-align: right;
     }
-    
+    .cw-text img {
+    width: 100%;   /* 你可以自己調整這個值 */
+    height: auto;  /* 自動調整高度以維持比例 */
+    max-width: 500px;  /* 這將設定圖片的最大寬度 */
+    max-height: 500px; /* 這將設定圖片的最大高度 */
+    object-fit: cover; /* 這樣可以使圖片填滿元素，但不會破壞比例 */
+}
+
     
 </style>
 <body>

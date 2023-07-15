@@ -7,11 +7,9 @@ import java.util.List;
 import java.text.SimpleDateFormat;
 
 
-import org.hibernate.internal.build.AllowSysOut;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 
 import jakarta.persistence.CascadeType;

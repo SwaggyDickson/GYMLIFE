@@ -1,6 +1,5 @@
 	package tw.gymlife.member.controller;
 	
-	import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -18,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 	
 	import tw.gymlife.member.model.Member;
-import tw.gymlife.member.service.MailService;
 import tw.gymlife.member.service.MemberService;
 	
 	@Controller
@@ -26,8 +24,6 @@ import tw.gymlife.member.service.MemberService;
 		
 		  @Autowired
 		    private MemberService memberService;
-		  @Autowired
-		  	private  MailService mailService;
 		  
 		  @Autowired
 		  private SimpMessagingTemplate template;
@@ -108,6 +104,11 @@ import tw.gymlife.member.service.MemberService;
 		      return totalMembers;
 		    }
 		    
+		    @GetMapping("/api/membersByMonth")
+		    @ResponseBody
+		    public List<Map<String, Object>> getMembersByMonth() {
+		        return memberService.countMembersByMonth();
+		    }
 		   
 		    
 		    	

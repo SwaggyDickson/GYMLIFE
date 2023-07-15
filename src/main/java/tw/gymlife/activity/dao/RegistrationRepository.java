@@ -21,6 +21,8 @@ public interface RegistrationRepository extends JpaRepository<Registration, Inte
 	
 	//查詢會員ID和活動ID的報名紀錄
 	List<Registration> findByuserIdAndActivityId(Integer userId, Integer activityId);
+	
+	
 }
 
 

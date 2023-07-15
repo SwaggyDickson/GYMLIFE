@@ -79,43 +79,36 @@ public class Member {
 
 	// 跟文章關聯
 	@JsonIgnore
-	@JsonManagedReference
 	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
 	private List<ArticleBean> articles = new ArrayList<>(0);
 
 	// 跟留言關聯
 	@JsonIgnore
-	@JsonManagedReference
 	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
 	private List<CommentBean> comments = new ArrayList<>(0);
 
 	// 文章按讚
 	@JsonIgnore
-	@JsonManagedReference
 	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
 	private List<ArticleLike> articleLikes = new ArrayList<>();
 
 	// 留言按讚
 	@JsonIgnore
-	@JsonManagedReference
 	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
 	private List<CommentLike> commentLikes = new ArrayList<>();
 
 	// 文章檢舉
 	@JsonIgnore
-	@JsonManagedReference
 	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
 	private List<ArticleReport> articleReports = new ArrayList<>();
 
 	// 留言檢舉
 	@JsonIgnore
-	@JsonManagedReference
 	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
 	private List<CommentReport> commentReports = new ArrayList<>();
 
 	// 文章收藏
 	@JsonIgnore
-	@JsonManagedReference
 	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
 	private List<ArticleSave> articleSaves = new ArrayList<>();
 	

@@ -40,17 +40,14 @@ public class CommentReport {
     private boolean isNestedComment;
     
     @ManyToOne
-    @JsonBackReference
     @JoinColumn(name = "commentId")
     private CommentBean comment;
     
     @ManyToOne
-    @JsonBackReference
     @JoinColumn(name = "parentCommentId")
     private CommentBean parentComment;
     
     @ManyToOne
-    @JsonBackReference
     @JoinColumn(name = "userId")
     private Member member;
 }

@@ -100,7 +100,7 @@
 				<div class="col-lg-6">
 					<nav class="nav-menu">
 						<ul>
-							<li class="active"><a th:href="@{/}">Home</a></li>
+							<li class="active"><a th:href="@{/}">首頁</a></li>
 							<li><a href="#">商店</a>
 								<ul class="dropdown">
 									<li><a th:href="@{/shopList.func}">線上店</a></li>
@@ -115,7 +115,7 @@
 
 							<li><a th:href="@{/activityHome}">活動</a>
 								<ul class="dropdown">
-									<li><a th:href="@{/goRegistrationRecord}">會員報名紀錄</a></li>
+									<li><a th:href="@{/goRegistrationRecord}">報名紀錄</a></li>
 								</ul></li>
 
 							<th:block th:with="userLoggedIn=${session.userLoggedIn != null}">

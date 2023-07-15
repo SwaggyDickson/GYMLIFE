@@ -26,13 +26,11 @@ public class CommentLike {
 
 	@JsonIgnore
 	@ManyToOne
-	@JsonBackReference
 	@JoinColumn(name = "userId")
 	private Member member;
 
 	@JsonIgnore
 	@ManyToOne
-	@JsonBackReference
 	@JoinColumn(name = "commentId")
 	private CommentBean comment;
 

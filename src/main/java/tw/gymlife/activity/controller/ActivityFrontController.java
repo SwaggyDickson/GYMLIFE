@@ -42,60 +42,50 @@ public class ActivityFrontController {
 	}
 
 	// 單筆活動詳細資料
-	@GetMapping("/activityDetails")
-	public String getDetails(@RequestParam("activityId") Integer activityId, Model m) {
-	    // 根據活動ID找到該筆資料
-	    Activity activity = aService.getActivityById(activityId);
-	    
-	    // 獲取活動的報名截止日期和當前日期進行比較
-	    Date registrationEndDate = activity.getRegistrationEndDate();
-	    Date currentDate = new Date();
+		@GetMapping("/activityDetails")
+		public String getDetails(@RequestParam("activityId") Integer activityId, Model m) {
+		    // 根據活動ID找到該筆資料
+		    Activity activity = aService.getActivityById(activityId);
+		    
+		    // 获取活动地点
+		    String activityLocation = activity.getActivityLocation();
 
-	    // 比較當前日期和活動報名截止日期
-	    if (currentDate.before(registrationEndDate)) {
-	        // 當前日期在報名截止日期之前，顯示"我要報名"
-	        m.addAttribute("buttonText", "我要報名");
-	    } else {
-	        // 當前日期在報名截止日期之後，顯示"報名截止"
-	        m.addAttribute("buttonText", "報名已截止");
-	    }
-	    
-	    // 利用model傳給前端
-	    m.addAttribute("activity", activity);
-	    
-        // 計算倒計時時間差 報名截止日 & 活動日期倒數計時器
-        Date now = new Date();
-        Date activityDate = activity.getActivityDate();
-        long remainingMillisecondsEndDate = registrationEndDate.getTime() - now.getTime();
-        long remainingSecondsEndDate = remainingMillisecondsEndDate / 1000;
-        long remainingMillisecondsDate = activityDate.getTime() - now.getTime();
-        long remainingSecondsDate = remainingMillisecondsDate / 1000;
-        
+		    
+		    // 獲取活動的報名截止日期和當前日期進行比較
+		    Date registrationEndDate = activity.getRegistrationEndDate();
+		    Date currentDate = new Date();
 
-        // 將倒數計時器時間差傳給前端
-        m.addAttribute("remainingSecondsEndDate", remainingSecondsEndDate);
-        m.addAttribute("remainingSecondsDate", remainingSecondsDate);
-	    return "frontgymlife/activity/Details";
-	}
+		    // 比較當前日期和活動報名截止日期
+		    if (currentDate.before(registrationEndDate)) {
+		        // 當前日期在報名截止日期之前，顯示"我要報名"
+		        m.addAttribute("buttonText", "我要報名");
+		    } else {
+		        // 當前日期在報名截止日期之後，顯示"報名截止"
+		        m.addAttribute("buttonText", "報名已截止");
+		    }
+		    
+		    // 利用model傳給前端
+		    m.addAttribute("activity", activity);
+		    // 将活动地点添加到模型中
+		    m.addAttribute("activityLocation", activityLocation);
+		    
+	        // 計算倒計時時間差 報名截止日 & 活動日期倒數計時器
+	        Date now = new Date();
+	        Date activityDate = activity.getActivityDate();
+	        long remainingMillisecondsEndDate = registrationEndDate.getTime() - now.getTime();
+	        long remainingSecondsEndDate = remainingMillisecondsEndDate / 1000;
+	        long remainingMillisecondsDate = activityDate.getTime() - now.getTime();
+	        long remainingSecondsDate = remainingMillisecondsDate / 1000;
+	        
+
+	        // 將倒數計時器時間差傳給前端
+	        m.addAttribute("remainingSecondsEndDate", remainingSecondsEndDate);
+	        m.addAttribute("remainingSecondsDate", remainingSecondsDate);
+		    return "frontgymlife/activity/Details";
+		}
+
 	
-//	@GetMapping("/map")
-//	public String showMapPage(@RequestParam("activityId") Integer activityId, Model m) {
-//	    // 根据活动ID找到该笔数据
-//	    Activity activity = aService.getActivityById(activityId);
-//	    
-//	    // 获取活动地点
-//	    String activityLocation = activity.getActivityLocation();
-//
-//	    // 使用地理编码服务将地址转换为经纬度
-//	    double latitude = // 调用逆地理编码服务将地址转换为经度
-//	    double longitude = // 调用逆地理编码服务将地址转换为纬度
-//
-//	    // 将经纬度添加到模型对象
-//	    model.addAttribute("latitude", latitude);
-//	    model.addAttribute("longitude", longitude);
-//
-//	    return "map"; // 返回前端页面的文件名，例如 "map.html" 或 "map"（如果使用 Thymeleaf）
-//	}
+
 
 
 }

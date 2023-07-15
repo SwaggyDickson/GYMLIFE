@@ -1,6 +1,10 @@
 package tw.gymlife.member.controller;
 
 import java.beans.PropertyEditorSupport;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -38,7 +42,6 @@ import tw.gymlife.member.service.MemberService;
 @Controller
 public class Register {
 
-	
 	@Autowired
 	private MemberService memberService;
 	
@@ -105,17 +108,26 @@ public class Register {
 			return "frontgymlife/member/register";
 		}else {
 			
-		//合併前後地址為一個字串
+		//合併字串
 		String userAddress = userAddressFirst + userAddressDetail;
         member.setUserAddress(userAddress);
         
         java.util.Date registerDateUtil = new java.util.Date();
         java.sql.Date registerDateSql = new java.sql.Date(registerDateUtil.getTime());
         member.setUserRegisterDate(registerDateSql);
+        
+        //設置預設照片
+        try {
+            Path defaultImagePath = Paths.get("src/main/resources/static/gym/member/image/default.png");
+            byte[] defaultImageBytes = Files.readAllBytes(defaultImagePath);
+            
+            member.setUserPhoto(defaultImageBytes);
+        } catch (IOException e) {
+            
+        }
 
         Member insertedMember = memberService.register(member);
-        
-        // 
+
         String subject = "Welcome to GymLife!";
         String message = "您好!! " + member.getUserName() + " 歡迎您加入我們的GymLife的大家庭，請好好享受我們提供的服務";
         String uuid = UUID.randomUUID().toString().replace("-", "").toUpperCase();
@@ -148,11 +160,8 @@ public class Register {
             List<Member> allMembers = memberService.selectAllMembers();
             template.convertAndSend("/topic/MemberQuery", allMembers);
            
-
-        	
             return "frontgymlife/member/afterRegister";
         } else {
-      
             return "member/RegisterFail";
         }
     }

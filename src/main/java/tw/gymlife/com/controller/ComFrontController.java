@@ -235,13 +235,6 @@ public class ComFrontController {
 		return "frontgymlife/com/front_shoppingCart";
 	}
 
-	// 加入購物車
-	// 假session
-	@ModelAttribute("UserId")
-	public String fakeSession() {
-
-		return "abc1";
-	}
 
 	// 加入購物車
 	@PostMapping("/userAddCart.func")
@@ -381,7 +374,7 @@ public class ComFrontController {
 		}
 		
 		//訂單建立後寄信
-		CompletableFuture<Boolean> result = comFUtilService.prepareAndSend("zzxx5576843@gmail.com", userId+"您的訂單已建立成功","訂單編號為: "+latestOrderBean.getOrderUuid());
+		CompletableFuture<Boolean> result = comFUtilService.prepareAndSend("hgdthhff@gmail.com", userId+"您的訂單已建立成功","訂單編號為: "+latestOrderBean.getOrderUuid());
 		System.out.println("信件寄出結果: "+ result);
 		
 		return "redirect:/order.func";

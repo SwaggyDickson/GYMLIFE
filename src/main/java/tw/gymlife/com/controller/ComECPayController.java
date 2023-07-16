@@ -100,8 +100,26 @@ public class ComECPayController {
 				comFService.updateComBuyNumber(comID, comBuyNum);
 			}
 		}
+		List<Commoditys> returnComList = new ArrayList<>();
+		Set<Integer> addedComIds = new HashSet<>(); // 用來記錄已經加入的商品ID
+		for (Orders orders : oneOrderList) {
+			for (OrderDetails odts : orders.getOrderDetails()) {
+				int comId = odts.getComId();
+				// 判斷商品是否已經加入過，如果是則跳過
+				if (addedComIds.contains(comId)) {
+					continue;
+				}
+				Commoditys commodity = comFService.getCommoditys(comId);
+				returnComList.add(commodity);
+				addedComIds.add(comId); // 將已經加入的商品ID記錄起來
+			}
+		}
+
+		List<CommodityDTO> commodityDTOList = comFUtilService.convertOneCOmPicDTOList(returnComList);
+
+		List<OrdersDTO> ordersDTOList = comFUtilService.convertOrderToOrdersDTO(oneOrderList, commodityDTOList);
 		
-		return linePayService.setupLinePay();
+		return linePayService.setupLinePay(ordersDTOList);
 	}
 	
 

@@ -32,6 +32,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import tw.gymlife.com.model.ComLog;
 import tw.gymlife.com.model.ComPic;
 import tw.gymlife.com.model.CommodityDTO;
 import tw.gymlife.com.model.Commoditys;
@@ -40,6 +41,7 @@ import tw.gymlife.com.model.Orders;
 import tw.gymlife.com.model.OrdersDTO;
 import tw.gymlife.com.service.ComFrontService;
 import tw.gymlife.com.service.ComFrontUtilService;
+import tw.gymlife.com.service.ComLogService;
 import tw.gymlife.com.service.ComOrderService;
 import tw.gymlife.com.service.ComService;
 import tw.gymlife.com.service.ComUtilService;
@@ -58,6 +60,9 @@ public class ComBackController {
 	private ComFrontService comFService;
 	@Autowired
 	private ComFrontUtilService comFUtilService;
+
+	@Autowired
+	private ComLogService logService;
 
 	@GetMapping("/backHomePage")
 	public String getBackHomePage() {
@@ -380,29 +385,29 @@ public class ComBackController {
 		}
 		return ResponseEntity.notFound().build();
 	}
-	
-	//將圖表輸出成圖檔
+
+	// 將圖表輸出成圖檔
 	@PostMapping("/importImg.func")
-	public ResponseEntity<Object> getrImportImg(@RequestParam("image") String image){
-		
-		System.out.println("image: "+ image);
+	public ResponseEntity<Object> getrImportImg(@RequestParam("image") String image) {
+
+		System.out.println("image: " + image);
 		String base64Data = image.substring(image.indexOf(',') + 1);
 		byte[] imageData = Base64.getDecoder().decode(base64Data);
-		
-        String desktopPath = System.getProperty("user.home") + "/Desktop";
-        String filePath = desktopPath + "/chart.png";
 
-        try (OutputStream outputStream = new FileOutputStream(filePath)) {
-        	
-            outputStream.write(imageData);
-            System.out.println("图像已成功保存到桌面。");
-            return ResponseEntity.ok().build();
-        } catch (IOException e) {
-        	
-            System.out.println("保存图像时发生错误。");
-            e.printStackTrace();
-            return ResponseEntity.notFound().build();
-        }
+		String desktopPath = System.getProperty("user.home") + "/Desktop";
+		String filePath = desktopPath + "/chart.png";
+
+		try (OutputStream outputStream = new FileOutputStream(filePath)) {
+
+			outputStream.write(imageData);
+			System.out.println("图像已成功保存到桌面。");
+			return ResponseEntity.ok().build();
+		} catch (IOException e) {
+
+			System.out.println("保存图像时发生错误。");
+			e.printStackTrace();
+			return ResponseEntity.notFound().build();
+		}
 	}
 
 	// 通知
@@ -497,7 +502,7 @@ public class ComBackController {
 
 		List<CommodityDTO> commodityDTOList = comFUtilService.convertOneCOmPicDTOList(returnComList);
 		List<OrdersDTO> ordersDTOList = comFUtilService.convertOrderToOrdersDTO(allOrdersList, commodityDTOList);
-		System.out.println("DTOLIST: "+ ordersDTOList);
+		System.out.println("DTOLIST: " + ordersDTOList);
 		// 將資料轉為JSON轉發到商品頁面
 		ObjectMapper objectMapper = new ObjectMapper();
 		try {
@@ -518,18 +523,29 @@ public class ComBackController {
 		System.out.println("uuid: " + orderUuid);
 
 		try {
-		Orders ordersByUuid = orderService.getOrdersByUuid(orderUuid);
-		ordersByUuid.setOrderPayment(4);
+			Orders ordersByUuid = orderService.getOrdersByUuid(orderUuid);
+			ordersByUuid.setOrderPayment(4);
 			orderService.setOrderStatusByAdmin(ordersByUuid);
 			System.out.println("更新成功");
 			return ResponseEntity.ok().build();
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			return ResponseEntity.notFound().build();
 		}
 
 	}
-	
+
+	// LOG
+	@GetMapping("/getLog.func")
+	public String getAllLog(Model model) {
+
+		List<ComLog> allLogList = logService.getAllLog();
+		// 將資料轉為JSON轉發到商品頁面
+			model.addAttribute("logList",allLogList);
+			
+			return "backgymlife/com/comLog";
+
+	}
 
 }

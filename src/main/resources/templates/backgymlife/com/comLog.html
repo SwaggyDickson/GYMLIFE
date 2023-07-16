@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Insert title here</title>
+    <!-- Com CSS -->
+    <link rel="stylesheet" th:href="@{gym/com/css/comLog.css}">
+
+    <!-- SweetAlert2框框 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- JQ -->
+    <script th:src="@{/Js/jquery-3.6.4.min.js}"></script>
+</head>
+
+<body class="adminbody">
+    <div id="main">
+        <div th:replace="~{layout/navbar}"></div>
+        <div class="content-page">
+            <!-- Start content -->
+            <div class="content">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <div class="breadcrumb-holder">
+                                <h1 class="main-title float-left">使用者紀錄</h1>
+                                <ol class="breadcrumb float-right">
+                                    <li class="breadcrumb-item">Home</li>
+                                    <li class="breadcrumb-item active">使用者紀錄</</li>
+                                </ol>
+                                <div class="clearfix"></div>
+                            </div>
+                        </div>
+                    </div>
+                      <!-- -------------------------內文-------------------------------------------------------------- -->
+                      
+                       <div class="wholePageContent">
+                        <main class="main-content">
+                         <table>
+                          	<thead>
+				                <tr>
+				                    <th>IP地址</th>
+				                    <th>連線时間</th>
+				                    <th>使用者操作</th>
+				                </tr>
+				            </thead>
+				            <tbody>
+				                <tr th:each="log : ${logList}">
+				                    <td th:text="${log.userIp}"></td>
+				                    <td th:text="${log.connectTime}"></td>
+				                    <td th:text="${log.userAction}"></td>
+				                </tr>
+				            </tbody>
+				        </table>
+                        </main>
+                        </div>
+                      
+                       <!--回到上方按鈕-->
+                    <button id="back-to-top-btn" title="回到頁面頂端">
+                        <i class="fas fa-arrow-up">TOP</i>
+                    </button>
+                </div>
+                <!-- END container-fluid -->
+            </div>
+            <!-- END content -->
+        </div>
+        <div th:replace="~{layout/footer}"></div>
+        <script th:src="@{gym/com/js/comLog.js}"></script>
+    </div>
+</body>
+
+</html>

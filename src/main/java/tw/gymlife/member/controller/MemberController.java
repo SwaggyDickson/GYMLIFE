@@ -65,6 +65,7 @@ import tw.gymlife.member.service.MemberService;
 		                body.getUserEmail(),
 		                body.getUserBirthDay()
 		            );
+//		            List<Member> selectAllMembers = memberService.selectAllMembers();
 		            return new ResponseEntity<>(member, HttpStatus.OK);
 
 		        } catch (Exception e) {

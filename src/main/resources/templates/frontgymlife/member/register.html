@@ -11,6 +11,8 @@
 	}
 
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.1/sockjs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 </head>
 <body class="test" onload="populateAddressOptions()">
 
@@ -250,77 +252,140 @@
             document.getElementById('userBirthDay').value = '1998-03-14';
     });
 
-    //------------------------使用ajax傳送註冊資訊--------------------------
-
-//     document.getElementById('registerBtn').addEventListener('click',(e)=>{
-//         e.preventDefault();
-
-//         let userAccount  = document.getElementById('userAccount').value
-//         let userPassword  = document.getElementById('userPassword').value
-  
-//         let userName  = document.getElementById('userName').value 
-//         let userNickName = document.getElementById('userNickName').value 
-//         let userGender = document.getElementById('userGender').value 
-//         let userAddressFirst = document.getElementById('userAddressFirst').value 
-//         let userAddressDetail = document.getElementById('userAddressDetail').value
-//         let userTel = document.getElementById('userTel').value
-//         let userEmail = document.getElementById('userEmail').value
-//         let userBirthDay = document.getElementById('userBirthDay').value 
- 
-//     axios.post('http://localhost:8080/gymlife/ajaxRegister', {
-//     userAccount: userAccount,
-//     userPassword:userPassword,
-//     userAddressFirst: userAddressFirst,
-//     userAddressDetail: userAddressDetail,
-//     userNickName:userNickName,
-//     userGender:userGender,
-//     userName:userName,
-//     userTel:userTel,
-//     userEmail:userEmail,
-//     userBirthDay:userBirthDay
+    
 
 
-   
-// }).then(function (response) {
-  
-//     if(response.data.success) {
-//         Swal.fire(
-//             'Success',
-//             'Registration succeeded',
-//             'success'
-//         ).then(function() {
-//             window.location.href = '/frontgymlife/member/firstpage';
-//         });
-//     } else {
-//         Swal.fire(
-//             'Error',
-//             'Registration failed',
-//             'error'
-//         );
-//     }
-// }).catch(function (error) {
-//     console.log(error);
-// });
-
-// })
 
 
-// $(document).ready(function() {
-//     // 從 localStorage 獲取 Google 數據
-//     let googleData = JSON.parse(localStorage.getItem('googleData'));
+        
+        
+    let stompClient = null;
 
-//     // 將數據填入到表單中
-//     if (googleData) {
-//         $('#userName').val(googleData.name);
-//         $('#userEmail').val(googleData.email);
-//         $('#userGender').val(googleData.gender == 'Male' ? 'male' : 'female');
-//         $('#userBirthDay').val(googleData.birthday);
+$(document).ready(function() {
+    // Connect to the WebSocket endpoint
+    let socket = new SockJS('http://localhost:8080/gymlife/MemberQuery');
 
-//         console.log(googleData.gender);
-//     }
-// });
-// console.log(localStorage.getItem('googleData'))
+    // Create a STOMP client over the WebSocket connection
+    stompClient = Stomp.over(socket);
 
+    stompClient.connect({}, function(frame) {
+        console.log('Connected: ' + frame);
+        // Subscribe to the '/topic/MemberQuery' destination
+        stompClient.subscribe('/topic/MemberQuery', function(message) {
+            let data = JSON.parse(message.body);
+            // Update member list with new data
+            newMemberList(data);
+            console.log(data);
+        });
+    });
+});
+// function register() {
+//     // Send message to '/topic/MemberQuery'
+//     stompClient.send("/topic/MemberQuery", {}, JSON.stringify(updateMessage));
+
+//     $.ajax({
+//         url: 'http://localhost:8080/gymlife/api/MemberQuery',
+//         method: "GET",
+//         success: function(allMembersResponse) {
+//             console.log("Get all members request successful");
+//             // Update the member list
+//             newMemberList(allMembersResponse);
+
+//             // Trigger a search to refresh the entire member list page
+//             searchMembers(""); // Pass the desired query parameter
+//         },
+//         error: function(xhr, status, error) {
+//             // Handle error
+//             console.log("HTTP status: ", xhr.status);
+//             console.log("Status description: ", xhr.statusText);
+//             alert("Get all members operation failed: " + xhr.responseText);
+//         }
+//     });
+// }
+
+
+// function register() {
+//     // Send message to '/topic/MemberQuery'
+//     stompClient.send("/topic/MemberQuery", {}, JSON.stringify(updateMessage));
+
+//     $.ajax({
+//         url: 'http://localhost:8080/gymlife/api/MemberQuery',
+//         method: "GET",
+//         success: function(allMembersResponse) {
+//             console.log("Get all members request successful");
+//             // Update the member list
+//             newMemberList(allMembersResponse);
+//             console.log(allMembersResponse);
+//         },
+//         error: function(xhr, status, error) {
+//             // Handle error
+//             console.log("HTTP status: ", xhr.status);
+//             console.log("Status description: ", xhr.statusText);
+//             alert("Get all members operation failed: " + xhr.responseText);
+//         }
+//     });
+// }
+
+            
+      
+
+        function newMemberList(data) {
+    console.log(data);
+    $("tbody").empty();
+    data.forEach(function(member, index) {
+        let row = $("<tr>");
+            row.append($("<td>").text(member.userId));
+            row.append($("<td>").text(member.userAccount));
+            row.append($("<td>").text(member.userName));
+            row.append($("<td>").text(member.userGender));
+            row.append($("<td>").text(member.userBirthDay));
+            row.append($("<td>").text(member.userAddress));
+            row.append($("<td>").text(member.userTel));
+            row.append($("<td>").text(member.userEmail));
+            row.append($("<td>").text(member.userNickName));
+            row.append($("<td>").text(member.userRegisterDate));
+            let permissionText = member.userPermission == 1 ? "管理員" : "一般會員";
+            row.append($("<td>").text(permissionText));
+                let statusSwitch = $("<label>").addClass("switch");
+        let statusInput = $("<input>").attr("type", "checkbox");
+        if (member.userStatus == 1) {
+            statusInput.prop('checked', true);
+        }
+        statusInput.click(function() {
+            changeUserStatus(member.userId);
+        });
+        let slider = $("<span>").addClass("slider round");
+        statusSwitch.append(statusInput);
+        statusSwitch.append(slider);
+        row.append($("<td>").append(statusSwitch));
+
+
+            let updateButton = $("<button>")
+                .addClass("btn btn-primary")
+                .attr("data-bs-toggle", "modal")
+                .attr("data-bs-target", "#updateModal")
+                .text("更新")
+                .click(function() {
+                    storeData(index);
+                });
+            row.append($("<td>").append(updateButton));
+
+            let deleteButton = $("<button>")
+                .addClass("btn btn-danger")
+                .attr("data-bs-toggle", "modal")
+                .attr("data-bs-target", "#deleteModal")
+                .text("刪除")
+                .click(function() {
+                    userIdToDelete = member.userId;
+                    console.log("Stored User ID: ", userIdToDelete);
+                });
+            row.append($("<td>").append(deleteButton));
+
+            $("tbody").append(row);
+        
+    
+            });
+        }
 
 
 

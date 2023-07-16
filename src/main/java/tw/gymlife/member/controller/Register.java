@@ -7,6 +7,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Map;
 import java.util.UUID;
@@ -19,6 +20,8 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.messaging.simp.stomp.StompCommand;
+import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -30,6 +33,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+
+
 
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -157,8 +163,17 @@ public class Register {
       
         if (insertedMember != null) {
             // Registration succeeded, redirect to a success page List<Member> allMembers = memberService.getAllMembers();
-            List<Member> allMembers = memberService.selectAllMembers();
-            template.convertAndSend("/topic/MemberQuery", allMembers);
+            
+        	List<Member> allMembers = memberService.selectAllMembers();
+//        	List<Member> newMembers = new ArrayList<>();
+//            newMembers.add(insertedMember);
+        	StompHeaderAccessor headerAccessor = StompHeaderAccessor.create(StompCommand.MESSAGE);
+        	headerAccessor.setDestination("/topic/MemberQuery");
+        	headerAccessor.setMessage(userAddressDetail); // 设置用户信息
+        	headerAccessor.setHeader("username", insertedMember.getUserName()); // 设置用户名信息
+        	
+
+        	template.convertAndSend(headerAccessor.getDestination(), allMembers);
            
             return "frontgymlife/member/afterRegister";
         } else {

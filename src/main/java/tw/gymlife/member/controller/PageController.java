@@ -15,6 +15,11 @@ public class PageController {
 	
 	@GetMapping("/Admin")
 	public String admin(HttpSession session) {	
+		Object userPermission = session.getAttribute("userPermission");
+		if(userPermission != null & !userPermission.toString().equals("1")) {
+			 return "frontgymlife/member/firstPage";
+		}
+		
 		return "backgymlife/member/BackEnd";
 	}
 	

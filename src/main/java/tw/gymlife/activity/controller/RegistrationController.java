@@ -135,9 +135,15 @@ public class RegistrationController {
 	
 	//跳轉報名紀錄頁面
 	@GetMapping("/goRegistrationRecord")
-	public String goRegistrationRecord(HttpSession session, Model model) {
+	public String goRegistrationRecord(HttpSession httpsession, Model m) {
 	    // 判斷是否存在 session
-	    Integer userId = (Integer) session.getAttribute("userId");
+	    Integer userId = (Integer) httpsession.getAttribute("userId");
+
+	    // 如果不是會員則跳轉
+	    if (userId == null) {
+	        String alertMessage = "請先登入或註冊會員";
+	        return "redirect:/Login?alert=" + URLEncoder.encode(alertMessage, StandardCharsets.UTF_8);
+	    }
 
 	    // 根據會員ID獲取報名記錄列表
 	    List<Registration> registrations = rService.getRegistrationsByMemberId(userId);
@@ -148,9 +154,16 @@ public class RegistrationController {
 	        Activity activity = aService.getActivityById(registration.getActivityId());
 	        allactivity.add(activity);
 	    }
+	    
+	    // 檢查報名紀錄是否為空
+	    if (userId!=null && registrations.isEmpty()) {
+	    	// 該會員目前無報名紀錄，使用SweetAlert彈出提示框後跳轉到所有活動頁面
+    	    String alertMessage = "目前尚無報名紀錄";
+    	    return "redirect:/activityHome?alert=" + URLEncoder.encode(alertMessage, StandardCharsets.UTF_8);
+	    }
 
-	    model.addAttribute("registrations", registrations);
-	    model.addAttribute("allactivity", allactivity);
+	    m.addAttribute("registrations", registrations);
+	    m.addAttribute("allactivity", allactivity);
 	    return  "frontgymlife/activity/RegistrationRecord"; 
 	}
 	

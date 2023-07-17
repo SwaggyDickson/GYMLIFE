@@ -23,16 +23,17 @@
 
 /* 立即報名按鈕設置 */
 .go-button {
-	display: inline-block;
-	padding: 2px 5px;
-	font-size: 1.2em;
-	font-weight: bold;
-	text-align: center;
-	border-radius: 5px;
-	cursor: pointer;
-	background-color: #66B3FF;
-	color: black;
+  display: inline-block;
+  padding: 2px 5px;
+  font-size: 1.2em;
+  font-weight: bold;
+  text-align: center;
+  border-radius: 5px;
+  cursor: pointer;
+  background-color: #66B3FF;
+  color: black;
 }
+
 
 /* 搜索設置 */
 .form-row {

@@ -24,12 +24,10 @@ public class ArticleLike {
   private int liked;
   
   @ManyToOne
-  @JsonBackReference
   @JoinColumn(name = "userId")
   private Member member;
 
   @ManyToOne
-  @JsonBackReference
   @JoinColumn(name = "articleId")
   private ArticleBean article;
   

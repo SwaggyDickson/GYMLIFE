@@ -25,6 +25,7 @@ import tw.gymlife.forum.service.ArticleReportService;
 import tw.gymlife.forum.service.ArticleService;
 import tw.gymlife.forum.service.CommentService;
 import tw.gymlife.member.model.Member;
+import tw.gymlife.member.service.MailService;
 
 @Controller
 @MultipartConfig
@@ -39,6 +40,43 @@ public class ArticleBackController {
 	
 	@Autowired
 	private ArticleReportService articleReportService;
+	
+	@Autowired
+	private MailService mailService;
+	
+	
+	@PostMapping("/admin/article/report/send/{reportId}")
+	public String sendReportMail(@PathVariable Integer reportId, RedirectAttributes redirectAttributes) {
+	    try {
+	        // 獲取檢舉
+	        ArticleReport report = articleReportService.findById2(reportId);
+	        if (report == null) {
+	            redirectAttributes.addFlashAttribute("message", "檢舉不存在");
+	            return "redirect:/report/page";
+	        }
+
+	        // 獲取會員資訊
+	        Member member = report.getMember();
+	        ArticleBean article = report.getArticle();
+
+	        // 發送檢舉郵件
+	        String recipient = member.getUserEmail(); // 取得會員的電子郵件地址
+	        String subject = "您的文章已被檢舉"; // 設定郵件主題
+	        String message = "您的文章 " + article.getArticleTitle() + " 已被檢舉。請檢視並改善您的文章。"; // 設定郵件內容
+	        mailService.prepareAndSend(recipient, subject, message); // 這行呼叫mailService的prepareAndSend方法來發送電子郵件
+
+	        // 若一切正常，返回一個包含成功訊息的響應
+	        redirectAttributes.addFlashAttribute("message", "郵件發送成功");
+	    } catch (Exception e) {
+	        // 輸出錯誤訊息
+	        e.printStackTrace();
+	        // 添加錯誤訊息
+	        redirectAttributes.addFlashAttribute("message", "發送郵件失敗");
+	    }
+	    return "redirect:/report/page";
+	}
+
+	
 	
 	//更新檢舉狀態
 	@PostMapping("/updateReportStatus")
@@ -67,6 +105,8 @@ public class ArticleBackController {
 //	        return "redirect:/Login";
 //	    }
 	}
+	
+	
 	
 	
 	

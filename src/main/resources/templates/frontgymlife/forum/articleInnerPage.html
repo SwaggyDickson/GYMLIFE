@@ -40,6 +40,7 @@
 
 		div p {
 	    color: black; /* 或者任何你想要的顏色 */
+	    font-size:20px;
 		}
 		
 		/* 	.fa.fa-share-alt {
@@ -212,7 +213,7 @@ ul {
 						</h2>
 
 						<a th:href="@{/front/memberPersonalPage}">
-							<p style="color: black">發文者<span th:text="${article.member.userName}"></span></p>
+							<p style="color: black;font-size:18px;">發文者<span th:text="${article.member.userName}"></span></p>
 						</a>
 						發文時間<span
 							th:text="${article}?${#dates.format(article.articleTime,'yyyy-MM-dd, HH:mm:ss')}"></span>
@@ -227,9 +228,9 @@ ul {
 								<input type="hidden" id="articleId" th:value="${article.articleId}">
 							</div>
 							<i class="fa-solid fa-tag"><span class="badge rounded-pill bg-warning text-dark"
-									th:text="${article}?${ article.articleType}"></span></i>
+									th:text="${article}?${ article.articleType}" style="font-size:18px" ></span></i>
 							<hr>
-							<div style="color: black" th:utext="${article}?${article.articleContent}">文章內容</div>
+							<div style="color: black" th:utext="${article.articleContent}">文章內容</div>
 							<hr>
 							
 								<img width="200px" th:src="@{'/downloadImage/'+${article.articleId}}" th:if="${article.hasImage}">
@@ -280,19 +281,27 @@ ul {
 
 								<!-- </li>
 				<li>	 -->
+				
+								<!-- 文章分享 -->
 								<div class="articleShare-section share-section">
 									<i class="fa fa-share-alt fa-fw fa--spacing"></i>
 								</div>
+								
+								
 								<!-- 	</li>
 				<li> -->
 								<div class="view-count">
 									<span>瀏覽次數：</span> <span th:text="${article.viewCount}"></span>
 								</div>
+								
+								<div class="line-it-button" data-lang="zh_Hant" data-type="share-a" data-env="REAL" th:data-url="@{'http://localhost:8080/gymlife/front/' + ${article.articleId}}" data-color="default" data-size="large" data-count="true" data-ver="3" style="display: none;"></div>
+<script src="https://www.line-website.com/social-plugins/js/thirdparty/loader.min.js" async="async" defer="defer" style="margin:left 20px;"></script>
+
 								<!-- </li>
 				</ul> -->
 								<!-- 檢舉文章的按鈕，點擊後顯示modal -->
 								<button type="button" class="btn btn-primary reportButton" data-toggle="modal"
-									data-target="#reportModal">檢舉文章
+									data-target="#reportModal" style="margin:left 20px;">檢舉文章
 								</button>
 							</div>
 						</section>
@@ -317,8 +326,9 @@ ul {
 										<label for="reportType">檢舉類型</label>
 										<select class="form-control" id="reportType" name="reportType">
 											<option>言語霸凌</option>
-											<option>色情</option>
+											<option>色情內容</option>
 											<option>分類錯誤</option>
+											<option>就是想檢舉</option>
 										</select>
 									</div>
 									<div class="form-group">
@@ -330,6 +340,7 @@ ul {
 							<div class="modal-footer">
 								<button type="button" class="btn btn-secondary" data-dismiss="modal">關閉</button>
 								<button type="button" class="btn btn-primary" id="submitReport">送出檢舉</button>
+								<button id="autoReport" class="btn btn-secondary">一鍵輸入</button>
 							</div>
 						</div>
 					</div>
@@ -349,7 +360,7 @@ ul {
 					<!--ajax 新增留言-->
 			<div style="color: black; background-color: white; padding: 20px;">
 				<form action="#" method="post" enctype="multipart/form-data" id="commentForm">
-					<textarea id="commentCon" name="commentContent" placeholder="輸入留言內容" required style="width: 100%; height: 150px; padding: 10px; border: none; border-radius: 10px; background: #f2f2f2;"></textarea>
+					<textarea id="commentCon"  class="addComment"   name="commentContent" placeholder="輸入留言內容" required style="width: 100%; height: 150px; padding: 10px; border: none; border-radius: 10px; background: #f2f2f2;"></textarea>
 					<div class="input-group">
 						<input type="file" id="commentImg" name="commentImg" accept="image/*" style="display: none;">
 						<label for="commentImg" id="fileLabel">
@@ -357,6 +368,7 @@ ul {
 							<!-- <img id="uploadIcon" src="upload_icon.png" style="cursor:pointer;" /> -->
 						</label>
 					</div>
+					<button id="autoFillBtn" class="btn btn-secondary">一鍵輸入</button>
 					<button type="button" class="btn btn-outline-warning" id="submitCommentBtn" style="display: block; width: 100%; margin-top: 10px;">新增留言</button>
 				</form>
 			</div>
@@ -376,21 +388,21 @@ ul {
 				</div>
 
 
-				<th:block th:each="comment,commentIndex : ${comments}" style="color:black; font-family: Arial;">
+				<th:block th:each="comment,commentIndex : ${comments}" style="color:black; ">
 					<div class="card" style="color: black; border: 1px solid #ddd; padding: 10px; margin: 10px;">
 						<div class="card-header"
 							style="color: black; border-bottom: 1px solid #ddd; padding-bottom: 10px;">
 							<div></div>
 							<div th:text="${'B'+  (commentIndex.index + 1 + (currentPage - 1) * pageSize)  }"
-								style="font-weight: bold;"></div>
+								></div>
 							<p style="color: black">發文者<span th:text="${article.member.userName}"
-									style="font-weight: bold;"></span></p>
+									></span></p>
 							留言時間<span th:text="${comment}?${#dates.format(comment.commentTime,'yyyy-MM-dd, HH:mm:ss')}"
-								style="font-size: 12px;"></span>
+								style="font-size: 18px;"></span>
 						</div>
 						<div class="card-body" style="color: black;">
 							<div id="commentList" style="color: black;">
-								<span th:text="${comment.commentContent}" style="margin: 10px 0;"></span>
+								<span th:attr="id='comment-content-' + ${comment.commentId}" th:text="${comment.commentContent}" style="margin: 10px 0;font-size:20px"></span>
 								<br />
 							<!-- 如果該評論有圖片則顯示圖片 -->
 							<img width="200px" 
@@ -410,7 +422,8 @@ ul {
 										th:if="${userIsCommentAuthors[comment.commentId]}">
 										更新留言
 									</button>
-
+									
+									<!-- 真刪除留言 -->
 									<form th:action="@{/front/{articleId}/delete(articleId=${article.articleId})}"
 										th:method="delete" class="deleteForm"
 										th:if="${userIsCommentAuthors[comment.commentId]}">
@@ -441,7 +454,7 @@ ul {
 									<form th:action="@{'/parent/add/'+${comment.commentId}}" method="post">
 										<input type="hidden" name="articleId" th:value="${article.articleId}">
 										<input type="hidden" name="parentCommentId" th:value="${comment.commentId}">
-										<textarea name="commentContent" placeholder="Add a reply..."
+										<textarea name="commentContent" placeholder="新增回覆"
 											style="width: 100%; height: 100px; padding: 10px;"></textarea>
 										<button type="submit"
 											style="background-color: #007bff; color: #fff; padding: 5px 10px; border: none; border-radius: 5px;">新增回覆</button>
@@ -558,7 +571,7 @@ ul {
 									<input type="hidden" id="editCommentId" name="commentId">
 									<div class="form-group">
 										<label for="editCommentContent" class="col-form-label">留言内容:</label>
-										<textarea class="form-control" id="editCommentContent"
+										<textarea class="form-control" id="editCommentContent" 
 											name="commentContent"></textarea>
 									</div>
 									<div class="form-group">
@@ -819,10 +832,6 @@ ul {
 						});
 					});
 
-
-
-
-
 					//更新留言的ajax
 					//要同時更新文字內容和圖片才能更新留言
 					$(document).ready(function () {
@@ -830,8 +839,12 @@ ul {
 						let editComments = document.querySelectorAll('.ajaxEditComment');
 						editComments.forEach(editComment => {
 							editComment.addEventListener('click', function () {
+								console.log("Button clicked!"); // 当按钮被点击时，这将在控制台打印出一条消息
 								var commentId = editComment.getAttribute('data-comment-id');
-								var commentContent = $('#comment-content-' + commentId).text();
+							    var commentContent = $('#comment-content-' + commentId).text();
+							    console.log("commentId: " + commentId); // 打印 commentId
+							    console.log("commentContent: " + commentContent); // 打印 commentContent
+								
 								$('#editCommentId').val(commentId);
 								$('#editCommentContent').val(commentContent);
 								let myModal = document.getElementById('exampleModal');
@@ -869,6 +882,10 @@ ul {
 							formData.append('commentContent', commentContent);
 							//saveEditComment
 
+							//在新增一個查詢的ajax來把值放到modal裡面
+							//get 的，controller 也要對應的
+							
+							
 							$.ajax({
 								url: 'http://localhost:8080/gymlife/front/comments/editCommentAjax',
 								type: 'PUT',
@@ -1113,9 +1130,19 @@ ul {
 										if (response.isSaved && !isSaved) {
 											bookmark.classList.add('fas');
 											bookmark.classList.remove('far');
+											Swal.fire(
+													'已新增至我的收藏!',
+													'',
+													'success'
+												)
 										} else if (!response.isSaved && isSaved) {
 											bookmark.classList.add('far');
 											bookmark.classList.remove('fas');
+											Swal.fire(
+													'已取消收藏!',
+													'',
+													'success'
+												)
 										}
 									},
 									error: function () {
@@ -1125,6 +1152,31 @@ ul {
 							});
 						});
 					});
+					
+					
+					
+					//一鍵輸入
+			document.getElementById('autoFillBtn').addEventListener('click', function (e) {
+            e.preventDefault(); // 阻止按鈕的預設提交行為
+
+            // 為文章標題輸入框設定值
+            var articleTitleInput = document.getElementsByClassName('addComment');
+            articleTitleInput[0].value = `個人覺得考慮去檢查一下心血管，血壓是否偏高，運動前有沒有適度先熱身`; 
+        });
+
+		document.getElementById('autoReport').addEventListener('click', function (e) {
+            e.preventDefault(); // 阻止按鈕的預設提交行為
+
+            // 為文章標題輸入框設定值
+            var articleTitleInput = document.getElementById('reportType');
+            articleTitleInput.value = `就是想檢舉`; 
+			var articleTitleInput2 = document.getElementById('reportReason');
+			articleTitleInput2.value = `我想檢舉這個使用者`; 
+        });
+
+
+
+
 
 				</script>
 

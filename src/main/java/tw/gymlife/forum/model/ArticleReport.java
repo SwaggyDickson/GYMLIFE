@@ -37,12 +37,10 @@ public class ArticleReport {
     private String reportStatus;
     
     @ManyToOne
-    @JsonBackReference
     @JoinColumn(name = "articleId")
     private ArticleBean article;
     
     @ManyToOne
-    @JsonBackReference
     @JoinColumn(name = "userId")
     private Member member;
     

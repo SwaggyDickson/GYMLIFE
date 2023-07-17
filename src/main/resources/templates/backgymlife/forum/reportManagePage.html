@@ -19,10 +19,10 @@
 					<div class="row">
 						<div class="col-xl-12">
 							<div class="breadcrumb-holder">
-								<h1 class="main-title float-left">Example</h1>
+								<h1 class="main-title float-left">論壇</h1>
 								<ol class="breadcrumb float-right">
-									<li class="breadcrumb-item">Home</li>
-									<li class="breadcrumb-item active">Google Maps</li>
+									<li class="breadcrumb-item">論壇</li>
+									<li class="breadcrumb-item active">論壇</li>
 								</ol>
 								<div class="clearfix"></div>
 							</div>
@@ -30,16 +30,20 @@
 					</div>
 
 					<!---------------------------內文-------------------------------------------------------------- -->
+					<div th:if="${message}" th:text="${message}"></div>
 					<table id="myTable" class="display hover compact stripe ">
 						<thead>
 							<tr>
 								<th>檢舉編號</th>
 								<th>會員編號</th> 
+								 <th>文章ID</th>    
+           						 <th>文章標題</th>   
 								<th>會員名稱</th>  
+								<th>檢舉種類</th>
 								<th>檢舉內容</th>
 								<th>檢舉時間</th>
-								<th>檢舉種類</th>
 								<th>檢舉狀態</th>
+								<th>發送郵件</th>
 							<!--	<th>編輯</th>
 								<th>刪除</th>   -->
 							</tr>
@@ -49,11 +53,12 @@
 								<tr>
 									<th scope="row" th:text="${articleReport}?${articleReport.reportId}"></th>
 									 <td th:text="${articleReport.article.member != null and articleReport.article.member.userId != null} ? ${articleReport.article.member.userId} : ''"></td>
+   									    <td th:text="${articleReport.article != null and articleReport.article.articleId != null} ? ${articleReport.article.articleId} : ''"></td> <!-- 新增的文章ID欄位 -->
+                						<td th:text="${articleReport.article != null and articleReport.article.articleTitle != null} ? ${articleReport.article.articleTitle} : ''"></td> <!-- 新增的文章標題欄位 -->
    									 <td th:text="${articleReport.article.member != null and articleReport.article.member.userName != null} ? ${articleReport.article.member.userName} : ''"></td>
+									<td th:text="${articleReport}?${articleReport.reportType}"></td>
 									<td th:text="${articleReport != null} ? (${#strings.length(articleReport.reportReason) > 40} ? ${#strings.substring(articleReport.reportReason, 0, 40) + '...'} : ${articleReport.reportReason}) : ''"></td>
 									<td th:text="${articleReport}?${#dates.format(articleReport.reportTime,'yyyy-MM-dd, HH:mm:ss')}"></td>
-									<td th:text="${articleReport}?${articleReport.reportType}"></td>
-								  <!-- 	<td th:text="${articleReport}?${articleReport.reportStatus}"></td>  th:disabled="${articleReport.reportStatus != null}"  --> 
 								 	 <td>
 									    <form th:action="@{/updateReportStatus}" method="post">
 									        <input type="hidden" th:value="${articleReport.reportId}" name="reportId" />
@@ -64,6 +69,14 @@
 									            <option th:selected="${articleReport.reportStatus == '檢舉無效（Invalid Report）'}" value="檢舉無效（Invalid Report）">檢舉無效（Invalid Report）</option>
 									        </select>
 									        <input type="submit" value="更新">
+									    </form>
+									</td>
+									
+									
+									
+									<td>
+									    <form th:action="@{'/admin/article/report/send/' + ${articleReport.reportId}}" method="post">
+									        <input type="submit" value="發送郵件" class="btn btn-outline-primary btn-sm"/>
 									    </form>
 									</td>
 

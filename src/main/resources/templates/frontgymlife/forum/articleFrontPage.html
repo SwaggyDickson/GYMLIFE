@@ -78,6 +78,7 @@
 		}
 		span p {
 	    color: black; /* 或者任何你想要的顏色 */
+	    font-size: 20px;
 		}
 		div p {
 	    color: black; /* 或者任何你想要的顏色 */
@@ -144,10 +145,9 @@
 					<h2 style="color: white">主題分類</h2>
 					<div id="list-example" class="list-group">
 						<a class="list-group-item list-group-item-action" th:href="@{/front/active/健身}">健身</a> <a
-							class="list-group-item list-group-item-action" th:href="@{/front/active/購物}">購物</a> <a
+							class="list-group-item list-group-item-action" th:href="@{/front/active/購物}">商品</a> <a
 							class="list-group-item list-group-item-action" th:href="@{/front/active/課程}">課程</a> <a
-							class="list-group-item list-group-item-action" th:href="@{/front/active/活動}">活動</a> <a
-							class="list-group-item list-group-item-action" th:href="@{/front/active/會員}">會員</a>
+							class="list-group-item list-group-item-action" th:href="@{/front/active/活動}">活動</a> 
 					</div>
 				</div>
 				<div class="col-10">
@@ -162,10 +162,10 @@
 										<a th:href="@{/front/{articleId}(articleId=${article.articleId})}"
 											th:text="${article}?${article.articleTitle}" style="color: black;"></a>
 									</h2>
-									<p style="color: black;"><span th:text="${article.member?.userName}"></span></p>
+									<p style="color: black;font-size:18px"><span th:text="${article.member?.userName}"></span></p>
 									<i class="fa-solid fa-tag"><span class="badge rounded-pill bg-warning text-dark"
-											th:text="${article}?${ article.articleType}"></span></i>
-									<span style="color: black;" th:utext="${article}?${article.articleContent}"></span>
+											th:text="${article}?${ article.articleType}" style="font-size:18px"></span></i>
+									<span style="color: black; font-size:18px" th:utext="${article}?${article.articleContent}"></span>
 									
 									
 									<img width="200px" th:src="@{'/downloadImage/'+${article.articleId}}" th:if="${article.hasImage}">

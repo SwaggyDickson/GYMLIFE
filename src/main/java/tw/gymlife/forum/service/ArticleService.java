@@ -1,5 +1,6 @@
 package tw.gymlife.forum.service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -14,24 +15,42 @@ import org.springframework.transaction.annotation.Transactional;
 
 import tw.gymlife.forum.model.ArticleBean;
 import tw.gymlife.forum.model.ArticleRepository;
-import tw.gymlife.forum.model.CommentBean;
+import tw.gymlife.forum.model.ArticleSave;
+import tw.gymlife.member.model.Member;
 
 @Service
 public class ArticleService {
 
 	@Autowired
 	private ArticleRepository articleRepository;
-	
+
+	@Autowired
+	private ArticleSaveService articleSaveService;
+
+	public List<ArticleBean> findSavedArticlesByMember(Member member) {
+		// 這裡假設你已有方法可以獲取所有保存的文章
+		List<ArticleSave> savedArticles = articleSaveService.findAllByMember(member);
+		List<ArticleBean> articles = new ArrayList<>();
+
+		for (ArticleSave savedArticle : savedArticles) {
+			ArticleBean article = savedArticle.getArticle();
+			article.getArticleSaves().add(savedArticle);
+			articles.add(article);
+		}
+
+		return articles;
+	}
+
 	public ArticleBean findByMemberUserIdAndArticleId(Integer userId, Integer articleId) {
 		ArticleBean article = articleRepository.findByMemberUserIdAndArticleId(userId, articleId);
-	    return article;
+		return article;
 	}
-	
+
 	// 透過會員編號查詢該會員文章按最新到最舊排列，會員個人頁面
 	public Page<ArticleBean> findByMemberUserIdOrderByArticleIdDesc(Integer userId, int pageNumber, int pageSize) {
-	    Pageable pageable = PageRequest.of(pageNumber - 1, pageSize, Sort.Direction.DESC, "articleId");
-	    Page<ArticleBean> articles = articleRepository.findByMemberUserId(userId, pageable);
-	    return articles;
+		Pageable pageable = PageRequest.of(pageNumber - 1, pageSize, Sort.Direction.DESC, "articleId");
+		Page<ArticleBean> articles = articleRepository.findByMemberUserId(userId, pageable);
+		return articles;
 	}
 
 	public List<ArticleBean> findAllByMemberUserId(int userId) {
@@ -70,9 +89,8 @@ public class ArticleService {
 		Page<ArticleBean> page = articleRepository.findByArticleTypeAndStatus(articleType, "active", pageable);
 		return page;
 	}
-	
-	// ------------------------------篩選----------------------------------
 
+	// ------------------------------篩選----------------------------------
 
 	// 在前台論壇首頁只查看active狀態的文章
 	// desc
@@ -82,51 +100,46 @@ public class ArticleService {
 		return page;
 	}
 
-	//asc
+	// asc
 	public Page<ArticleBean> findOlderArticles(int pageNumber, int pageSize) {
 		Pageable pageable = PageRequest.of(pageNumber - 1, 3, Sort.Direction.ASC, "articleTime");
 		Page<ArticleBean> page = articleRepository.findByStatus("Active", pageable);
 		return page;
 	}
 
-	//mostViews
+	// mostViews
 	public Page<ArticleBean> findMostViews(int pageNumber, int pageSize) {
 		Pageable pageable = PageRequest.of(pageNumber - 1, 3, Sort.Direction.DESC, "viewCount");
 		Page<ArticleBean> page = articleRepository.findByStatus("Active", pageable);
 		return page;
 	}
-	
+
 //	public Page<ArticleBean> findMostViews(int pageNumber, int pageSize) {
 //	    Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
 //	    Page<ArticleBean> page = articleRepository.findByStatusOrderByViewCountDesc("Active", pageable);
 //	    return page;
 //	}
-	
-	//mostLikes
+
+	// mostLikes
 	public Page<ArticleBean> findMostLikedArticles(int pageNumber, int pageSize) {
 		Pageable pageable = PageRequest.of(pageNumber - 1, 3, Sort.Direction.DESC, "likeCount");
 		Page<ArticleBean> page = articleRepository.findByStatus("Active", pageable);
 		return page;
 	}
-	
+
 //	public Page<ArticleBean> findMostLikedArticles(int pageNumber, int pageSize) {
 //	    Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
 //	    return articleRepository.findByStatusOrderByLikeCountDesc("Active", pageable);
 //	}
 
-	
-	
-	
-	// 為推薦功能添加的方法，需要根據你的推薦算法來實現   隨機推薦相關主題的
+	// 為推薦功能添加的方法，需要根據你的推薦算法來實現 隨機推薦相關主題的
 //	public Page<ArticleBean> findRecommendedArticles(int pageNumber, int pageSize) {
 //	    Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
 //	    return articleRepository.findByStatusAndRecommended("Active", pageable);
 //	}
 
-	
 	// ------------------------------篩選----------------------------------
 
-	
 	// 單筆查詢
 	public ArticleBean findById(Integer articleId) {
 		Optional<ArticleBean> optional = articleRepository.findById(articleId);

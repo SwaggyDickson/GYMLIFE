@@ -1,5 +1,6 @@
 package tw.gymlife.member.service;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -7,7 +8,6 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.crossstore.HashMapChangeSet;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -81,8 +81,6 @@ public class MemberService {
 	        return memberRepo.existsByUserAccount(userAccount);
 	    }
 
-
-	
 	public Member updateUserDetails(int userId, String userAccount, String userName, String userGender, 
 			String userAddress,Date userBirthDay, String userTel, String userEmail, String userNickName, byte[] userPhoto ) {
 		Optional<Member> memberOptional = memberRepo.findById(userId);
@@ -194,6 +192,13 @@ public class MemberService {
 		  return memberRepo.count();
 	  }
 	  
+	  public List<Map<String, Object>> countMembersByMonth() {
+	        // Get the current year
+	        int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+	        return memberRepo.countMembersByMonth(currentYear);
+	    }
+	  
+	  
 		// 查單筆(id)
 		public Member getMemberById(Integer userId) {
 			Optional<Member> memberOptional = memberRepo.findById(userId);
@@ -204,5 +209,9 @@ public class MemberService {
 			return null;
 		}
 
+		 public Member checkUserByEmail(String userEmail) {
+				
+				return memberRepo.findByUserEmail(userEmail);
+			}
 	  
 }

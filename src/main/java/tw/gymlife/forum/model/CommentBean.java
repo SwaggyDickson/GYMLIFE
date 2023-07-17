@@ -62,22 +62,18 @@ public class CommentBean {
 
 	@JsonIgnore
 	@ManyToOne
-	@JsonBackReference
 	@JoinColumn(name = "articleId")
 	private ArticleBean article;
 
 	@JsonIgnore
-	@JsonBackReference
 	@ManyToOne
 	@JoinColumn(name = "userId")
 	private Member member;
 	
 	@OneToMany(mappedBy = "comment", cascade = CascadeType.ALL)
-	@JsonManagedReference
 	private List<CommentLike> commentLikes = new ArrayList<>();
 	
 	@OneToMany(mappedBy = "comment", cascade = CascadeType.ALL)
-	@JsonManagedReference
 	private List<CommentReport> commentReports = new ArrayList<>();
 
 	@PrePersist // 當物件轉換成persist狀態以前，要做的事情放在方法裡面

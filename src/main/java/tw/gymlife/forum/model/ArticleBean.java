@@ -75,21 +75,17 @@ public class ArticleBean {
 	private String status = "Active"; // 默认状态为 Active (預設值)
 
 	@OneToMany(mappedBy = "article", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JsonManagedReference
 	private List<CommentBean> comments;
 
 	@JsonIgnore
-	@JsonBackReference
 	@ManyToOne
 	@JoinColumn(name = "userId")
 	private Member member;
 
 	@OneToMany(mappedBy = "article", cascade = CascadeType.ALL)
-	@JsonManagedReference
 	private List<ArticleLike> articleLikes = new ArrayList<>();
 
 	@OneToMany(mappedBy = "article", cascade = CascadeType.ALL)
-	@JsonManagedReference
 	private List<ArticleReport> articleReports = new ArrayList<>();
 	
 	@PrePersist // 當物件轉換成persist狀態以前，要做的事情放在方法裡面

@@ -78,6 +78,20 @@ input:checked + .slider:before {
 .slider.round:before {
   border-radius: 50%;
 }
+.indicator::after {
+    content: "";
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    width: 10px;
+    height: 10px;
+    background-color: red;
+    border-radius: 50%;
+}
+
+.mail {
+    position: relative;
+}
 
 	
 	</style>
@@ -311,20 +325,328 @@ input:checked + .slider:before {
 //     setInterval(refreshMemberData, 1000);
 // });
 
-let stompClient = null;
-$(document).ready(function() {
-    // Connect to the WebSocket endpoint
-    let socket = new SockJS('http://localhost:8080/gymlife/MemberQuery');
+// $(document).ready(function() {
+//     // Connect to the WebSocket endpoint
+//     let socket = new SockJS('http://localhost:8080/gymlife/MemberQuery');
 
-    // Create a STOMP client over the WebSocket connection
-    stompClient = Stomp.over(socket);
-    stompClient.connect({}, function (frame) {
-        // Subscribe to the '/topic/MemberQuery' destination
-        stompClient.subscribe('/topic/MemberQuery', function (message) {
-            let data = JSON.parse(message.body);
-            $("tbody").empty();
-            data.forEach(function(member, index) {
-                let row = $("<tr>");
+//     // Create a STOMP client over the WebSocket connection
+//     stompClient = Stomp.over(socket);
+//     stompClient.connect({}, function (frame) {
+//         // Subscribe to the '/topic/MemberQuery' destination
+//         stompClient.subscribe('/topic/MemberQuery', function (message) {
+//             let data = JSON.parse(message.body);
+//             $("tbody").empty();
+//             data.forEach(function(member, index) {
+//                 let row = $("<tr>");
+//             row.append($("<td>").text(member.userId));
+//             row.append($("<td>").text(member.userAccount));
+//             row.append($("<td>").text(member.userName));
+//             row.append($("<td>").text(member.userGender));
+//             row.append($("<td>").text(member.userBirthDay));
+//             row.append($("<td>").text(member.userAddress));
+//             row.append($("<td>").text(member.userTel));
+//             row.append($("<td>").text(member.userEmail));
+//             row.append($("<td>").text(member.userNickName));
+//             row.append($("<td>").text(member.userRegisterDate));
+//             let permissionText = member.userPermission == 1 ? "管理員" : "一般會員";
+//             row.append($("<td>").text(permissionText));
+//                 let statusSwitch = $("<label>").addClass("switch");
+//         let statusInput = $("<input>").attr("type", "checkbox");
+//         if (member.userStatus == 1) {
+//             statusInput.prop('checked', true);
+//         }
+//         statusInput.click(function() {
+//             changeUserStatus(member.userId);
+//         });
+//         let slider = $("<span>").addClass("slider round");
+//         statusSwitch.append(statusInput);
+//         statusSwitch.append(slider);
+//         row.append($("<td>").append(statusSwitch));
+
+
+//             let updateButton = $("<button>")
+//                 .addClass("btn btn-primary")
+//                 .attr("data-bs-toggle", "modal")
+//                 .attr("data-bs-target", "#updateModal")
+//                 .text("更新")
+//                 .click(function() {
+//                     storeData(index);
+//                 });
+//             row.append($("<td>").append(updateButton));
+
+//             let deleteButton = $("<button>")
+//                 .addClass("btn btn-danger")
+//                 .attr("data-bs-toggle", "modal")
+//                 .attr("data-bs-target", "#deleteModal")
+//                 .text("刪除")
+//                 .click(function() {
+//                     userIdToDelete = member.userId;
+//                     console.log("Stored User ID: ", userIdToDelete);
+//                 });
+//             row.append($("<td>").append(deleteButton));
+
+//             $("tbody").append(row);
+        
+    
+//             });
+//         });
+//     });
+
+//     stompClient.onDisconnect = function() {
+//         console.log('Disconnected from WebSocket server.');
+//     };
+
+//     stompClient.onStompError = function(frame) {
+//         console.log('STOMP error:', frame);
+//     };
+// });
+
+
+            //存取資訊
+            function storeData(rowId) {
+                // 使用 rowId 獲取該行的信息
+                let tr = document.getElementsByTagName("tr")[rowId +1];
+                // 逐個獲取單元格的值
+                let userId = tr.cells[0].innerText;
+                let userAccount = tr.cells[1].innerText;
+                
+                let userName = tr.cells[2].innerText;
+                let userGender = tr.cells[3].innerText;
+                let userBirthDay = tr.cells[4].innerText;
+                let userAddress = tr.cells[5].innerText;
+                let userTel = tr.cells[6].innerText;
+                let userEmail = tr.cells[7].innerText;
+                
+                const rowData = {
+                    id: rowId,
+                    userId: userId,
+                    userAccount: userAccount,
+                   	UserName: userName,
+                   	userEmail: userEmail,
+                    userGender: userGender,
+                    userBirthDay: userBirthDay,
+                    userAddress: userAddress,
+                    userTel: userTel,
+                    
+                };
+                // 將 rowData 保存到 localStorage
+                localStorage.setItem("rowData", JSON.stringify(rowData));
+            }
+
+            document.getElementById("updateModal").addEventListener("shown.bs.modal", function () {
+                const rowData = JSON.parse(localStorage.getItem("rowData"));
+             
+                document.getElementById("userIdInput").value = rowData.userId;
+                document.getElementById("accountInput").value = rowData.userAccount;
+                document.getElementById("nameInput").value = rowData.UserName;
+                document.getElementById("emailInput").value = rowData.userEmail;
+                document.getElementById("genderInput").value = rowData.userGender;
+                document.getElementById("birthDayInput").value = rowData.userBirthDay;
+                document.getElementById("addressInput").value = rowData.userAddress;
+                document.getElementById("telInput").value = rowData.userTel;
+              
+            });
+            
+            let stompClient = null;
+
+            $(document).ready(function() {
+                // Connect to the WebSocket endpoint
+                let socket = new SockJS('http://localhost:8080/gymlife/MemberQuery');
+
+                // Create a STOMP client over the WebSocket connection
+                stompClient = Stomp.over(socket);
+                
+                stompClient.connect({}, function (frame) {
+                    console.log('Connected: ' + frame);
+                    // Subscribe to the '/topic/MemberQuery' destination
+                    stompClient.subscribe('/topic/MemberQuery', function (message) {
+                        
+                        let data = JSON.parse(message.body);
+                         // Update member list with new data
+                         newMemberList(data);
+                         displayNewMemberMessage(message.headers);
+                         $('.mail').addClass('indicator');  
+
+                        // 更新未读消息数
+                        let currentUnread = parseInt($('#noread').text()) || 0;
+                        $('#noread').text(currentUnread + 1);
+
+                    });
+                });
+            });
+
+            function updateData() {
+            	const updatedUserId = document.getElementById("userIdInput").value;
+                const updatedAccount = document.getElementById("accountInput").value;
+                const updatedName = document.getElementById("nameInput").value;
+                const updatedEmail = document.getElementById("emailInput").value;
+                const updatedGender = document.getElementById("genderInput").value;
+                const updatedBirthDay = document.getElementById("birthDayInput").value;
+                const updatedAddress = document.getElementById("addressInput").value;
+                const updatedTel = document.getElementById("telInput").value;
+              
+                        const data = {
+                    userId: updatedUserId,
+                    userAccount: updatedAccount,
+                    userName: updatedName,
+                    userEmail: updatedEmail,
+                    userGender: updatedGender,
+                    userBirthDay: updatedBirthDay,
+                    userAddress: updatedAddress,
+                    userTel: updatedTel,
+                };
+                // 發送AJAX請求到後端Servlet
+                $.ajax({
+                    url: 'gymlife/api/memberUpdate',
+                    method: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify(data),
+                    success: function(allMembersResponse) {
+                        console.log("Update operation successful");
+                        $('#updateModal').modal('hide'); // Close the modal after successful update operation
+                        // Build update message object
+                        const updateMessage = {
+                            type: "update",
+                            userId: updatedUserId
+                        };
+                        
+                        // Send update message using WebSocket
+                        stompClient.send("/topic/MemberQuery", {}, JSON.stringify(updateMessage));
+                        
+                        Swal.fire(
+                            '成功更新',
+                            '更新成功',
+                            'success'
+                        );
+
+                        // Remove rowData from localStorage
+                        localStorage.removeItem("rowData");
+                        // newMemberList(allMembersResponse);
+
+                        $.ajax({
+                            url: 'gymlife/api/MemberQuery',
+                            method: "GET",
+                            success: function(allMembersResponse) {
+                                console.log("Get all members  request successful");
+                                // Update the member list
+                                newMemberList(allMembersResponse);
+                            },
+                            error: function(xhr, status, error) {
+                                // Handle error
+                                console.log("HTTP status: ", xhr.status);
+                                console.log("Status description: ", xhr.statusText);
+                                alert("Get all members operation failed: " + xhr.responseText);
+                            }
+                        });
+                    },
+                    error: function(xhr, status, error) {
+                        // Handle error
+                        console.log("HTTP status: ", xhr.status);
+                        console.log("Status description: ", xhr.statusText);
+                        alert("Update operation failed: " + xhr.responseText);
+                    }
+                });
+            }
+            
+            
+            //--------------刪除方法--------------
+        
+        let userIdToDelete = null;
+        function storeDataForDelete(index) {
+                
+                const userIdElement = $(`tbody > tr:eq(${index}) > td:first-child`);
+                const userId = userIdElement.text().trim();
+                
+            if (userId) {
+                userIdToDelete = parseInt(userId, 10); // Convert the userId to an integer (assuming that the ID is a number)
+                console.log("Stored User ID: ", userIdToDelete);
+            } else {
+                console.error("Could not find User ID in the first cell of the row");
+            }
+        }
+
+
+
+        function deleteData() {
+            const userId = userIdToDelete;
+            const url = `gymlife/api/DeleteMember/${userId}`;
+
+            $.ajax({
+                url: url,
+                method: "DELETE",
+                success: function(response) {
+                    console.log("Delete request successful");
+                    $('#deleteModal').modal('hide'); // Close the modal after successful delete operation
+
+                    // 构建更新消息对象
+                    const updateMessage = {
+                        type: "delete",
+                        userId: userId
+                    };
+                    
+                    // 使用WebSocket发送更新消息
+                    stompClient.send("/topic/MemberQuery", {}, JSON.stringify(updateMessage));
+                    
+                    Swal.fire(
+                        '成功刪除',
+                        '刪除成功',
+                        'success'
+                    );
+                    $.ajax({
+                        url: 'gymlife/api/MemberQuery',
+                        method: "GET",
+                        success: function(allMembersResponse) {
+                            console.log("Get all members request successful");
+                            members = allMembersResponse;
+                
+                            newMemberList(members);
+
+                        },
+                        error: function(xhr, status, error) {
+                            // 处理错误
+                            console.log("HTTP status: ", xhr.status);
+                            console.log("Status description: ", xhr.statusText);
+                            alert("Get all members operation f	ailed: " + xhr.responseText);
+                        }
+                    });
+
+                
+                },
+                error: function(xhr, status, error) {
+                    // 处理错误
+                    console.log("HTTP status: ", xhr.status);
+                    console.log("Status description: ", xhr.statusText);
+                    alert("Delete operation failed: " + xhr.responseText);
+                    $('#deleteModal').modal('hide');
+                }
+                
+            });
+            console.log("deleteData called");
+        }
+
+function changeUserStatus(userId) {
+    // 发送 AJAX 请求
+    $.ajax({
+        url: 'api/updateUserStatus',  // 你的 API 端点
+        type: 'POST',
+        contentType: 'application/json', 
+        data:JSON.stringify({
+            userId: userId
+        }),
+        success: function(response) {
+            console.log("User status changed successfully.");
+        },
+        error: function(error) {
+            console.log("Error changing user status: ", error);
+        }
+    });
+}
+
+function newMemberList(data) {
+    console.log(data);
+    $("tbody").empty();
+    data.forEach(function(member, index) {
+        let row = $("<tr>");
             row.append($("<td>").text(member.userId));
             row.append($("<td>").text(member.userAccount));
             row.append($("<td>").text(member.userName));
@@ -376,249 +698,23 @@ $(document).ready(function() {
         
     
             });
-        });
-    });
-
-    stompClient.onDisconnect = function() {
-        console.log('Disconnected from WebSocket server.');
-    };
-
-    stompClient.onStompError = function(frame) {
-        console.log('STOMP error:', frame);
-    };
-});
-
-
-
-            // document.getElementById("searchInput").addEventListener("keyup", function () {
-            //     let searchInput = document.getElementById("searchInput");
-            //     let filter = searchInput.value.toUpperCase();
-            //     let table = document.querySelector(".table");
-            //     let tr = table.getElementsByTagName("tr");
-
-            //     for (let i = 0; i < tr.length; i++) {
-            //         let td = tr[i].getElementsByTagName("td")[1]; // 使用第二列（用戶名）進行搜索
-            //         if (td) {
-            //             let txtValue = td.textContent || td.innerText;
-            //             if (txtValue.toUpperCase().indexOf(filter) > -1) {
-            //                 tr[i].style.display = "";
-            //             } else {
-            //                 tr[i].style.display = "none";
-            //             }
-            //         }
-            //     }
-            // });
-            //存取資訊
-            function storeData(rowId) {
-                // 使用 rowId 獲取該行的信息
-                let tr = document.getElementsByTagName("tr")[rowId +1];
-                // 逐個獲取單元格的值
-                let userId = tr.cells[0].innerText;
-                let userAccount = tr.cells[1].innerText;
-                
-                let userName = tr.cells[2].innerText;
-                let userGender = tr.cells[3].innerText;
-                let userBirthDay = tr.cells[4].innerText;
-                let userAddress = tr.cells[5].innerText;
-                let userTel = tr.cells[6].innerText;
-                let userEmail = tr.cells[7].innerText;
-                
-                const rowData = {
-                    id: rowId,
-                    userId: userId,
-                    userAccount: userAccount,
-                   	UserName: userName,
-                   	userEmail: userEmail,
-                    userGender: userGender,
-                    userBirthDay: userBirthDay,
-                    userAddress: userAddress,
-                    userTel: userTel,
-                    
-                };
-                // 將 rowData 保存到 localStorage
-                localStorage.setItem("rowData", JSON.stringify(rowData));
-            }
-            document.getElementById("updateModal").addEventListener("shown.bs.modal", function () {
-                const rowData = JSON.parse(localStorage.getItem("rowData"));
-             
-                document.getElementById("userIdInput").value = rowData.userId;
-                document.getElementById("accountInput").value = rowData.userAccount;
-                document.getElementById("nameInput").value = rowData.UserName;
-                document.getElementById("emailInput").value = rowData.userEmail;
-                document.getElementById("genderInput").value = rowData.userGender;
-                document.getElementById("birthDayInput").value = rowData.userBirthDay;
-                document.getElementById("addressInput").value = rowData.userAddress;
-                document.getElementById("telInput").value = rowData.userTel;
-              
-            });
-            function updateData() {
-            	const updatedUserId = document.getElementById("userIdInput").value;
-                const updatedAccount = document.getElementById("accountInput").value;
-                const updatedName = document.getElementById("nameInput").value;
-                const updatedEmail = document.getElementById("emailInput").value;
-                const updatedGender = document.getElementById("genderInput").value;
-                const updatedBirthDay = document.getElementById("birthDayInput").value;
-                const updatedAddress = document.getElementById("addressInput").value;
-                const updatedTel = document.getElementById("telInput").value;
-              
-               
-                // 發送AJAX請求到後端Servlet
-                const xhr = new XMLHttpRequest();
-                xhr.open("POST", "gymlife/api/memberUpdate", true);
-                xhr.setRequestHeader("Content-Type", "application/json");
-                
-                const data = {
-                        userId: updatedUserId,
-                        userAccount: updatedAccount,
-                        
-                        userName: updatedName,
-                        userEmail: updatedEmail,
-                        userGender: updatedGender,
-                        userBirthDay: updatedBirthDay,
-                        userAddress: updatedAddress,
-                        userTel: updatedTel,
-                        
-                    };
-            
-                xhr.onreadystatechange = function () {
-                    if (xhr.readyState === 4 && xhr.status === 200) {
-                        // 根據響應更新前端UI或顯示操作結果
-                        console.log(xhr.responseText);
-                        const updateMessage = {
-            type: "update",
-            userId: updatedUserId
-        };
-        
-        // 使用WebSocket发送更新消息
-        stompClient.send("/topic/MemberQuery", {}, JSON.stringify(updateMessage));
-    
-                    } $.ajax({
-                url: 'gymlife/api/MemberQuery',
-                method: "GET",
-                success: function(allMembersResponse) {
-                    console.log("Get all members request successful");
-
-                    // 将新的成员列表发送到WebSocket
-                    stompClient.send("/topic/MemberQuery", {}, JSON.stringify(allMembersResponse));
-                },
-                error: function(xhr, status, error) {
-                    // 处理错误
-                    console.log("HTTP status: ", xhr.status);
-                    console.log("Status description: ", xhr.statusText);
-                    alert("Get all members operation failed: " + xhr.responseText);
-                }
-            });
-
-                    
-                };
-                // 將更新後的數據作為請求參數發送
-             
-                //xhr.send(`userAccount=${updatedAccount}&userName=${updatedName}&userEmail=${updatedEmail}&userId=${updatedUserId}&userGender=${updatedGender}&userBirthDay=${updatedBirthDay}&userAddress=${updatedAddress}&userTel=${updatedTel}`);
-                xhr.send(JSON.stringify(data));
-                // 移除 localStorage 中的 rowData
-                localStorage.removeItem("rowData");
-                // 關閉模態框
-                $('#updateModal').modal('hide');
-                Swal.fire(
-                    'Success',
-                    '成功更新',
-                    'success'
-                )
-            }
-            
-            
-            //--------------刪除方法--------------
-        
-let userIdToDelete = null;
-function storeDataForDelete(index) {
-		
-	    const userIdElement = $(`tbody > tr:eq(${index}) > td:first-child`);
-	    const userId = userIdElement.text().trim();
-	    
-    if (userId) {
-        userIdToDelete = parseInt(userId, 10); // Convert the userId to an integer (assuming that the ID is a number)
-        console.log("Stored User ID: ", userIdToDelete);
-    } else {
-        console.error("Could not find User ID in the first cell of the row");
-    }
-}
-
-
-
-function deleteData() {
-    const userId = userIdToDelete;
-    const url = `gymlife/api/DeleteMember/${userId}`;
-
-    $.ajax({
-        url: url,
-        method: "DELETE",
-        success: function(response) {
-            console.log("Delete request successful");
-            $('#deleteModal').modal('hide'); // Close the modal after successful delete operation
-
-            // 构建更新消息对象
-            const updateMessage = {
-                type: "delete",
-                userId: userId
-            };
-            
-            // 使用WebSocket发送更新消息
-            stompClient.send("/topic/MemberQuery", {}, JSON.stringify(updateMessage));
-            
-            Swal.fire(
-                '成功刪除',
-                '刪除成功',
-                'success'
-            );
-            $.ajax({
-                url: 'gymlife/api/MemberQuery',
-                method: "GET",
-                success: function(allMembersResponse) {
-                    console.log("Get all members request successful");
-
-                    // 将新的成员列表发送到WebSocket
-                    stompClient.send("/topic/MemberQuery", {}, JSON.stringify(allMembersResponse));
-                },
-                error: function(xhr, status, error) {
-                    // 处理错误
-                    console.log("HTTP status: ", xhr.status);
-                    console.log("Status description: ", xhr.statusText);
-                    alert("Get all members operation f	ailed: " + xhr.responseText);
-                }
-            });
-
-        
-        },
-        error: function(xhr, status, error) {
-            // 处理错误
-            console.log("HTTP status: ", xhr.status);
-            console.log("Status description: ", xhr.statusText);
-            alert("Delete operation failed: " + xhr.responseText);
-            $('#deleteModal').modal('hide');
         }
         
-    });
-    console.log("deleteData called");
-}
+        function displayNewMemberMessage(headers) {
+            let mailItem = $("#mailitem");
+            let username = headers['username'];
+            let newMemberMessage = "<a href='#' class='dropdown-item notify-item'>有一位新會員註冊！"  + "</a>";
+            mailItem.append(newMemberMessage);
+           
+            }
 
-function changeUserStatus(userId) {
-    // 发送 AJAX 请求
-    $.ajax({
-        url: 'api/updateUserStatus',  // 你的 API 端点
-        type: 'POST',
-        contentType: 'application/json', 
-        data:JSON.stringify({
-            userId: userId
-        }),
-        success: function(response) {
-            console.log("User status changed successfully.");
-        },
-        error: function(error) {
-            console.log("Error changing user status: ", error);
-        }
-    });
-}
+            $('.mail').on('click', function () {
+                // 隐藏小红点
+                $(this).removeClass('indicator');
 
+                // 清空未读消息数
+                $('#noread').text('');
+            });
 
         </script>
         

@@ -28,8 +28,8 @@
 								<i class="fa fa-table"></i> 活動總覽
 							</h1>
 							<ol class="breadcrumb float-right">
-								<li class="breadcrumb-item">Home</li>
-								<li class="breadcrumb-item active">Activity</li>
+								<li class="breadcrumb-item">首頁</li>
+								<li class="breadcrumb-item active">活動管理</li>
 							</ol>
 							<div class="clearfix"></div>
 						</div>
@@ -54,6 +54,7 @@
 										class="table table-bordered table-hover display">
 										<thead>
 											<tr>
+												<th>活動編號</th>
 												<th>活動名稱</th>
 												<th>活動封面</th>
 												<th>活動類型</th>
@@ -68,6 +69,7 @@
 										<tbody>
 											<th:block th:each=" oneActivity : ${allActivity}">
 												<tr>
+													<td th:text="${oneActivity.activityId}"></td>
 													<td th:text="${oneActivity.activityName}"></td>
 													<td><img width="250px" height="150px"
 														th:src="@{'/dowloadImageActivity/' + ${oneActivity.activityId}}">

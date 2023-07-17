@@ -1,19 +1,15 @@
 package tw.gymlife.member.config;
 
 import org.springframework.context.annotation.Configuration;
-import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketTransportRegistration;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @Configuration
 @EnableWebSocketMessageBroker
 public class WebSocketMemberConfig implements WebSocketMessageBrokerConfigurer {
 	
-	private static final Logger logger = LoggerFactory.getLogger(WebSocketMemberConfig.class);
 	 @Override
 	    public void registerStompEndpoints(StompEndpointRegistry registry) {
 	        registry.addEndpoint("/MemberQuery")
@@ -31,8 +27,8 @@ public class WebSocketMemberConfig implements WebSocketMessageBrokerConfigurer {
 	 
 	 @Override
      public void configureWebSocketTransport(WebSocketTransportRegistration registration) {
-         registration.setMessageSizeLimit(999999) // 設定訊息大小限制
-                 .setSendBufferSizeLimit(999999) // 設定發送緩衝區大小限制
+         registration.setMessageSizeLimit(10485760) // 設定訊息大小限制
+                 .setSendBufferSizeLimit(10485760) // 設定發送緩衝區大小限制
                  .setSendTimeLimit(1000); // 設定發送時間限制
      }
 	

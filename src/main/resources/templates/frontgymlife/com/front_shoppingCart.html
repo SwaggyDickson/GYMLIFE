@@ -24,7 +24,7 @@
 							<div class="ibox">
 								<div class="ibox-title">
 									<span class="pull-right">(<strong>[[${length}]]</strong>) items </span>
-									<h5>Items in your cart</h5>
+									<h5>購物車</h5>
 									<br>
 								</div>
 								<th:block th:each="com : ${CartList}">
@@ -86,7 +86,7 @@
 							<form th:action="@{/getOrder.func}" method="post">
 								<div class="ibox">
 									<div class="ibox-title">
-										<h5>Cart Summary</h5>
+										<h5>總價</h5>
 									</div>
 									<div class="ibox-content">
 										<span> Total </span>

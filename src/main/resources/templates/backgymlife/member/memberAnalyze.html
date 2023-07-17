@@ -51,13 +51,16 @@
 					</div>
 <!---------------------------內文---------------------------------------------------------------->
 					<div class="row">
-                    <div class="small-div">
-						<canvas id="genderChart" class="small-chart"></canvas>
+            <div class="small-div">
+						  <canvas id="genderChart" class="small-chart"></canvas>
+					  </div>
+            <div class="small-div" style="width: 50%; margin: auto; text-align: center;">
+						  <canvas id="memberChart" class="small-chart" style="font-size: 48px;"></canvas>
+              <div id="totalMembers" style="font-size: 24px;"></div>
 					</div>
-                    <div class="small-div" style="width: 50%; margin: auto; text-align: center;">
-						<canvas id="memberChart" class="small-chart" style="font-size: 48px;"></canvas>
-                        <div id="totalMembers" style="font-size: 24px;"></div>
-					</div>
+          <div class="small-div" style="width: 50%; margin: auto; text-align: center;">
+            <canvas id="registerChart" class="small-chart" style="font-size: 48px;"></canvas>
+        </div>
 				</div>
 
 				</div>
@@ -129,6 +132,39 @@
     var totalMembersDiv = document.getElementById('totalMembers');
       totalMembersDiv.textContent = "會員總數: " + totalUsers;
   });
+
+  fetch('api/membersByMonth')
+.then(response => response.json())
+.then(data => {
+  var ctx = document.getElementById('registerChart').getContext('2d');
+
+  // 取出月份和對應的人數
+  var labels = data.map(obj =>  obj.month + ' 月' );
+  var usersData = data.map(obj => obj.count);
+
+  var myChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: '# of Registered Members',
+        data: usersData,
+        fill: false,
+        borderColor: 'rgba(75, 192, 192, 1)',
+        tension: 0.1 // 這會產生一個較平滑的線
+      }]
+    },
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+    }
+  });
+});
+
+
 
 </script>
 

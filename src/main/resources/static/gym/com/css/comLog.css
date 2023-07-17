@@ -1,0 +1,61 @@
+@charset "UTF-8";
+
+.wholePageContent{
+	width:100%;
+	height:500px;
+	background: rgb(167 167 167 / 50%);
+	overflow-y: auto; /* 启用垂直滚动 */
+}
+
+/* 设置表格样式 */
+table {
+  border-collapse: collapse; /* 合并单元格边框 */
+  width: 100%; /* 设置表格宽度 */
+}
+
+/* 设置表头样式 */
+thead {
+  background-color: #f2f2f2; /* 设置表头背景色 */
+}
+
+/* 设置表头单元格样式 */
+th {
+  border: 1px solid #ddd; /* 设置表头单元格边框 */
+  padding: 8px; /* 设置表头单元格内边距 */
+  text-align: left; /* 设置表头单元格文本对齐方式 */
+}
+
+/* 设置表格内容样式 */
+td {
+  border: 1px solid #ddd; /* 设置单元格边框 */
+  padding: 8px; /* 设置单元格内边距 */
+  text-align: left; /* 设置单元格文本对齐方式 */
+}
+
+
+
+/* 固定按鈕在右下角 */
+#back-to-top-btn {
+  position: fixed;
+  right: 30px;
+  bottom: 30px;
+  z-index: 9999;
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 15px;
+  border-radius: 50%;
+  font-size: 18px;
+  transition: background-color 0.3s;
+}
+
+#back-to-top-btn:hover {
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
+/* 隱藏按鈕 */
+#back-to-top-btn.hide {
+  display: none;
+}

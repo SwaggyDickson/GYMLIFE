@@ -27,4 +27,3 @@ $('#input-minus').on('click', function() {
     calculateCost();
   }
 });
-

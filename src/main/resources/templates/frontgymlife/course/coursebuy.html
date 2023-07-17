@@ -2,50 +2,49 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head>
-<meta charset="UTF-8">
-<title>GYMLIFE-課程購買</title>
-<!-- 購買堂數輸入框 -->
-<style>
-#buynumber {
-	width: 60px;
-	padding: 0 12px;
-	vertical-align: top;
-	text-align: center;
-	outline: none;
-}
+	<meta charset="UTF-8">
+	<title>GYMLIFE-課程購買</title>
+	<style>
+		#buynumber {
+			width: 60px;
+			padding: 0 12px;
+			vertical-align: top;
+			text-align: center;
+			outline: none;
+		}
 
-.input-number, #buynumber {
-	border: 1px solid #cccccc;
-	height: 38px
-}
+		.input-number,
+		#buynumber {
+			border: 1px solid #cccccc;
+			height: 38px
+		}
 
-.input-number {
-	display: inline-block;
-	width: 30px;
-	height: 38px; /* 调整图标的高度 */
-	line-height: 39px; /* 使用图标的高度作为行高 */
-	background: #f1f1f1;
-	color: #444444;
-	text-align: center;
-	font-weight: bold;
-	cursor: pointer;
-}
+		.input-number {
+			display: inline-block;
+			width: 30px;
+			height: 38px;
+			/* 调整图标的高度 */
+			line-height: 39px;
+			/* 使用图标的高度作为行高 */
+			background: #f1f1f1;
+			color: #444444;
+			text-align: center;
+			font-weight: bold;
+			cursor: pointer;
+		}
 
-.input-number:active {
-	background: #dddddd;
-}
-</style>
+		.input-number:active {
+			background: #dddddd;
+		}
+	</style>
 </head>
-<link th:href="@{/gym/course/front/coursebuy.css}" rel="stylesheet"
-	type="text/css" />
-<script src="https://kit.fontawesome.com/fdf42e9c64.js"
-	crossorigin="anonymous"></script>
+<link th:href="@{/gym/course/front/coursebuy.css}" rel="stylesheet" type="text/css" />
+<script src="https://kit.fontawesome.com/fdf42e9c64.js" crossorigin="anonymous"></script>
 
 <body>
 	<div th:replace="~{layout/front_nav}"></div>
 	<!-- Breadcrumb Section Begin -->
-	<section class="breadcrumb-section set-bg"
-		data-setbg="/gymlife/front/img/breadcrumb-bg.jpg">
+	<section class="breadcrumb-section set-bg" data-setbg="/gymlife/front/img/breadcrumb-bg.jpg">
 		<div class="container">
 			<div class="row">
 				<div class="col-lg-12 text-center">
@@ -64,137 +63,95 @@
 	<!-- Class Details Section Begin -->
 	<form th:action="@{/ecpayCheckout}" method="post">
 		<section class="class-details-section spad">
-			<div class="container"
-				style="background-color: white; border-radius: 10px">
+			<div class="container" style="background-color: white;border-radius:10px">
 				<div class="row p-2">
 					<div class="col-lg-8 ">
 						<div class="row ">
+							
+							
 							<div class="col-lg-8 mb-2">
-								<div style="justify-content: center; align-items: center;">
+								<div style="justify-content: center;align-items: center;">
 									<img th:src="@{'/courseImage/'+${cbean.images[0].imageId}}"
-										class="img-fluid mx-auto" alt="..."
-										style="border-radius: 10px">
+										class="img-fluid mx-auto" alt="..." style="border-radius:10px">
 								</div>
 							</div>
 							<div class="col-lg-4 d-flex" style="width: 100%;padding-left:0">
-							<div class="card" style="width: 100%;">
-  <div class="card-header" style="background-color:lightgray">
-    課程特色
-  </div>
-  <ul class="list-group list-group-flush">
-    <li class="list-group-item">每堂課50分鐘的專業指導。</li>
-    <li class="list-group-item">由專業教練一對一教授。</li>
-    <li class="list-group-item">提供量身定制的運動計劃。</li>
-    <li class="list-group-item">保證您的動作正確和安全。</li>
-    <li class="list-group-item">幫助您實現健康和健身目標。</li>
-  </ul>
-</div>
-<!-- 								<div class="row mt-3"> -->
-<!-- 									<div class="col-lg-12"> -->
-<!-- 										<a style="text-decoration: underline;" ><i -->
-<!-- 											class="fa-solid fa-circle fa-2xs" style="color: #000000;"></i>&nbsp;&nbsp;每堂課50分鐘的專業指導。</a> -->
-<!-- 									</div> -->
-<!-- 									<div class="col-lg-12"> -->
-<!-- 										<a style="text-decoration: underline;"><i -->
-<!-- 											class="fa-solid fa-circle fa-2xs" style="color: #000000;"></i>&nbsp;&nbsp;由專業教練一對一教授。</a> -->
-<!-- 									</div> -->
-<!-- 									<div class="col-lg-12"> -->
-<!-- 										<a style="text-decoration: underline;"><i -->
-<!-- 											class="fa-solid fa-circle fa-2xs" style="color: #000000;"></i>&nbsp;&nbsp;提供量身定制的運動計劃。</a> -->
-<!-- 									</div> -->
-<!-- 									<div class="col-lg-12"> -->
-<!-- 										<a style="text-decoration: underline;"><i -->
-<!-- 											class="fa-solid fa-circle fa-2xs" style="color: #000000;"></i>&nbsp;&nbsp;保證您的動作正確和安全。</a> -->
-<!-- 									</div> -->
-<!-- 									<div class="col-lg-12"> -->
-<!-- 										<a style="text-decoration: underline;"><i -->
-<!-- 											class="fa-solid fa-circle fa-2xs" style="color: #000000;"></i>&nbsp;幫助您實現健康和健身目標。</a> -->
-<!-- 									</div> -->
-<!-- 								</div> -->
+								<div class="card" style="width: 100%;">
+									<div class="card-header" style="background-color:lightgray">
+										<b>課程特色</b>
+									</div>
+									<ul class="list-group list-group-flush">
+										<li class="list-group-item"><b>每堂課50分鐘的專業指導。</b></li>
+										<li class="list-group-item"><b>由專業教練一對一教授。</b></li>
+										<li class="list-group-item"><b>提供量身定制的運動計劃。</b></li>
+										<li class="list-group-item"><b>保證您的動作正確和安全。</b></li>
+										<li class="list-group-item"><b>幫助您實現健康和健身目標。</b></li>
+									</ul>
+								</div>
 							</div>
-							<div class="col-lg-12 " >
-								<div style="background-color:#dddddd;border-radius:5px;padding:5px;width:250px"><h5 class="card-title" style="margin-left:15px">課程名稱:<a th:text="${cbean.courseName}"></a></h5>
-								<h5 class="card-title"
-									th:text="'教練- '+${cbean.coach.coachNickName}"style="margin-left:15px"></h5></div>
+							<div class="col-lg-12 ">
+								<h4 class="card-title" ><b><a th:text="${cbean.courseName}"></a></b></h4>
+								<h5 class="card-title" ><b><a th:text="'教練- '+${cbean.coach.coachNickName}"></a></b></h5>
 								<a class="card-text" th:text="${cbean.courseIntroduce}"></a>
 							</div>
+
 
 						</div>
 					</div>
 					<div class="col-lg-4">
 						<div
-							style="border: 1px solid rgb(192, 192, 192); text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 100px 0; margin: 30px 0">
+							style="border: 1px solid rgb(192, 192, 192);text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center; padding: 100px 0;margin:50px 0">
 							<div class="mb-3">
-								<h5 style="background-color: gray">訂購人資料</h5>
+								<h5 style="background-color:#dddddd"><b>訂購人資料</b></h5>
 							</div>
 							<div class="mb-3">
 								<h5>
-									姓名&nbsp:&nbsp&nbsp&nbsp<span th:text="${userName}"></span>
+									<b>姓名&nbsp:</b>&nbsp&nbsp&nbsp<span th:text="${userName}"></span>
 								</h5>
 							</div>
 							<div class="mb-3">
 								<h5>
-									E-mail&nbsp:&nbsp&nbsp&nbsp<span th:text="${member.userEmail}"></span>
+									<b>E-mail&nbsp:</b>&nbsp&nbsp&nbsp<span th:text="${member.userEmail}"></span>
 								</h5>
 							</div>
 							<div class="mb-3">
 								<h5>
-									電話&nbsp:&nbsp&nbsp&nbsp<span th:text="${member.userTel}"></span>
+									<b>電話&nbsp:</b>&nbsp&nbsp&nbsp<span th:text="${member.userTel}"></span>
 								</h5>
 							</div>
 							<div class="mb-3">
 								<h5>
-									地址&nbsp:&nbsp&nbsp&nbsp<span th:text="${member.userAddress}"></span>
+									<b>地址&nbsp:</b>&nbsp&nbsp&nbsp<span th:text="${member.userAddress}"></span>
 								</h5>
 							</div>
 							<br>
 
-							<!-- 					<div class="row"> -->
-							<!-- 					<div > -->
-							<!-- 						<div class="col-lg-12 d-flex" style="justify-content: center;align-items: center;"> -->
-							<!-- 							<h5>訂購人資料</h5> -->
-							<!-- 						</div><br> -->
-							<!-- 						<div class="col-lg-12 d-flex" style="justify-content: center;align-items: center;"> -->
-							<!-- 							<input type="hidden" th:value="${cbean.courseCost}" id="courseCost"> -->
-							<!-- 							<a>總金額:</a><a th:text="${cbean.courseCost}" id="allcost" ></a> -->
-
-							<!-- 						</div><br> -->
-							<!-- 						<div class="col-lg-12 d-flex" style="justify-content: center;align-items: center;"> -->
-							<!-- 							<button type="submit" class="btn btn-danger" id="paybtn">結帳</button> -->
-							<!-- 						</div></div> -->
-							<!-- 					<div > -->
-							<div class="col-lg-12 d-flex"
-								style="justify-content: center; align-items: center;">
-								<span>購買堂數&nbsp:&nbsp&nbsp&nbsp&nbsp</span> <span
-									class="input-number" id="input-plus" style="border-right: none;"><i
-									class="fa-solid fa-plus" style="color: #000000;"></i></span> <input
-									type="text" value="1" id="buynumber" name="corderQuantity">
+							<div class="col-lg-12 d-flex" style="justify-content: center; align-items: center;">
+								<span><b>購買堂數&nbsp:</b>&nbsp&nbsp&nbsp&nbsp</span> <span class="input-number" id="input-plus"
+									style="border-right: none;"><i class="fa-solid fa-plus"
+										style="color: #000000;"></i></span> <input type="text" value="1" id="buynumber"
+									name="corderQuantity">
 								<!-- 							<input type="number" min="1" step="1" value="1" id="buynumber" name="corderQuantity"> -->
 								<span class="input-number" id="input-minus" style="border-left: none;"><i
-									class="fa-solid fa-minus" style="color: #000000;"></i></span>
+										class="fa-solid fa-minus" style="color: #000000;"></i></span>
 							</div>
 							<br>
-							<div class="col-lg-12 d-flex"
-								style="justify-content: center; align-items: center;">
-								<input type="hidden" th:value="${cbean.courseCost}"
-									id="courseCost"> <a>總金額:</a><a
-									th:text="${cbean.courseCost}" id="allcost"></a>
+							<div class="col-lg-12 d-flex" style="justify-content: center; align-items: center;">
+								<input type="hidden" th:value="${cbean.courseCost}" id="courseCost"> <a><b>總金額&nbsp:</b></a>&nbsp&nbsp<b><a style="color: red;"
+									th:text="${cbean.courseCost}" id="allcost"></a></b>
 
 							</div>
 							<br>
-							<div class="col-lg-12 d-flex"
-								style="justify-content: center; align-items: center;">
+							<div class="col-lg-12 d-flex" style="justify-content: center; align-items: center;">
 								<button type="submit" class="btn btn-danger" id="paybtn">結帳</button>
 							</div>
 							<!-- 						</div> -->
-							<input type="hidden" th:value="${cbean.courseName}"
-								name="courseName"> <input type="hidden"
-								th:value="${userId}" id="userId" name="userId"> <input
-								type="hidden" th:value="${userName}" id="userName"> <input
-								type="hidden" th:value="${cbean.courseId}" id="courseId"
-								name="courseId"> <input type="hidden" value="完成"
-								name="corderPayment"> <input type="hidden"
-								name="corderCost" th:value="${cbean.courseCost}" id="corderCost">
+							<input type="hidden" th:value="${cbean.courseName}" name="courseName">
+							<input type="hidden" th:value="${userId}" id="userId" name="userId">
+							<input type="hidden" th:value="${userName}" id="userName">
+							<input type="hidden" th:value="${cbean.courseId}" id="courseId" name="courseId">
+							<input type="hidden" value="完成" name="corderPayment">
+							<input type="hidden" name="corderCost" th:value="${cbean.courseCost}" id="corderCost">
 							<!-- 					</div> -->
 						</div>
 					</div>

@@ -59,6 +59,28 @@ function updateCorder(corderId){
 		denyButtonText: `取消`,
 	}).then((result) => {
 		if (result.isConfirmed) {
+			let timerInterval
+Swal.fire({
+  title: '正在更新訂單...',
+//  html: 'I will close in <b></b> milliseconds.',
+  timer: 3500,
+  timerProgressBar: true,
+  didOpen: () => {
+    Swal.showLoading()
+    const b = Swal.getHtmlContainer().querySelector('b')
+    timerInterval = setInterval(() => {
+      b.textContent = Swal.getTimerLeft()
+    }, 100)
+  },
+  willClose: () => {
+    clearInterval(timerInterval)
+  }
+}).then((result) => {
+  /* Read more about handling dismissals below */
+  if (result.dismiss === Swal.DismissReason.timer) {
+    console.log('I was closed by the timer')
+  }
+})
 	axios({
 		method:'put',
 		url:'http://localhost:8080/gymlife/course/corder/update',
@@ -70,11 +92,11 @@ function updateCorder(corderId){
 	})
 	.then(res=>{
 		console.log('res:'+JSON.stringify(res))
-		Swal.fire(
-						'更新成功!',
-						'',
-						'success'
-					)
+//		Swal.fire(
+//						'更新成功!',
+//						'',
+//						'success'
+//					)
 		AllCorderHtml(res.data);
 	})
 	} else if (result.isDenied) {

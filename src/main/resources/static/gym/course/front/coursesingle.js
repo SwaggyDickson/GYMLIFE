@@ -79,4 +79,18 @@ function getAge(birthday) {
   }
   return 0;
 }
+//客服對話框
+//$('#serviceicon').on('click',function(){
+//	console.log(666)
+//	toggleDialog();
+//})
+//$('.close-button').on('click',function(){
+//	toggleDialog();
+//})
+//function toggleDialog() {
+//    var dialogBox = document.getElementById("dialog-box");
+//    dialogBox.style.display = dialogBox.style.display === "block" ? "none" : "block";
+//}
 
+//var openButton = document.getElementById("open-button");
+//openButton.addEventListener("click", openDialog);

@@ -153,6 +153,7 @@ public class CourseController_Front {
 		    		+ "  <title>健身課程訂單確認</title>\r\n"
 		    		+ "</head>\r\n"
 		    		+ "<body>\r\n"
+		    		+ "<img src=\"https://gymlife.es/wp-content/uploads/2022/01/GYMLIFELOGO-BLACK-WEB.png\" style=\"width: 200px;\">\r\n"
 		    		+ "  <h2>健身課程訂單確認</h2>\r\n"
 		    		+ "\r\n"
 		    		+ "  <p>親愛的 "+userName+"，</p>\r\n"

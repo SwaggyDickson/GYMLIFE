@@ -2,6 +2,14 @@
 $(document).ready(function() {
 	let corderAnalyze = document.getElementById('corderAnalyze');
 	corderAnalyze.innerHTML = `<canvas id="courseView"></canvas><canvas id="courseBuyers"></canvas>`;
+	viewAnalyze();
+	buyerAnalyze();
+	});
+	
+	//觀看人數圖表
+	function viewAnalyze(){
+//	let corderAnalyze = document.getElementById('corderAnalyze');
+//	corderAnalyze.innerHTML = `<canvas id="courseView"></canvas>`;
 	axios({
 		method: 'get',
 		url: 'http://localhost:8080/gymlife/course/corder/analyze'
@@ -20,7 +28,7 @@ $(document).ready(function() {
 			}
 			console.log(data)
 			console.log(colors)
-			new Chart(view, {
+			const ViewChat = new Chart(view, {
 				type: 'doughnut',
 				data: {
 					labels: viewName,
@@ -62,6 +70,26 @@ $(document).ready(function() {
 					}
 				}
 			});
+	const viewbtn = document.getElementById('viewbtn');
+            viewbtn.addEventListener('click', () => {
+                const image = ViewChat.toBase64Image();
+                const link = document.createElement('a');
+                link.href = image;
+                link.download = 'Viewchart.png';
+                link.click();
+            });
+
+		})
+};
+	//購買人數圖表
+	function buyerAnalyze(){
+//	let corderAnalyze = document.getElementById('corderAnalyze');
+//	corderAnalyze.innerHTML = `<canvas id="courseBuyers"></canvas>`;
+	axios({
+		method: 'get',
+		url: 'http://localhost:8080/gymlife/course/corder/analyze'
+	})
+		.then(res => {
 			const Buyers = document.getElementById('courseBuyers');
 			let BuyerscourseName = [];
 			let Buyersdata = [];
@@ -75,7 +103,7 @@ $(document).ready(function() {
 			}
 			console.log(Buyersdata)
 			console.log(Buyerscolors)
-			new Chart(Buyers, {
+			const buyChat = new Chart(Buyers, {
 				type: 'doughnut',
 				data: {
 					labels: BuyerscourseName,
@@ -116,9 +144,20 @@ $(document).ready(function() {
 					}
 				}
 			});
+			const buybtn = document.getElementById('buybtn');
+            buybtn.addEventListener('click', () => {
+                const image = buyChat.toBase64Image();
+                const link = document.createElement('a');
+                link.href = image;
+                link.download = 'Buyerchart.png';
+                link.click();
+            });
+
 
 		})
-});
+		
+};
+
 
 // 生成顏色的函數
 function generateColor() {

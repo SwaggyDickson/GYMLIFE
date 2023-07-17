@@ -73,10 +73,9 @@
 						<select id="articleType" name="articleType" required>
 						    <option value="0">請選擇主題分類</option>
 						    <option value="健身" th:selected="${article.articleType == '健身'}">健身</option>
-						    <option value="購物" th:selected="${article.articleType == '購物'}">購物</option>
+						    <option value="購物" th:selected="${article.articleType == '購物'}">課程</option>
 						    <option value="課程" th:selected="${article.articleType == '課程'}">課程</option>
 						    <option value="活動" th:selected="${article.articleType == '活動'}">活動</option>
-						    <option value="會員" th:selected="${article.articleType == '會員'}">會員</option>
 						</select>
 						<br><br>
 
@@ -93,7 +92,7 @@
 
 						<br>
 						<label for="content">內容：</label>
-						<textarea id="content" name="articleContent" rows="10" cols="50" th:value="${article.articleContent}" required ></textarea>
+						<textarea id="content" name="articleContent" rows="10" cols="50" th:utext="${article.articleContent}"  ></textarea>
 						<br><br>
 
 						<button type="submit" class="btn btn-dark">確定</button>

@@ -88,6 +88,9 @@ public class ArticleBean {
 	@OneToMany(mappedBy = "article", cascade = CascadeType.ALL)
 	private List<ArticleReport> articleReports = new ArrayList<>();
 	
+	@OneToMany(mappedBy = "article", cascade = CascadeType.ALL)
+	private List<ArticleSave> articleSaves = new ArrayList<>();
+	
 	@PrePersist // 當物件轉換成persist狀態以前，要做的事情放在方法裡面
 	public void onCreate() {
 		if (articleTime == null) {

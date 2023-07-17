@@ -71,19 +71,46 @@ public class ArticleFrontController {
 	@Autowired
 	private MailService mailService;
 
+	// 個人文章收藏頁面
+	@GetMapping("/articleSave/page")
+	public String articleSavePage(Model m, HttpSession session) {
+	    Member member = (Member) session.getAttribute("member");
+	    if (member == null) {
+	        return "redirect:/login";
+	    }
+
+	    List<ArticleBean> allSavedArticles = articleService.findSavedArticlesByMember(member);
+	    List<ArticleBean> activeSavedArticles = new ArrayList<>();
+
+	    for (ArticleBean article : allSavedArticles) {
+	        ArticleSave articleSave = articleSaveService.findByMemberUserIdAndArticleArticleId(member.getUserId(), article.getArticleId());
+	        if (articleSave != null && articleSave.getSaved() == 1) {
+	            activeSavedArticles.add(article);
+	        }
+	    }
+
+	    m.addAttribute("savedArticles", activeSavedArticles);
+
+	    return "frontgymlife/forum/articleSavePage";
+	}
+
+
+
+
+
 	// 進入會員個人文章頁面
 	@GetMapping("/front/memberPersonalPage")
 	public String memberPersonalPage(@RequestParam(name = "p", defaultValue = "1") Integer pageNumber,
-	                                 @RequestParam(value = "pageSize", defaultValue = "3") int pageSize,
-	                                 HttpSession session, Model model) {
-	    Member member = (Member) session.getAttribute("member");
-	    if (member != null) {
-	        Page<ArticleBean> articles = articleService.findByMemberUserIdOrderByArticleIdDesc(member.getUserId(), pageNumber, pageSize);
-	        model.addAttribute("articles", articles);
-	        return "frontgymlife/forum/memberPersonalPage";
-	    } else {
-	        return "redirect:/Login";
-	    }
+			@RequestParam(value = "pageSize", defaultValue = "3") int pageSize, HttpSession session, Model model) {
+		Member member = (Member) session.getAttribute("member");
+		if (member != null) {
+			Page<ArticleBean> articles = articleService.findByMemberUserIdOrderByArticleIdDesc(member.getUserId(),
+					pageNumber, pageSize);
+			model.addAttribute("articles", articles);
+			return "frontgymlife/forum/memberPersonalPage";
+		} else {
+			return "redirect:/Login";
+		}
 	}
 
 	// 文章收藏
@@ -133,6 +160,7 @@ public class ArticleFrontController {
 	}
 
 	// 文章檢舉-ajax
+	@ResponseBody
 	@PostMapping("/article/{articleId}/report")
 	public ResponseEntity<Map<String, Object>> reportArticle(@PathVariable Integer articleId,
 			@RequestBody ArticleReport report, HttpSession session) {
@@ -179,7 +207,7 @@ public class ArticleFrontController {
 				String subject = "您的文章已被檢舉5次"; // 設定郵件主題
 				String message = "您的文章 " + article.getArticleTitle() + " 已被檢舉超過5次。請檢視並改善您的文章。"; // 設定郵件內容
 
-				mailService.prepareAndSend(recipient, subject, message); // 發送電子郵件
+				mailService.prepareAndSend(recipient, subject, message); // 這行呼叫mailService的prepareAndSend方法來發送電子郵件
 			}
 
 			// 若一切正常，返回一個包含成功訊息的響應
@@ -258,7 +286,7 @@ public class ArticleFrontController {
 
 	// ------------------------------首頁----------------------------------
 
-    //主題分類
+	// 主題分類
 	@GetMapping("/front/active/{articleType}")
 	public String listActiveArticlesByType(@PathVariable String articleType,
 			@RequestParam(name = "p", defaultValue = "1") Integer pageNumber,
@@ -268,155 +296,160 @@ public class ArticleFrontController {
 		return "frontgymlife/forum/articleFrontPage";
 	}
 
-	
 	@GetMapping("/front/active")
 	public String frontForunm(@RequestParam(name = "p", defaultValue = "1") Integer pageNumber,
-	        @RequestParam(value = "pageSize", defaultValue = "3") int pageSize,
-	        @RequestParam(value = "sort", defaultValue = "newest") String sort, 
-	        Model model) {
-	    Page<ArticleBean> articleBeans =articleService.findActiveArticles(pageNumber, pageSize);
-	    for (ArticleBean article : articleBeans) {
-	        byte[] photoFile = article.getArticleImg();
-	        if (photoFile == null || photoFile.length == 0) {
-	            article.setHasImage(false);
-	        } else {
-	            article.setHasImage(true);
-	            System.out.println("Image exists for articleId " + article.getArticleId());
-	        }
-	    }
-	    
-	    
-	    model.addAttribute("articleBeans", articleBeans);
-	    return "frontgymlife/forum/articleFrontPage";
+			@RequestParam(value = "pageSize", defaultValue = "3") int pageSize,
+			@RequestParam(value = "sort", defaultValue = "newest") String sort, Model model) {
+		Page<ArticleBean> articleBeans = articleService.findActiveArticles(pageNumber, pageSize);
+		for (ArticleBean article : articleBeans) {
+			byte[] photoFile = article.getArticleImg();
+			if (photoFile == null || photoFile.length == 0) {
+				article.setHasImage(false);
+			} else {
+				article.setHasImage(true);
+				System.out.println("Image exists for articleId " + article.getArticleId());
+			}
+		}
+		model.addAttribute("articleBeans", articleBeans);
+		return "frontgymlife/forum/articleFrontPage";
 	}
-	
-	
-	//論壇首頁-ajax 排序篩選
+
+	// 論壇首頁-ajax 排序篩選
 	@GetMapping("/front/active/json")
 	@ResponseBody
 	public List<ArticleBeanDto> listActiveArticles(@RequestParam(name = "p", defaultValue = "1") Integer pageNumber,
-	        @RequestParam(value = "pageSize", defaultValue = "3") int pageSize,
-	        @RequestParam(value = "sort", defaultValue = "newest") String sort) {
-	    Page<ArticleBean> articleBeans;
-	    switch (sort) {
-        case "mostViews":
-            articleBeans = articleService.findMostViews(pageNumber, pageSize);
-            break;
-        case "oldest":
-            articleBeans = articleService.findOlderArticles(pageNumber, pageSize);
-            break;
-        case "mostLiked":
-            articleBeans = articleService.findMostLikedArticles(pageNumber, pageSize);
-            break;
-        case "newest":
-        	articleBeans = articleService.findActiveArticles(pageNumber, pageSize);           
-        	break;
-        default:
-            articleBeans = articleService.findActiveArticles(pageNumber, pageSize);
-            break;
-    }
-	    List<ArticleBeanDto> articleBeanDtos = new ArrayList<>();
-	    for (ArticleBean articleBean : articleBeans) {
-	    	ArticleBeanDto articleBeanDto = new ArticleBeanDto();
-	    	articleBeanDto.setArticleId(articleBean.getArticleId());
-	    	articleBeanDto.setArticleContent(articleBean.getArticleContent());
-	    	articleBeanDto.setArticleTitle(articleBean.getArticleTitle());
-	    	articleBeanDto.setArticleType(articleBean.getArticleType());
-	    	articleBeanDto.setArticleTime(articleBean.getArticleTime());
-	    	articleBeanDto.setMemberName(articleBean.getMember().getUserName());
-	    	articleBeanDto.setViewCount(articleBean.getViewCount());
-	    	articleBeanDto.setLikeCount(articleBean.getLikeCount());
+			@RequestParam(value = "pageSize", defaultValue = "3") int pageSize,
+			@RequestParam(value = "sort", defaultValue = "newest") String sort) {
+		Page<ArticleBean> articleBeans;
+		switch (sort) {
+		case "mostViews":
+			articleBeans = articleService.findMostViews(pageNumber, pageSize);
+			break;
+		case "oldest":
+			articleBeans = articleService.findOlderArticles(pageNumber, pageSize);
+			break;
+		case "mostLiked":
+			articleBeans = articleService.findMostLikedArticles(pageNumber, pageSize);
+			break;
+		case "newest":
+			articleBeans = articleService.findActiveArticles(pageNumber, pageSize);
+			break;
+		default:
+			articleBeans = articleService.findActiveArticles(pageNumber, pageSize);
+			break;
+		}
+		List<ArticleBeanDto> articleBeanDtos = new ArrayList<>();
+		for (ArticleBean articleBean : articleBeans) {
+			ArticleBeanDto articleBeanDto = new ArticleBeanDto();
+			articleBeanDto.setArticleId(articleBean.getArticleId());
+			articleBeanDto.setArticleContent(articleBean.getArticleContent());
+			articleBeanDto.setArticleTitle(articleBean.getArticleTitle());
+			articleBeanDto.setArticleType(articleBean.getArticleType());
+			articleBeanDto.setArticleTime(articleBean.getArticleTime());
+			articleBeanDto.setMemberName(articleBean.getMember().getUserName());
+			articleBeanDto.setViewCount(articleBean.getViewCount());
+			articleBeanDto.setLikeCount(articleBean.getLikeCount());
 			articleBeanDtos.add(articleBeanDto);
 		}
 
-	    return articleBeanDtos;
+		return articleBeanDtos;
 	}
 
-	
 	// 查看文章內頁 -只顯示active狀態的文章、留言， ----------------- 回覆還沒設定，是真刪除
 	@GetMapping("/front/{articleId}")
 	public String showArticleDetail(@PathVariable Integer articleId,
-	        @RequestParam(name = "p", defaultValue = "1") Integer pageNumber,
-	        @RequestParam(value = "pageSize", defaultValue = "3") int pageSize, Model model, HttpSession session) {
-	    Integer loggedInUserId = (Integer) session.getAttribute("userId");
-	    boolean isLoggedIn = loggedInUserId != null;
+			@RequestParam(name = "p", defaultValue = "1") Integer pageNumber,
+			@RequestParam(value = "pageSize", defaultValue = "3") int pageSize, Model model, HttpSession session) {
+		Integer loggedInUserId = (Integer) session.getAttribute("userId");
+		boolean isLoggedIn = loggedInUserId != null;
 
-	    ArticleBean article = articleService.findById(articleId);
-	    Integer articleUserId = article.getMember().getUserId();
+		ArticleBean article = articleService.findById(articleId);
+		Integer articleUserId = article.getMember().getUserId();
 
-	    byte[] photoFile = article.getArticleImg();
-	    if (photoFile == null || photoFile.length == 0) {
-	        article.setHasImage(false);
-	    } else {
-	        article.setHasImage(true);
-	        System.out.println("Image exists for articleId " + articleId);
-	    }
+		byte[] photoFile = article.getArticleImg();
+		if (photoFile == null || photoFile.length == 0) {
+			article.setHasImage(false);
+		} else {
+			article.setHasImage(true);
+			System.out.println("Image exists for articleId " + articleId);
+		}
 
-	    ArticleBean userArticle = isLoggedIn ? articleService.findByMemberUserIdAndArticleId(loggedInUserId, articleId) : null;
-	    boolean userIsAuthor = userArticle != null;
+		ArticleBean userArticle = isLoggedIn ? articleService.findByMemberUserIdAndArticleId(loggedInUserId, articleId)
+				: null;
+		boolean userIsAuthor = userArticle != null;
 
-	    Integer viewCount = article.getViewCount();
-	    viewCount++;
-	    article.setViewCount(viewCount);
-	    articleService.insert(article);
+		Integer viewCount = article.getViewCount();
+		viewCount++;
+		article.setViewCount(viewCount);
+		articleService.insert(article);
 
-	    Page<CommentBean> comments = commentService.findActiveCommentsByArticleId(articleId, pageNumber, pageSize);
+		Page<CommentBean> comments = commentService.findActiveCommentsByArticleId(articleId, pageNumber, pageSize);
 
-	    Map<Integer, List<CommentBean>> commentReplies = new HashMap<>();
-	    Map<Integer, Boolean> userIsCommentAuthors = new HashMap<>();
-	    Map<Integer, Boolean> userIsReplyAuthors = new HashMap<>();
-	    Map<Integer, Boolean> userLikedComments = new HashMap<>();
-	    Map<Integer, Integer> likeCounts = new HashMap<>(); 
+		Map<Integer, List<CommentBean>> commentReplies = new HashMap<>();
+		Map<Integer, Boolean> userIsCommentAuthors = new HashMap<>();
+		Map<Integer, Boolean> userIsReplyAuthors = new HashMap<>();
+		Map<Integer, Boolean> userLikedComments = new HashMap<>();
+		Map<Integer, Integer> likeCounts = new HashMap<>();
 
-	    for (CommentBean comment : comments.getContent()) {
-	        CommentBean userComment = isLoggedIn ? commentService.findByMemberUserIdAndCommentId(loggedInUserId, comment.getCommentId()) : null;
-	        boolean userIsCommentAuthor = userComment != null;
-	        userIsCommentAuthors.put(comment.getCommentId(), userIsCommentAuthor);
+		for (CommentBean comment : comments.getContent()) {
+			CommentBean userComment = isLoggedIn
+					? commentService.findByMemberUserIdAndCommentId(loggedInUserId, comment.getCommentId())
+					: null;
+			boolean userIsCommentAuthor = userComment != null;
+			userIsCommentAuthors.put(comment.getCommentId(), userIsCommentAuthor);
 
-	        List<CommentBean> replies = commentService.findRepliesByCommentId(comment.getCommentId());
-	        for (CommentBean reply : replies) {
-	            List<CommentBean> userReply = isLoggedIn ? commentService.findByMemberUserIdAndParentCommentId(loggedInUserId, reply.getParentCommentId()) : null;
-	            boolean userIsReplyAuthor = userReply != null;
-	            userIsReplyAuthors.put(reply.getCommentId(), userIsReplyAuthor);
-	        }
+			List<CommentBean> replies = commentService.findRepliesByCommentId(comment.getCommentId());
+			for (CommentBean reply : replies) {
+				List<CommentBean> userReply = isLoggedIn
+						? commentService.findByMemberUserIdAndParentCommentId(loggedInUserId,
+								reply.getParentCommentId())
+						: null;
+				boolean userIsReplyAuthor = userReply != null;
+				userIsReplyAuthors.put(reply.getCommentId(), userIsReplyAuthor);
+			}
 
-	        CommentLike liked = isLoggedIn ? commentLikeService.findByMemberUserIdAndCommentCommentId(loggedInUserId, comment.getCommentId()) : null;
-	        boolean userLikedThisComment = liked != null && liked.getLiked() == 1;
-	        userLikedComments.put(comment.getCommentId(), userLikedThisComment);
+			CommentLike liked = isLoggedIn
+					? commentLikeService.findByMemberUserIdAndCommentCommentId(loggedInUserId, comment.getCommentId())
+					: null;
+			boolean userLikedThisComment = liked != null && liked.getLiked() == 1;
+			userLikedComments.put(comment.getCommentId(), userLikedThisComment);
 
-	        int likeCount = commentLikeService.getLikeCount(comment.getCommentId());
-	        likeCounts.put(comment.getCommentId(), likeCount);
+			int likeCount = commentLikeService.getLikeCount(comment.getCommentId());
+			likeCounts.put(comment.getCommentId(), likeCount);
 
-	        commentReplies.put(comment.getCommentId(), replies);
-	    }
+			commentReplies.put(comment.getCommentId(), replies);
+		}
 
-	    ArticleLike articleLiked = isLoggedIn ? articleLikeService.findByMemberUserIdAndArticleArticleId(loggedInUserId, articleId) : null;
-	    boolean userLikedThisArticle = articleLiked != null && articleLiked.getLiked() == 1;
-	    int articleLikeCount = articleLikeService.getLikeCount(articleId);
+		ArticleLike articleLiked = isLoggedIn
+				? articleLikeService.findByMemberUserIdAndArticleArticleId(loggedInUserId, articleId)
+				: null;
+		boolean userLikedThisArticle = articleLiked != null && articleLiked.getLiked() == 1;
+		int articleLikeCount = articleLikeService.getLikeCount(articleId);
 
-	    ArticleSave articleSaved = isLoggedIn ? articleSaveService.findByMemberUserIdAndArticleArticleId(loggedInUserId, articleId) : null;
-	    boolean userSavedThisArticle = articleSaved != null && articleSaved.getSaved() == 1;
+		ArticleSave articleSaved = isLoggedIn
+				? articleSaveService.findByMemberUserIdAndArticleArticleId(loggedInUserId, articleId)
+				: null;
+		boolean userSavedThisArticle = articleSaved != null && articleSaved.getSaved() == 1;
 
-	    model.addAttribute("article", article);
-	    model.addAttribute("userIsAuthor", userIsAuthor);
-	    model.addAttribute("comments", comments);
-	    model.addAttribute("userIsCommentAuthors", userIsCommentAuthors);
-	    model.addAttribute("commentReplies", commentReplies);
-	    model.addAttribute("userIsReplyAuthors", userIsReplyAuthors);
-	    model.addAttribute("currentPage", pageNumber);
-	    model.addAttribute("pageSize", pageSize);
-	    model.addAttribute("totalComments", comments.getTotalElements());
-	    model.addAttribute("userLikedComments", userLikedComments);
-	    model.addAttribute("likeCounts", likeCounts);
-	    model.addAttribute("userLikedArticle", userLikedThisArticle);
-	    model.addAttribute("articleLikeCount", articleLikeCount);
-	    model.addAttribute("loggedInUserId", loggedInUserId);
-	    model.addAttribute("articleUserId", articleUserId);
-	    model.addAttribute("userSavedArticle", userSavedThisArticle);
+		model.addAttribute("article", article);
+		model.addAttribute("userIsAuthor", userIsAuthor);
+		model.addAttribute("comments", comments);
+		model.addAttribute("userIsCommentAuthors", userIsCommentAuthors);
+		model.addAttribute("commentReplies", commentReplies);
+		model.addAttribute("userIsReplyAuthors", userIsReplyAuthors);
+		model.addAttribute("currentPage", pageNumber);
+		model.addAttribute("pageSize", pageSize);
+		model.addAttribute("totalComments", comments.getTotalElements());
+		model.addAttribute("userLikedComments", userLikedComments);
+		model.addAttribute("likeCounts", likeCounts);
+		model.addAttribute("userLikedArticle", userLikedThisArticle);
+		model.addAttribute("articleLikeCount", articleLikeCount);
+		model.addAttribute("loggedInUserId", loggedInUserId);
+		model.addAttribute("articleUserId", articleUserId);
+		model.addAttribute("userSavedArticle", userSavedThisArticle);
 
-	    return "frontgymlife/forum/articleInnerPage";
+		return "frontgymlife/forum/articleInnerPage";
 	}
-
 
 	// ------------------------------首頁----------------------------------
 
@@ -533,43 +566,43 @@ public class ArticleFrontController {
 
 	@ResponseBody
 	@PostMapping("/front/article/{articleId}/comment")
-	public  List<CommentBeanDto> addCommentAjax(@PathVariable Integer articleId,
-	        @RequestParam String commentContent,
-	        @RequestParam(value="commentImg",required = false) MultipartFile commentImg,
-	        HttpSession session, 
-	        @RequestParam(name = "p", defaultValue = "1") Integer currentPage,
-	        @RequestParam(value = "pageSize", defaultValue = "3") int pageSize){
-	
-	    Member member = (Member) session.getAttribute("member");
-	    ArticleBean article = articleService.findById(articleId);
-	    CommentBean comment = new CommentBean();
-	    
-	    comment.setCommentContent(commentContent);
-	    try {
-	    	if(commentImg!=null) {
-	    		byte[] byteArr = commentImg.getBytes();
-	    		comment.setCommentImg(byteArr);
-	    	}
-	    } catch (IOException e) {
-	        e.printStackTrace();
-	    }
-	    
-	    comment.setArticle(article);
-	    comment.setMember(member); 
-	    
-	   // commentService.insert(comment);
-	    CommentBean savedComment = commentService.insert(comment); // Assuming `insert` method returns the saved `CommentBean`
-	    
-	    Page<CommentBean> comments = commentService.findActiveCommentsByArticleId(articleId,currentPage,pageSize);
+	public List<CommentBeanDto> addCommentAjax(@PathVariable Integer articleId, @RequestParam String commentContent,
+			@RequestParam(value = "commentImg", required = false) MultipartFile commentImg, HttpSession session,
+			@RequestParam(name = "p", defaultValue = "1") Integer currentPage,
+			@RequestParam(value = "pageSize", defaultValue = "3") int pageSize) {
+
+		Member member = (Member) session.getAttribute("member");
+		ArticleBean article = articleService.findById(articleId);
+		CommentBean comment = new CommentBean();
+
+		comment.setCommentContent(commentContent);
+		try {
+			if (commentImg != null) {
+				byte[] byteArr = commentImg.getBytes();
+				comment.setCommentImg(byteArr);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		comment.setArticle(article);
+		comment.setMember(member);
+
+		// commentService.insert(comment);
+		CommentBean savedComment = commentService.insert(comment); // Assuming `insert` method returns the saved
+																	// `CommentBean`
+
+		Page<CommentBean> comments = commentService.findActiveCommentsByArticleId(articleId, currentPage, pageSize);
 		List<CommentBeanDto> CommentBeanDtos = new ArrayList<>();
 		int i = 0;
 		for (CommentBean commentBean : comments) {
 			CommentBeanDto commentBeanDto = new CommentBeanDto();
 			commentBeanDto.setCurrentPage(currentPage);
 			commentBeanDto.setPageSize(pageSize);
-			commentBeanDto.setTotalComments((int)comments.getTotalElements()); // assuming `comments` is a Spring Data JPA Page object
+			commentBeanDto.setTotalComments((int) comments.getTotalElements()); // assuming `comments` is a Spring Data
+																				// JPA Page object
 			commentBeanDto.setFloorNumber(++i); // assuming i is the index in the for loop
-			
+
 			commentBeanDto.setCommentId(commentBean.getCommentId());
 			commentBeanDto.setCommentContent(commentBean.getCommentContent());
 			commentBeanDto.setCommentImg(commentBean.getCommentImg());
@@ -582,9 +615,9 @@ public class ArticleFrontController {
 			commentBeanDto.setUserName(commentBean.getMember().getUserName());
 			CommentBeanDtos.add(commentBeanDto);
 		}
-	    return CommentBeanDtos;
+		return CommentBeanDtos;
 	}
-	
+
 	// ------------------------------更新留言ajax----------------------------------
 
 //	@ResponseBody
@@ -593,30 +626,18 @@ public class ArticleFrontController {
 //		CommentBean commentBean = commentService.updateCommentById(commentBeanDto.getCommentId(), commentBeanDto.getCommentContent(),commentBeanDto.getCommentImg());
 //		return commentBean.getCommentContent();
 //	}
-	
+
 	@ResponseBody
 	@PutMapping("/front/comments/editCommentAjax")
-	public CommentBean editMessage(@RequestParam("commentId") Integer commentId, @RequestParam("commentContent") String commentContent, @RequestParam(value = "commentImg", required = false) MultipartFile commentImg) throws IOException {
-	    byte[] imgBytes = commentImg.getBytes();
-	    CommentBean commentBean = commentService.updateCommentById(commentId, commentContent, imgBytes);
-	    return commentBean;
+	public CommentBean editMessage(@RequestParam("commentId") Integer commentId,
+			@RequestParam("commentContent") String commentContent,
+			@RequestParam(value = "commentImg", required = false) MultipartFile commentImg) throws IOException {
+		byte[] imgBytes = commentImg.getBytes();
+		CommentBean commentBean = commentService.updateCommentById(commentId, commentContent, imgBytes);
+		return commentBean;
 	}
 
-
-	
-	
-	
-	
-	
 	// ------------------------------刪除留言ajax----------------------------------
-
-	
-	
-	
-	
-	
-	
-	
 
 	// ------------------------------刪除留言----------------------------------
 
@@ -671,9 +692,8 @@ public class ArticleFrontController {
 	}
 
 	// ------------------------------文章處理圖片----------------------------------
-	
-	
-	//article
+
+	// article
 	// 輸出圖片，以供下載 (有人要顯示在螢幕上就要用這個方法，透過字串相加，靜態+動態的方式處理二進位圖片)
 	@GetMapping("/downloadImage/{articleId}")
 	// ResponseEntity 不受@Controller回傳頁面限制影響，可以透握header來設定回傳格式type
@@ -682,13 +702,13 @@ public class ArticleFrontController {
 		// 存在本地端，只有以下這兩行的取得方式會不同
 		ArticleBean photo1 = articleService.findById(articleId);
 		byte[] photoFile = photo1.getArticleImg();
-		
+
 		if (photoFile == null || photoFile.length == 0) {
-		    // 添加新的字段
-		    photo1.setHasImage(false);
+			// 添加新的字段
+			photo1.setHasImage(false);
 		} else {
-		    photo1.setHasImage(true);
-	        System.out.println("Image exists for articleId " + articleId);  // Add debug log
+			photo1.setHasImage(true);
+			System.out.println("Image exists for articleId " + articleId); // Add debug log
 		}
 
 		// 透過這個controler來 透過HttpHeaders來設置content type
@@ -702,7 +722,7 @@ public class ArticleFrontController {
 
 	// ------------------------------留言處理圖片----------------------------------
 
-	//comment
+	// comment
 	// 輸出圖片，以供下載 (有人要顯示在螢幕上就要用這個方法，透過字串相加，靜態+動態的方式處理二進位圖片)
 	@GetMapping("/front/comments/{commentId}")
 	// th:src="@{'/front/comments/'+${comment.commentId}}"

@@ -21,6 +21,14 @@ public class ArticleReportService {
 	@Autowired
 	private ArticleService articleService;
 
+	public ArticleReport findById2(Integer articleId) {
+		Optional<ArticleReport> optional = articleReportRepository.findById(articleId);
+		if (optional.isPresent()) {
+			return optional.get();
+		}
+		return null;
+	}
+	
 
 	@Transactional
 	public void updateReportStatus(Integer reportId, String newStatus) {

@@ -3,9 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <title>文章管理頁面</title>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/jq-3.3.1/dt-1.11.3/datatables.min.css"/>
-<script type="text/javascript" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+   
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/jq-3.3.1/dt-1.11.3/datatables.min.css"/>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/2.2.2/css/buttons.dataTables.min.css"/>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
 </head>
 <body class="adminbody">
 	<div id="main">
@@ -40,11 +42,7 @@
 								<th>文章主題分類</th>
 								<th>文章內容</th>
 								<th>發文時間</th>
-								<th>最新修改時間</th>
-								<th>文章圖片</th>
 								<th>文章狀態</th>
-								<th>修改</th>
-								<th>刪除</th> 
 
 							</tr>
 						</thead>
@@ -59,9 +57,8 @@
 									<td th:text="${article}?${article.articleType}"></td>
 									<td th:text="${article != null} ? (${#strings.length(article.articleContent) > 40} ? ${#strings.substring(article.articleContent, 0, 40) + '...'} : ${article.articleContent}) : ''"></td>
 									<td th:text="${article}?${#dates.format(article.articleTime,'yyyy-MM-dd, HH:mm:ss')}"></td>
-									<td th:text="${article}?${#dates.format(article.articleUpdateTime,'yyyy-MM-dd, HH:mm:ss')}"></td>
 										
-									<td><img width="200px" th:src="@{'/downloadImage/'+${article.articleId}}"></td>	
+									<!-- <td><img width="200px" th:src="@{'/downloadImage/'+${article.articleId}}"></td>	 -->
 									
 									
 									<!-- 修改文章狀態 -->
@@ -76,11 +73,11 @@
 									</form></td>
 										
 										<!-- 修改 -->
-										<td><form th:action="@{/forum/edit}" method="get">
-											<!-- 雖然藏起來但是參數有跟著送過去 -->
+									<!-- 	<td><form th:action="@{/forum/edit}" method="get">
+											雖然藏起來但是參數有跟著送過去
 											<input name="articleId" th:value="${article.articleId}" type="hidden"/>
 											 <input type="submit" value="編輯" class="btn btn-outline-success btn-sm"/>
-											</form></td> 
+											</form></td> --> 
 											<!-- 修改 -->
 											
 									
@@ -98,11 +95,11 @@
 								</form></td>    -->
 					
 								<!-- 測試刪除(假刪除)  -->
-									<td>
+								<!-- 	<td>
 									<form th:action="@{'/forum/delete/' + ${article.articleId}}" method="post" th:id="'deleteForm-' + ${article.articleId}">
 									    <button type="submit" class="btn btn-outline-danger btn-sm deleteButton" th:id="'deleteButton-' + ${article.articleId}">刪除</button>
 									</form>
-									</td>  
+									</td>   -->
 								
 								</tr>
 								
@@ -167,10 +164,24 @@
 		<!-- END content-page -->
 		<div th:replace="~{layout/footer}"></div>
 	</div>
-
+	 <script type="text/javascript" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/v/dt/jq-3.3.1/dt-1.11.3/datatables.min.js"></script>
+	<script type="text/javascript" src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/buttons/2.2.2/js/dataTables.buttons.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.flash.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.html5.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.print.min.js"></script>
 	<script>
         $(document).ready(function () {
-            $('#myTable').DataTable();
+        	 $('#myTable').DataTable( {
+                 dom: 'Bfrtip',
+                 buttons: [
+                     'copy', 'csv', 'excel', 'pdf', 'print'
+                 ]
+             } );
             
             
         $('.deleteButton').on('click', function(e) {
@@ -199,6 +210,5 @@
         
        
     </script>
-    <script type="text/javascript" src="https://cdn.datatables.net/v/dt/jq-3.3.1/dt-1.11.3/datatables.min.js"></script>
 </body>
 </html>

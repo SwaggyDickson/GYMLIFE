@@ -37,12 +37,8 @@
 								 <th>會員編號</th> 
 								<th>會員名稱</th>  
 								<th>留言內容</th>
-								<th>留言圖片</th>
 								<th>留言發布時間</th>
-								<th>最新修改時間</th>
 								<th>留言狀態</th>
-								<th>修改</th>
-								<th>刪除</th> 
 							</tr>
 						</thead>
 						<tbody>
@@ -52,9 +48,8 @@
 									 <td th:text="${comment.article.member != null and comment.article.member.userId != null} ? ${comment.article.member.userId} : ''"></td>
    									 <td th:text="${comment.article.member != null and comment.article.member.userName != null} ? ${comment.article.member.userName} : ''"></td>
 									<td th:text="${comment != null} ? (${#strings.length(comment.commentContent) > 40} ? ${#strings.substring(comment.commentContent, 0, 40) + '...'} : ${comment.commentContent}) : ''"></td>
-									<td><img width="200px" th:src="@{'/front/comments/'+${comment.commentId}}"></td>	
+									<!-- <td><img width="200px" th:src="@{'/front/comments/'+${comment.commentId}}"></td>	 -->
 									<td th:text="${comment}?${#dates.format(comment.commentTime,'yyyy-MM-dd, HH:mm:ss')}"></td>
-									<td th:text="${comment}?${#dates.format(comment.commentUpdateTime,'yyyy-MM-dd, HH:mm:ss')}"></td>
 								   
 									<!-- 修改留言狀態 -->
 									<td><form th:action="@{/comment/status}" method="post">
@@ -68,33 +63,18 @@
 									</form></td>
 										
 										<!-- 編輯 -->
-										<td><form th:action="@{/comment/edit}" method="get">
-											<!-- 雖然藏起來但是參數有跟著送過去 -->
+										<!-- <td><form th:action="@{/comment/edit}" method="get">
 											<input name="commentId" th:value="${comment.commentId}" type="hidden"/>
 											 <input type="submit" value="編輯" class="btn btn-outline-success btn-sm"/>
-											</form></td> 
+											</form></td>  -->
 											<!-- 修改 -->
-											
-									
-										<!-- 刪除 （真刪除） -->
-						<!--		<td><form th:action="@{/forum/delete}" method="post" id="deleteForm">
-									<input name="commentId" th:value="${comment.commentId}" type="hidden"/>
-									<input name="_method" th:value="delete" type="hidden" /> 
-									<button type="submit" class="btn btn-outline-danger btn-sm deleteButton"  id="deleteButton">刪除</button>
-											</form></td>    --> 
-											<!-- 刪除 --> 
-					
-									<!-- 測試刪除(假刪除)  -->
-						<!-- 	<td><form th:action="@{'/forum/delete/' + ${comment.commentId}}" method="post" id="deleteForm">
-				   				 <button type="submit" class="btn btn-outline-danger btn-sm deleteButton"  id="deleteButton">刪除</button>
-								</form></td>    -->
-					
+										
 							       <!-- 測試刪除(假刪除)  -->
-									<td>
+								<!-- 	<td>
 									<form th:action="@{'/comment/delete/' + ${comment.commentId}}" method="post" th:id="'deleteForm-' + ${comment.commentId}">
 									    <button type="submit" class="btn btn-outline-danger btn-sm deleteButton" th:id="'deleteButton-' + ${comment.commentId}">刪除</button>
 									</form>
-									</td>  
+									</td>   -->
 								
 								</tr>
 								

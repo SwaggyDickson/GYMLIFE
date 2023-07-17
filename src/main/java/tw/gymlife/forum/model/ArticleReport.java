@@ -37,11 +37,12 @@ public class ArticleReport {
     @Column(name = "reportStatus", columnDefinition = "NVARCHAR(MAX)")
     private String reportStatus;
     
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "articleId")
     private ArticleBean article;
     
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "userId")
     private Member member;
     

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>文章編輯</title>
+<link rel="stylesheet"
+	href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
+<style>
+.test {
+	display: flex;
+	flex-direction: column;
+	min-height: 100vh;
+	background-color: black;
+	color: white;
+	align-items: center;
+}
+
+td {
+	color: black;
+}
+
+.odd.sorting_1 {
+	color: white;
+}
+
+label, span, label input {
+	color: white;
+}
+td a{
+color: black;
+
+}
+td a:hover{
+color: black;
+
+}
+
+</style>
+
+<link rel="stylesheet" type="text/css"
+	href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css" />
+<link rel="stylesheet" type="text/css"
+	href="https://cdn.datatables.net/buttons/2.2.2/css/buttons.dataTables.min.css" />
+
+</head>
+<body class="test">
+
+	<div th:replace="~{layout/front_nav}"></div>
+
+	<div class="container" style="padding-top: 100px;">
+		<div class="row">
+			<div class="col-2"></div>
+			<div class="col-8">
+				<table id="savedArticlesTable" class="display">
+					<thead>
+						<tr>
+							<th>文章ID</th>
+							<th>文章標題</th>
+							<th>文章類型</th>
+							 <th>查看詳情</th>
+							<!-- Add more columns as needed -->
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="article : ${savedArticles}">
+							<td th:text="${article.articleId}"></td>
+							<td th:text="${article.articleTitle}"></td>
+							<td th:text="${article.articleType}"></td>
+							<td><a th:href="@{'/front/' + ${article.articleId}}" target="_blank">查看文章</a></td>
+							<!-- Add more data as needed -->
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+
+	<div th:replace="~{layout/front_footer}"></div>
+
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script
+		src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+	<script
+		src="https://cdn.datatables.net/buttons/2.2.2/js/dataTables.buttons.min.js"></script>
+	<script
+		src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+	<script
+		src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+	<script
+		src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+	<script
+		src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.html5.min.js"></script>
+	<script
+		src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.print.min.js"></script>
+
+	<script>
+		$(document).ready(function() {
+			$('#savedArticlesTable').DataTable({
+				dom : 'Bfrtip',
+				buttons : [ 'copy', 'csv', 'excel', 'pdf', 'print' ]
+			});
+		});
+	</script>
+</body>
+</html>

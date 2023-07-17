@@ -1,268 +1,278 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
-<meta charset="UTF-8">
-<title>articleInsert</title>
-<style>
-.test {
-	display: flex;
-	flex-direction: column;
-	min-height: 100vh;
-	background-color: black;
-	color: white;
-	align-items: center;
-}
+    <meta charset="UTF-8">
+    <title>articleInsert</title>
+    <style>
+        .test {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            background-color: black;
+            color: white;
+            align-items: center;
+        }
 
-#container {
-	width: 100%;
-	margin: 0 auto;
-}
-.ck-editor__editable[role="textbox"] {
-	min-height: 200px;
-	max-width: 100%;
-	box-sizing: border-box;
-}
-.ck-content .image {
-	max-width: 80%;
-	margin: 20px auto;
-}
+        .ck-content p {
+            font-size: 20px;
+            color: black;
+        }
 
-/* New CSS rules */
-.form-container {
-	max-width: 800px;
-	background-color: #1c1c1c;
-	border-radius: 10px;
-	padding: 30px;
-	margin: 30px auto;
-	box-sizing: border-box;
-	width: 100%;
-}
+        #container {
+            width: 100%;
+            margin: 0 auto;
+        }
 
-.form-container .btn {
-	margin-top: 15px;
-}
+        .ck-editor__editable[role="textbox"] {
+            min-height: 200px;
+            max-width: 100%;
+            box-sizing: border-box;
+        }
+
+        .ck-content .image {
+            max-width: 80%;
+            margin: 20px auto;
+        }
+
+        /* New CSS rules */
+        .form-container {
+            max-width: 800px;
+            background-color: #1c1c1c;
+            border-radius: 10px;
+            padding: 30px;
+            margin: 30px auto;
+            box-sizing: border-box;
+            width: 100%;
+        }
+
+        .form-container .btn {
+            margin-top: 15px;
+        }
 
 
-form {
-	width: 100%;
-}
+        form {
+            width: 100%;
+        }
 
-form input, form select, form textarea {
-	width: 100%;
-	box-sizing: border-box;
-}
-</style>
+        form input,
+        form select,
+        form textarea {
+            width: 100%;
+            box-sizing: border-box;
+        }
+    </style>
 </head>
+
 <body class="test">
 
-	<div th:replace="~{layout/front_nav}"></div>
+    <div th:replace="~{layout/front_nav}"></div>
 
-	<div class="container" style="padding-top: 100px;">
-		<div class="row">
-					<div class="col-2"></div>
-		
-			<div class="col-8">
+    <div class="container" style="padding-top: 100px;">
+        <div class="row">
+            <div class="col-2"></div>
 
-
-			<div class="form-container">  
-				<h1 style="color: white; text-align: center">新增文章</h1>
-				<form th:action="@{/front/insert}" method="post" enctype="multipart/form-data">
-					<select name="articleType" required>
-						<option value="0">請選擇主題分類</option>
-						<option value="健身">健身</option>
-						<option value="購物">購物</option>
-						<option value="課程">課程</option>
-						<option value="活動">活動</option>
-						<option value="會員">會員</option>
-					</select> <br> <br>
-					
-					<br>
-					<br> <label for="articleTitle">標題：</label> <input type="text"
-						id="title" name="articleTitle"
-						th:text="${article}?${article.articleTitle}" autofocus required
-						placeholder="請輸入文章標題" autocomplete="off" size="42"><br>
-					<br>
-
-					<div class="st1">
-						<label for="articleImg" class="t1">照片</label> <input type="file"
-							name="articleImg" id="articleImg" accept="image/*"
-							onchange="preview()"> <img id="frame" src=""
-							width="100px" height="100px" />
-					</div>
-						
-					<br> 	
-					 <div id="container">
-		            <textarea id="editor" name="articleContent" rows="10" cols="50" th:utext="${article}?${article.articleContent}" ></textarea>
-		       		 </div>	
-						
-						
-					<br> <br>
-					<button type="submit" class="btn btn-dark">確定</button>
-					<button type="submit" class="btn btn-secondary"
-						th:onclick="history.back()">取消</button>
-					<button id="autoFillBtn" class="btn btn-secondary">一鍵輸入</button>
+            <div class="col-8">
 
 
-				</form>
-				</div>
-			</div>
-		</div>
-			</div>
+                <div class="form-container">
+                    <h1 style="color: white; text-align: center">新增文章</h1>
+                    <form th:action="@{/front/insert}" method="post" enctype="multipart/form-data">
+                        <select name="articleType" required>
+                            <option value="0">請選擇主題分類</option>
+                            <option value="健身">健身</option>
+                            <option value="購物">商品</option>
+                            <option value="課程">課程</option>
+                            <option value="活動">活動</option>
+                           <!--  <option value="會員">會員</option> -->
+                        </select> <br> <br>
+
+                        <br>
+                        <br> <label for="articleTitle">標題：</label> <input type="text" id="title" name="articleTitle"
+                            th:text="${article}?${article.articleTitle}" autofocus required placeholder="請輸入文章標題"
+                            autocomplete="off" size="42"><br>
+                        <br>
+
+                        <div class="st1">
+                            <label for="articleImg" class="t1">照片</label>
+                            <input type="file" name="articleImg" id="articleImg" accept="image/*">
+                            <img id="frame" src="" width="100px" height="100px" style="display: none;">
+                        </div>
 
 
-	<div th:replace="~{layout/front_footer}"></div>
-	 <script src="https://cdn.ckeditor.com/ckeditor5/38.1.0/super-build/ckeditor.js"></script>
-	
-	<script>
-	//CKeditor
-            let editorInstance;
-	
-            CKEDITOR.ClassicEditor.create(document.getElementById("editor"), {
+                        <br>
+                        <div id="container">
+                            <textarea id="editor" name="articleContent" rows="10" cols="50"
+                                th:utext="${article}?${article.articleContent}"></textarea>
+                        </div>
 
-                toolbar: {
-                    items: [
-                        'exportPDF','exportWord', '|',
-                        'findAndReplace', 'selectAll', '|',
-                        'heading', '|',
-                        'bold', 'italic', 'strikethrough', 'underline', 'code', 'subscript', 'superscript', 'removeFormat', '|',
-                        'bulletedList', 'numberedList', 'todoList', '|',
-                        'outdent', 'indent', '|',
-                        'undo', 'redo',
-                        '-',
-                        'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', 'highlight', '|',
-                        'alignment', '|',
-                        'link', 'insertImage', 'blockQuote', 'insertTable', 'mediaEmbed', 'codeBlock', 'htmlEmbed', '|',
-                        'specialCharacters', 'horizontalLine', 'pageBreak', '|',
-                        'textPartLanguage', '|',
-                        'sourceEditing'
-                    ],
-                    shouldNotGroupWhenFull: true
-                },
-                // Changing the language of the interface requires loading the language file using the <script> tag.
-                // language: 'es',
-                list: {
-                    properties: {
-                        styles: true,
-                        startIndex: true,
-                        reversed: true
-                    }
-                },
-                // https://ckeditor.com/docs/ckeditor5/latest/features/headings.html#configuration
-                heading: {
-                    options: [
-                        { model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
-                        { model: 'heading1', view: 'h1', title: 'Heading 1', class: 'ck-heading_heading1' },
-                        { model: 'heading2', view: 'h2', title: 'Heading 2', class: 'ck-heading_heading2' },
-                        { model: 'heading3', view: 'h3', title: 'Heading 3', class: 'ck-heading_heading3' },
-                        { model: 'heading4', view: 'h4', title: 'Heading 4', class: 'ck-heading_heading4' },
-                        { model: 'heading5', view: 'h5', title: 'Heading 5', class: 'ck-heading_heading5' },
-                        { model: 'heading6', view: 'h6', title: 'Heading 6', class: 'ck-heading_heading6' }
-                    ]
-                },
-                // https://ckeditor.com/docs/ckeditor5/latest/features/editor-placeholder.html#using-the-editor-configuration
-                placeholder: 'Welcome to CKEditor 5!',
-                // https://ckeditor.com/docs/ckeditor5/latest/features/font.html#configuring-the-font-family-feature
-                fontFamily: {
-                    options: [
-                        'default',
-                        'Arial, Helvetica, sans-serif',
-                        'Courier New, Courier, monospace',
-                        'Georgia, serif',
-                        'Lucida Sans Unicode, Lucida Grande, sans-serif',
-                        'Tahoma, Geneva, sans-serif',
-                        'Times New Roman, Times, serif',
-                        'Trebuchet MS, Helvetica, sans-serif',
-                        'Verdana, Geneva, sans-serif'
-                    ],
-                    supportAllValues: true
-                },
-                // https://ckeditor.com/docs/ckeditor5/latest/features/font.html#configuring-the-font-size-feature
-                fontSize: {
-                    options: [ 10, 12, 14, 'default', 18, 20, 22 ],
-                    supportAllValues: true
-                },
-                // Be careful with the setting below. It instructs CKEditor to accept ALL HTML markup.
-                // https://ckeditor.com/docs/ckeditor5/latest/features/general-html-support.html#enabling-all-html-features
-                htmlSupport: {
-                    allow: [
-                        {
-                            name: /.*/,
-                            attributes: true,
-                            classes: true,
-                            styles: true
-                        }
-                    ]
-                },
-                // Be careful with enabling previews
-                // https://ckeditor.com/docs/ckeditor5/latest/features/html-embed.html#content-previews
-                htmlEmbed: {
-                    showPreviews: true
-                },
-                // https://ckeditor.com/docs/ckeditor5/latest/features/link.html#custom-link-attributes-decorators
-                link: {
-                    decorators: {
-                        addTargetToExternalLinks: true,
-                        defaultProtocol: 'https://',
-                        toggleDownloadable: {
-                            mode: 'manual',
-                            label: 'Downloadable',
-                            attributes: {
-                                download: 'file'
-                            }
-                        }
-                    }
-                },
-                // https://ckeditor.com/docs/ckeditor5/latest/features/mentions.html#configuration
-                mention: {
-                    feeds: [
-                        {
-                            marker: '@',
-                            feed: [
-                                '@apple', '@bears', '@brownie', '@cake', '@cake', '@candy', '@canes', '@chocolate', '@cookie', '@cotton', '@cream',
-                                '@cupcake', '@danish', '@donut', '@dragée', '@fruitcake', '@gingerbread', '@gummi', '@ice', '@jelly-o',
-                                '@liquorice', '@macaroon', '@marzipan', '@oat', '@pie', '@plum', '@pudding', '@sesame', '@snaps', '@soufflé',
-                                '@sugar', '@sweet', '@topping', '@wafer'
-                            ],
-                            minimumCharacters: 1
-                        }
-                    ]
-                },
-                // The "super-build" contains more premium features that require additional configuration, disable them below.
-                // Do not turn them on unless you read the documentation and know how to configure them and setup the editor.
-                removePlugins: [
-                    // These two are commercial, but you can try them out without registering to a trial.
-                    // 'ExportPdf',
-                    // 'ExportWord',
-                    'CKBox',
-                    'CKFinder',
-                    'EasyImage',
-                    // This sample uses the Base64UploadAdapter to handle image uploads as it requires no configuration.
-                    // https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/base64-upload-adapter.html
-                    // Storing images as Base64 is usually a very bad idea.
-                    // Replace it on production website with other solutions:
-                    // https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/image-upload.html
-                    // 'Base64UploadAdapter',
-                    'RealTimeCollaborativeComments',
-                    'RealTimeCollaborativeTrackChanges',
-                    'RealTimeCollaborativeRevisionHistory',
-                    'PresenceList',
-                    'Comments',
-                    'TrackChanges',
-                    'TrackChangesData',
-                    'RevisionHistory',
-                    'Pagination',
-                    'WProofreader',
-                    // Careful, with the Mathtype plugin CKEditor will not load when loading this sample
-                    // from a local file system (file://) - load this site via HTTP server if you enable MathType.
-                    'MathType',
-                    // The following features are part of the Productivity Pack and require additional license.
-                    'SlashCommand',
-                    'Template',
-                    'DocumentOutline',
-                    'FormatPainter',
-                    'TableOfContents'
+
+                        <br> <br>
+                        <button type="submit" class="btn btn-dark">確定</button>
+                        <button type="submit" class="btn btn-secondary" th:onclick="history.back()">取消</button>
+                        <button id="autoFillBtn" class="btn btn-secondary">一鍵輸入</button>
+
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div th:replace="~{layout/front_footer}"></div>
+    <script src="https://cdn.ckeditor.com/ckeditor5/38.1.0/super-build/ckeditor.js"></script>
+
+    <script>
+        //CKeditor
+        let editorInstance;
+
+        CKEDITOR.ClassicEditor.create(document.getElementById("editor"), {
+
+            toolbar: {
+                items: [
+                    'exportPDF', 'exportWord', '|',
+                    'findAndReplace', 'selectAll', '|',
+                    'heading', '|',
+                    'bold', 'italic', 'strikethrough', 'underline', 'code', 'subscript', 'superscript', 'removeFormat', '|',
+                    'bulletedList', 'numberedList', 'todoList', '|',
+                    'outdent', 'indent', '|',
+                    'undo', 'redo',
+                    '-',
+                    'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', 'highlight', '|',
+                    'alignment', '|',
+                    'link', 'insertImage', 'blockQuote', 'insertTable', 'mediaEmbed', 'codeBlock', 'htmlEmbed', '|',
+                    'specialCharacters', 'horizontalLine', 'pageBreak', '|',
+                    'textPartLanguage', '|',
+                    'sourceEditing'
+                ],
+                shouldNotGroupWhenFull: true
+            },
+            // Changing the language of the interface requires loading the language file using the <script> tag.
+            // language: 'es',
+            list: {
+                properties: {
+                    styles: true,
+                    startIndex: true,
+                    reversed: true
+                }
+            },
+            // https://ckeditor.com/docs/ckeditor5/latest/features/headings.html#configuration
+            heading: {
+                options: [
+                    { model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
+                    { model: 'heading1', view: 'h1', title: 'Heading 1', class: 'ck-heading_heading1' },
+                    { model: 'heading2', view: 'h2', title: 'Heading 2', class: 'ck-heading_heading2' },
+                    { model: 'heading3', view: 'h3', title: 'Heading 3', class: 'ck-heading_heading3' },
+                    { model: 'heading4', view: 'h4', title: 'Heading 4', class: 'ck-heading_heading4' },
+                    { model: 'heading5', view: 'h5', title: 'Heading 5', class: 'ck-heading_heading5' },
+                    { model: 'heading6', view: 'h6', title: 'Heading 6', class: 'ck-heading_heading6' }
                 ]
-            })
+            },
+            // https://ckeditor.com/docs/ckeditor5/latest/features/editor-placeholder.html#using-the-editor-configuration
+            placeholder: '請輸入文章內容!',
+            // https://ckeditor.com/docs/ckeditor5/latest/features/font.html#configuring-the-font-family-feature
+            fontFamily: {
+                options: [
+                    'default',
+                    'Arial, Helvetica, sans-serif',
+                    'Courier New, Courier, monospace',
+                    'Georgia, serif',
+                    'Lucida Sans Unicode, Lucida Grande, sans-serif',
+                    'Tahoma, Geneva, sans-serif',
+                    'Times New Roman, Times, serif',
+                    'Trebuchet MS, Helvetica, sans-serif',
+                    'Verdana, Geneva, sans-serif'
+                ],
+                supportAllValues: true
+            },
+            // https://ckeditor.com/docs/ckeditor5/latest/features/font.html#configuring-the-font-size-feature
+            fontSize: {
+                options: [10, 12, 14, 'default', 18, 20, 22],
+                supportAllValues: true
+            },
+            // Be careful with the setting below. It instructs CKEditor to accept ALL HTML markup.
+            // https://ckeditor.com/docs/ckeditor5/latest/features/general-html-support.html#enabling-all-html-features
+            htmlSupport: {
+                allow: [
+                    {
+                        name: /.*/,
+                        attributes: true,
+                        classes: true,
+                        styles: true
+                    }
+                ]
+            },
+            // Be careful with enabling previews
+            // https://ckeditor.com/docs/ckeditor5/latest/features/html-embed.html#content-previews
+            htmlEmbed: {
+                showPreviews: true
+            },
+            // https://ckeditor.com/docs/ckeditor5/latest/features/link.html#custom-link-attributes-decorators
+            link: {
+                decorators: {
+                    addTargetToExternalLinks: true,
+                    defaultProtocol: 'https://',
+                    toggleDownloadable: {
+                        mode: 'manual',
+                        label: 'Downloadable',
+                        attributes: {
+                            download: 'file'
+                        }
+                    }
+                }
+            },
+            // https://ckeditor.com/docs/ckeditor5/latest/features/mentions.html#configuration
+            mention: {
+                feeds: [
+                    {
+                        marker: '@',
+                        feed: [
+                            '@apple', '@bears', '@brownie', '@cake', '@cake', '@candy', '@canes', '@chocolate', '@cookie', '@cotton', '@cream',
+                            '@cupcake', '@danish', '@donut', '@dragée', '@fruitcake', '@gingerbread', '@gummi', '@ice', '@jelly-o',
+                            '@liquorice', '@macaroon', '@marzipan', '@oat', '@pie', '@plum', '@pudding', '@sesame', '@snaps', '@soufflé',
+                            '@sugar', '@sweet', '@topping', '@wafer'
+                        ],
+                        minimumCharacters: 1
+                    }
+                ]
+            },
+            // The "super-build" contains more premium features that require additional configuration, disable them below.
+            // Do not turn them on unless you read the documentation and know how to configure them and setup the editor.
+            removePlugins: [
+                // These two are commercial, but you can try them out without registering to a trial.
+                // 'ExportPdf',
+                // 'ExportWord',
+                'CKBox',
+                'CKFinder',
+                'EasyImage',
+                // This sample uses the Base64UploadAdapter to handle image uploads as it requires no configuration.
+                // https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/base64-upload-adapter.html
+                // Storing images as Base64 is usually a very bad idea.
+                // Replace it on production website with other solutions:
+                // https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/image-upload.html
+                // 'Base64UploadAdapter',
+                'RealTimeCollaborativeComments',
+                'RealTimeCollaborativeTrackChanges',
+                'RealTimeCollaborativeRevisionHistory',
+                'PresenceList',
+                'Comments',
+                'TrackChanges',
+                'TrackChangesData',
+                'RevisionHistory',
+                'Pagination',
+                'WProofreader',
+                // Careful, with the Mathtype plugin CKEditor will not load when loading this sample
+                // from a local file system (file://) - load this site via HTTP server if you enable MathType.
+                'MathType',
+                // The following features are part of the Productivity Pack and require additional license.
+                'SlashCommand',
+                'Template',
+                'DocumentOutline',
+                'FormatPainter',
+                'TableOfContents'
+            ]
+        })
             .then(editor => {
                 console.log(editor);
                 editorInstance = editor;
@@ -275,44 +285,65 @@ form input, form select, form textarea {
 
 
 
-	//預覽圖片
-	function preview() {
-	    frame.src=URL.createObjectURL(event.target.files[0]);
-	}
+        //預覽圖片
+        /*function preview() {
+            frame.src=URL.createObjectURL(event.target.files[0]);
+        }*/
 
-	
-	//一鍵輸入
-    document.getElementById('autoFillBtn').addEventListener('click', function(e) {
-    e.preventDefault(); // 阻止按鈕的預設提交行為
-    
-    // 為文章種類選擇框設定值
-    var articleTypeSelect = document.querySelector('select[name="articleType"]');
-    articleTypeSelect.value = '健身'; // 您可以替換為您想要設定的值
 
-    // 為文章標題輸入框設定值
-    var articleTitleInput = document.getElementById('title');
-    articleTitleInput.value = '我愛健身，肌肉愛我'; // 您可以替換為您想要設定的值
+        document.addEventListener('DOMContentLoaded', function () {
+            document.getElementById('articleImg').addEventListener('change', function (e) {
+                var file = e.target.files[0];
+                var imageType = /image.*/;
 
-    // 為文章內容輸入框設定值
-    //var articleContentTextarea = document.getElementById('editor');
-    var articleContent = '健身是一個美好的習慣，我認為大家每天至少要健身30分鐘'; // 您可以替換為您想要設定的值
-    if (editorInstance) {
-        editorInstance.setData(articleContent);
-    } else {
-        console.error('CKEditor 5 instance is not ready yet.');
-    }
-  //  document.querySelector('form').submit();
+                if (!file.type.match(imageType)) {
+                    return;
+                }
 
-});
-	
-    document.querySelector("form").addEventListener("submit", function(e) {
-        // 取得 CKEditor 的內容
-        var articleContent = editorInstance.getData();
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    var img = document.getElementById('frame');
+                    img.src = reader.result;
+                    img.style.display = 'block';
+                }
+                reader.readAsDataURL(file);
+            });
+        });
 
-        // 更新到原本的 textarea 中
-        document.querySelector('#editor').value = articleContent;
-    });
 
-</script>
+        //一鍵輸入
+        document.getElementById('autoFillBtn').addEventListener('click', function (e) {
+            e.preventDefault(); // 阻止按鈕的預設提交行為
+
+            // 為文章種類選擇框設定值
+            var articleTypeSelect = document.querySelector('select[name="articleType"]');
+            articleTypeSelect.value = '健身'; // 您可以替換為您想要設定的值
+
+            // 為文章標題輸入框設定值
+            var articleTitleInput = document.getElementById('title');
+            articleTitleInput.value = '負重深蹲完頭痛，原因和原理？'; // 您可以替換為您想要設定的值
+
+            // 為文章內容輸入框設定值
+            //var articleContentTextarea = document.getElementById('editor');
+            var articleContent = `<p>昨天就如往常一樣做些例行的練習，飯也有吃，但可能就是有一點想睡覺，</p><p>前面熱身先做腿推機的時候都還蠻正常，接著開始做深蹲的時候，第一組、第二組重量稍微輕的都沒事，到第三組重量開始增加一點點，我也覺得還很輕、還蠻有力氣可以繼續做，還不是個人極限，&nbsp;</p><p>但此時站立的過程中，就開始有些頭痛的感覺，還沒到暈，</p><p>到了第四組，盡量採用深呼吸、深吐氣，完成這次的組數，</p><p>後面就接著做比較輕度的其他項目訓練， 但回家之後，就還是覺得隱隱約約頭頂、後腦勺有個內發性的脹痛，沒有到很嚴重，但不太舒服，</p><p>睡了一晚，隔天還是有一點感覺，查了資料發現可能跟缺氧有關，但似乎又不完全對，&nbsp;</p><p>想知道有人也有這樣的經驗過嗎？是身體發生了什麼事情？ 未來訓練的時候可以怎麼避免呢？</p>`; // 您可以替換為您想要設定的值
+            if (editorInstance) {
+                editorInstance.setData(articleContent);
+            } else {
+                console.error('CKEditor 5 instance is not ready yet.');
+            }
+            //  document.querySelector('form').submit();
+
+        });
+
+        document.querySelector("form").addEventListener("submit", function (e) {
+            // 取得 CKEditor 的內容
+            var articleContent = editorInstance.getData();
+
+            // 更新到原本的 textarea 中
+            document.querySelector('#editor').value = articleContent;
+        });
+
+    </script>
 </body>
+
 </html>

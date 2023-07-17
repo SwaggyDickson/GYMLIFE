@@ -35,8 +35,9 @@ import tw.gymlife.com.model.OrdersDetailsDTO;
 @Repository
 public class ComFrontUtilImpl implements ComFrontUtil {
 	
-	private String pathAll="C:\\GYMLIFEProject\\GYMLIFE\\src\\main\\resources\\static\\gym\\com\\cart";
-	private String path = "C:\\springBoot\\workspace\\springBootGym\\src\\main\\resources\\static\\gym\\com\\cart";
+//	private String pathAll="C:\\GYMLIFEProject\\GYMLIFE\\src\\main\\resources\\static\\gym\\com\\cart";
+	private String pathAll="C:\\testGym\\gymproject\\src\\main\\resources\\static\\gym\\com\\cart";
+//	private String pathAll = "C:\\springBoot\\workspace\\springBootGym\\src\\main\\resources\\static\\gym\\com\\cart";
 
 	// 將Bean轉成DTO
 	@Override

@@ -21,8 +21,8 @@
 							<i class="fa fa-file-text-o"></i> 修改活動
 						</h1>
 						<ol class="breadcrumb float-right">
-							<li class="breadcrumb-item">Home</li>
-							<li class="breadcrumb-item active">Update</li>
+							<li class="breadcrumb-item">首頁</li>
+							<li class="breadcrumb-item active">修改活動</li>
 						</ol>
 						<div class="clearfix"></div>
 					</div>
@@ -43,12 +43,12 @@
 								<div class="form-group col-md-6">
 									<label>活動名稱</label> <input class="form-control"
 										name="activityName" type="text" id="activityName"
-										th:field="*{activityName}">
+										th:field="*{activityName}" required>
 								</div>
 								<div class="form-group col-md-6">
-									<label>活動日期</label> <input type="text" class="form-control"
+									<label>活動日期</label> <input type="date" class="form-control"
 										id="activityDate" name="activityDate"
-										th:field="*{activityDate}">
+										th:field="*{activityDate}" required>
 								</div>
 							</div>
 
@@ -57,25 +57,25 @@
 								<div class="form-group col-md-6">
 									<label>活動地點</label> <input type="text" class="form-control"
 										id="activityLocation" name="activityLocation"
-										th:field="*{activityLocation}">
+										th:field="*{activityLocation}" required>
 								</div>
 								<div class="form-group col-md-6">
 									<label>主辦單位</label> <input type="text" class="form-control"
-										id="organizer" name="organizer" th:field="*{organizer}">
+										id="organizer" name="organizer" th:field="*{organizer}" required>
 								</div>
 							</div>
 
 							<div class="row">
 
 								<div class="form-group col-md-6">
-									<label>報名開始日期</label> <input type="text" class="form-control"
+									<label>報名開始日期</label> <input type="date" class="form-control"
 										id="registrationStartDate" name="registrationStartDate"
-										th:field="*{registrationStartDate}">
+										th:field="*{registrationStartDate}" required>
 								</div>
 								<div class="form-group col-md-6">
-									<label>報名結束日期</label> <input type="text" class="form-control"
+									<label>報名結束日期</label> <input type="date" class="form-control"
 										id="registrationEndDate" name="registrationEndDate"
-										th:field="*{registrationEndDate}">
+										th:field="*{registrationEndDate}" required>
 								</div>
 							</div>
 							<div class="row">
@@ -83,12 +83,12 @@
 								<div class="form-group col-md-6">
 									<label>報名人數上限</label> <input type="number" class="form-control"
 										id="applicantLimitedQty" name="applicantLimitedQty"
-										th:field="*{applicantLimitedQty}">
+										th:field="*{applicantLimitedQty}" required>
 								</div>
 								<div class="form-group col-md-6">
 									<label>目前報名人數</label> <input type="number" class="form-control"
 										id="activityApplicantsQty" name="activityApplicantsQty"
-										th:field="*{activityApplicantsQty}">
+										th:field="*{activityApplicantsQty}" required>
 								</div>
 							</div>
 							<div class="row">
@@ -96,32 +96,32 @@
 								<div class="form-group col-md-6">
 									<label for="activityCategory">活動類別 </label> <select
 										class="form-control" id="activityCategory"
-										name="activityCategory">
+										name="activityCategory" required>
 										<option value="跑步"
 											th:selected="${activity.activityCategory == '跑步'}">跑步</option>
-										<option value="游泳"
-											th:selected="${activity.activityCategory == '游泳'}">游泳</option>
 										<option value="健走"
 											th:selected="${activity.activityCategory == '健走'}">健走</option>
 										<option value="鐵人"
 											th:selected="${activity.activityCategory == '鐵人'}">鐵人</option>
+										<option value="籃球"
+											th:selected="${activity.activityCategory == '籃球'}">籃球</option>
 										<option value="越野跑"
-											th:selected="${activity.activityCategory == '自行車'}">越野跑</option>
-										<option value="越野跑"
+											th:selected="${activity.activityCategory == '越野跑'}">越野跑</option>
+										<option value="自行車"
 											th:selected="${activity.activityCategory == '自行車'}">自行車</option>
 									</select>
 								</div>
 								<div class="form-group col-md-6">
 									<label for="activityStatus">報名狀態</label> <select
 										class="form-control" id="activityStatus" name="activityStatus"
-										required="required">
+										required>
 										<option value="報名中">報名中</option>
 										<option value="報名截止">報名截止</option>
 									</select>
 								</div>
 								<div class="form-group col-md-6">
 									<label>活動封面</label><br /> <input type="file"
-										name="activityCover" id="activityCover"
+										name="activityCover" id="activityCover" required
 										th:field="*{activityCover}" />
 								</div>
 							</div>
@@ -129,8 +129,7 @@
 								<label>活動介紹</label>
 								<textarea rows="15" class="form-control editor ckeditor"
 									name="activityInfo" id="activityInfo"
-									th:utext="*{activityInfo}"></textarea>
-								<div id="imagePreview"></div>
+									th:utext="*{activityInfo}" required></textarea>
 							</div>
 
 
@@ -158,35 +157,121 @@
 		th:src="@{/assets/plugins/trumbowyg/plugins/upload/trumbowyg.upload.js}"></script>
 	<!-- END Java Script for this page -->
 	<script>      
-    function submitTest(event) {
-  event.preventDefault(); // 阻止表單提交
+// 表單提交事件處理函式
+function submitTest(event) {
+	event.preventDefault(); // 阻止表單提交
 
-  Swal.fire({
-    title: "您確定要更新活動資料嗎？",
-    icon: "question",
-    showCancelButton: true,
-    confirmButtonText: "確定",
-    cancelButtonText: "取消"
-  }).then(function(result) {
-    if (result.isConfirmed) {
-      // 延遲執行表單提交
-      setTimeout(function() {
-        document.getElementById('updateForm').submit();
-      }, 2000); // 2秒延遲
-      // 顯示打勾圖示及成功
-      Swal.fire({
-        title: "更新成功",
-        icon: "success",
-        showConfirmButton: false,
-        timer: 1500,
-      });
-    } else if (result.isDismissed) {
-      // 顯示取消提示
-      Swal.fire("取消更新", "", "info");
-    }
-  });
+	// 獲取所有必填欄位
+	var requiredFields = document.querySelectorAll('[required]');
+	var emptyFields = []; // 紀錄空字段的名稱
+
+	// 映射欄位 ID 和對應的名稱
+	var fieldNames = {
+		activityName: '活動名稱',
+		activityDate: '活動日期',
+		activityLocation: '活動地點',
+		organizer: '主辦單位',
+		registrationStartDate: '報名開始日期',
+		registrationEndDate: '報名結束日期',
+		applicantLimitedQty: '報名人數上限',
+		activityApplicantsQty: '目前報名人數',
+		activityCategory: '活動類別',
+		activityStatus: '報名狀態',
+		activityCover: '活動封面'
+	};
+
+	// 檢查每個必填欄位是否為空
+	requiredFields.forEach(function(field) {
+		if (field.value.trim() === '') {
+			// 紀錄空欄位的名稱
+			var fieldName = fieldNames[field.getAttribute('name')];
+			if (fieldName) {
+				emptyFields.push(fieldName);
+			}
+			// 添加錯誤樣式
+			field.classList.add('is-invalid');
+		} else {
+			// 移除錯誤樣式
+			field.classList.remove('is-invalid');
+		}
+	});
+
+	// 如果存在空欄位，阻止表單提交並顯示錯誤訊息
+	if (emptyFields.length > 0) {
+		var errorMessage = '請輸入必填欄位：';
+		errorMessage += emptyFields.join('、');
+		Swal.fire("錯誤", errorMessage, "error");
+		return;
+	}
+
+	// 同步 CKEditor 的內容到對應的文本域
+	var editorData = editor.getData();
+	$('#activityInfo').val(editorData);
+
+	// 獲取表單字段的值
+	var activityDate = $('#activityDate').val();
+	var registrationStartDate = $('#registrationStartDate').val();
+	var registrationEndDate = $('#registrationEndDate').val();
+
+	// 進行日期判斷
+	var currentDate = new Date();
+	if (currentDate < new Date(registrationStartDate)) {
+		// 報名尚未開始，弹出 SweetAlert 提示框
+		Swal.fire("日期錯誤", "報名時間尚未開始，請重新選擇。", "warning");
+	} else if (currentDate > new Date(registrationEndDate)) {
+		// 報名已結束，弹出 SweetAlert 提示框
+		Swal.fire("日期錯誤", "報名時間已結束，請重新選擇。", "warning");
+	} else if (currentDate > new Date(activityDate)) {
+		// 活動已結束，弹出 SweetAlert 提示框
+		Swal.fire("日期錯誤", "活動已結束，請重新選擇。", "warning");
+	} else {
+		// 日期判斷通過，彈出確認 SweetAlert 提示框
+		Swal.fire({
+			title: "確認修改",
+			text: "您確定要修改活動嗎？",
+			icon: "question",
+			showCancelButton: true,
+			confirmButtonText: "確定",
+			cancelButtonText: "取消"
+		}).then(function(result) {
+			if (result.isConfirmed) {
+				// 使用 AJAX 提交表單
+				$.ajax({
+					url: $("#updateForm").attr('action'),
+					type: $("#updateForm").attr('method'),
+					data: new FormData($("#updateForm")[0]),
+					processData: false,
+					contentType: false,
+					success: function(response) {
+						// 提交成功后显示成功的 SweetAlert 提示框
+						Swal.fire({
+							title: "新增成功",
+							icon: "success",
+							showConfirmButton: false,
+							timer: 1500,
+							delay: 2000
+						}).then(function() {
+							// 提示框關閉後重新跳轉頁面
+							window.location.href = 'http://localhost:8080/gymlife/activity/getAll';
+						});
+					},
+					error: function(error) {
+						// 提交失敗後顯示的 SweetAlert 
+						Swal.fire({
+							title: "修改失敗",
+							text: "請稍後再試",
+							icon: "error",
+							confirmButtonText: "確定"
+						});
+					}
+				});
+			} else if (result.isDismissed) {
+				// 顯示取消提示
+				Swal.fire("取消", "", "info");
+			}
+		});
+	}
 }
-$('#update-btn').click(submitTest);
     </script>
 </body>
 </html>

@@ -15,6 +15,35 @@
 <link rel="stylesheet"
 	th:href="@{http://localhost:8080/gymlife/gym/activity/css/countdown.css}">
 </head>
+<style>
+.sidebar-option {
+	margin-top: 50px;
+	color: white;
+}
+
+.categories-title {
+    display: inline-block;
+    background-color: #97CBFF;
+    color: black;
+    padding: 5px 10px;
+    border-radius: 20px;
+    margin-bottom: 15px;
+}
+
+.Category-button {
+    background-color:#97CBFF;
+    color: black;
+    border: none;
+    padding: 5px 10px;
+    margin: 5px;
+    cursor: pointer;
+    border-radius: 20px; /* 設置圓角半徑 */
+}
+
+.Category-button:hover {
+    color: #FFB5B5;
+}
+</style>
 <body style="background-color: black;">
 	<div th:replace="~{layout/front_nav}"></div>
 	<!-- Add a space with margin -->
@@ -30,10 +59,10 @@
 	<div style="margin-top: 40px;"></div>
 	<div class="container">
 		<div class="row">
-			<div class="col-lg-9">
+			<div class="col-lg-8">
 				<div class="class-details-text">
 					<div style="margin-top: 40px;"></div>
-					<div class="card mb-12">
+					<div class="card mb-8">
 						<div class="form-color">
 							<div class="card-header">
 								<h3>
@@ -52,7 +81,7 @@
 									</div>
 									<div class="form-group">
 										<label for="userGender">性别<span class="text-danger">*</span></label>
-										<div class="col-sm-10">
+										<div class="col-sm-9">
 											<div class="form-check">
 												<input class="form-check-input" type="radio"
 													name="userGender" id="gridRadios1" value="男"
@@ -99,13 +128,14 @@
 										<label>緊急聯絡人</label><span class="text-danger">*</span>
 										<div>
 											<input type="text" class="form-control"
-												name="emergencyContact" id="emergencyContact" required="required" />
+												name="emergencyContact" id="emergencyContact"
+												required="required" />
 										</div>
 										<label>電話</label><span class="text-danger">*</span>
 										<div>
 											<input type="text" class="form-control"
-												name="emergencyContactPhone" id="emergencyContactPhone"  required="required"
-												maxlength="11" pattern="09\d{2}\d{6}" />
+												name="emergencyContactPhone" id="emergencyContactPhone"
+												required="required" maxlength="11" pattern="09\d{2}\d{6}" />
 										</div>
 										<label>與報名者關係</label><span class="text-danger">*</span>
 										<div>
@@ -118,7 +148,7 @@
 										<button type="reset" class="btn btn-secondary m-l-5">
 											取消</button>
 										<button type="button" class="btn btn-success"
-										id="fill-form-btn" onclick="selectMale()">一鍵輸入</button>
+											id="fill-form-btn" onclick="selectMale()">一鍵輸入</button>
 									</div>
 								</form>
 							</div>
@@ -126,7 +156,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="col-lg-3 sideright">
+			<div class="col-lg-4 col-md-8">
 				<div class="info-all">
 					<!-- 倒計時顯示區域 -->
 					<div class="countdown-wrapper">
@@ -138,21 +168,39 @@
 					<span class="info-title" th:text="${activity.activityName}"
 						style="color: white;"></span>
 					<div style="color: white;">
-						<i class="far fa-calendar-alt" style="margin-left: 20px"></i> <span
-							class="info-subtitle"
+						<i class="far fa-calendar-alt"></i> <span class="info-subtitle"
 							th:text="${#dates.format(activity.activityDate, 'yyyy/MM/dd') + ' (' + #dates.format(activity.activityDate, 'EEEE') + ')'}"
-							style="display: inline; margin-right: 10px;"></span>
+							style="display: inline;"></span>
 					</div>
 					<div style="color: white;">
-						<i class="fas fa-map-marker-alt" style="margin-left: 20px" /></i> <span
-							class="info-subtitle" th:text="${activity.activityLocation}"
+						<i class="fas fa-map-marker-alt" /></i> <span class="info-subtitle"
+							th:text="${activity.activityLocation}"
 							style="display: inline; color: white;"></span>
 					</div>
 				</div>
 				<div class="button-wrapper">
 					<a th:href="@{/goRegistration(activityId=${activity.activityId})}"
-						class="custom-button go-button">我要報名</a>
-					 <a th:href="@{/goRegistrationRecord}" class="custom-button go-button">報名查詢</a>
+						class="custom-button go-button">我要報名</a> <a
+						th:href="@{/goRegistrationRecord}" class="custom-button go-button">報名查詢</a>
+				</div>
+				<div class="sidebar-option">
+					<div class="so-categories">
+						<h5 class="categories-title">活動類型</h5>
+						<ul class="categories-info">
+							<li><button class="Category-button" onclick="return false;">#
+									路跑</button></li>
+							<li><button class="Category-button" onclick="return false;">#
+									健走</button></li>
+							<li><button class="Category-button" onclick="return false;">#
+									鐵人</button></li>
+							<li><button class="Category-button" onclick="return false;">#
+									籃球</button></li>
+							<li><button class="Category-button" onclick="return false;">#
+									越野跑</button></li>
+							<li><button class="Category-button" onclick="return false;">#
+									自行車</button></li>
+						</ul>
+					</div>
 				</div>
 			</div>
 		</div>

@@ -79,7 +79,8 @@ font-size:20px;
 													<td th:text="${registration.member.userTel}"></td>
 													<td th:text="${registration.member.userEmail}"></td>
 													<td th:text="${registration.registrationStatus}"></td>
-													<td th:text="${registration.registrationDate}"></td>
+													<td th:text="${#dates.format(registration.registrationDate,'yyyy/MM/dd HH:mm:ss')}"></td>
+													
 												</tr>
 											</th:block>
 										</tbody>

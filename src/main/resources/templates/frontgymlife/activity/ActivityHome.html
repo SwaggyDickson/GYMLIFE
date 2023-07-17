@@ -94,10 +94,6 @@
 			</div>
 		</div>
 	</section>
-	<!-- 活动列表部分 -->
-	<div id="activityList">
-		<!-- 这里显示活动列表 -->
-	</div>
 	<!-- Add a space with margin -->
 	<div style="margin-top: 40px; margin-bottom: 20px;"></div>
 
@@ -108,6 +104,7 @@
 			<th:block th:each="oneActivity : ${allActivity}">
 				<div class="col-xs-12 col-sm-6 col-md-4 col-lg-4 mb-4">
 					<div class="card" style="background-color: black;">
+					<div class="hiddenId" th:text="${oneActivity.activityId}" style=" display: none;"></div>
 						<a
 							th:href="@{/activityDetails(activityId=${oneActivity.activityId})}">
 							<img class="card-img-top custom-card-image" width="300px"
@@ -186,20 +183,23 @@
   // 在頁面載入時執行一次篩選功能，以便根據初始值顯示卡片
   filterCards();
    
-  	// 報名日還未到截止時間但人數已滿跳出的提示訊息
 	// 獲取URL中的alert參數
 	const urlParams = new URLSearchParams(window.location.search);
 	const alertMessage = urlParams.get('alert');
 
-	// 如果存在alert参数，使用SweetAlert顯示提示框 (報名失敗)
+	// 如果存在alert参数，使用SweetAlert顯示提示框
 	if (alertMessage) {
 	Swal.fire({
- 	 title: '注意！',
+ 	 title: '不好意思',
   	text: alertMessage,
   	icon: 'warning',
  	confirmButtonText: '確定'
 });
 }
+
+
+
+
 
 </script>
 

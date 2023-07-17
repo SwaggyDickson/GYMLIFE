@@ -24,12 +24,10 @@ public class ArticleSave {
 	private int saved;
 
 	@ManyToOne
-	@JsonBackReference
 	@JoinColumn(name = "userId")
 	private Member member;
 
 	@ManyToOne
-	@JsonBackReference
 	@JoinColumn(name = "articleId")
 	private ArticleBean article;
 

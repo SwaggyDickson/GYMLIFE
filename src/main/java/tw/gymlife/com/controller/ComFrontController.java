@@ -235,13 +235,6 @@ public class ComFrontController {
 		return "frontgymlife/com/front_shoppingCart";
 	}
 
-	// 加入購物車
-	// 假session
-	@ModelAttribute("UserId")
-	public String fakeSession() {
-
-		return "abc1";
-	}
 
 	// 加入購物車
 	@PostMapping("/userAddCart.func")

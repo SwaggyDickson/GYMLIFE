@@ -16,7 +16,8 @@
 <link rel="stylesheet" th:href="@{/gym/activity/css/countdown.css}">
 <link rel="stylesheet" th:href="@{/gym/activity/leaflet/leaflet.css}">
 </head>
-<body>
+
+<body onload="initMap()">
 	<div th:replace="~{layout/front_nav}"></div>
 	<!-- Class Details Section Begin -->
 	<section class="class-details-section spad">
@@ -79,7 +80,24 @@
 										th:utext="${activity.activityInfo}"></span> </strong>
 								</p>
 							</div>
-							<!--<div class="map"></div>-->
+							<!-- Google map api -->
+								<div id="map" style="width: 100%; height: 400px;"></div> 
+							<!-- Add a space with margin -->
+							<div style="margin-top: 50px;"></div>
+							<div>
+								<input type="text" id="originInput" placeholder="輸入起點地點">
+								<button onclick="calculateRoute()"><i class="fas fa-search" ></i></button>
+							</div>
+							<!-- Add a space with margin -->
+							<div style="margin-top: 20px;"></div>
+							<button onclick="getUserLocation()" class="button-type">獲取我的位置</button>
+							<button class="button-type" id="button-input">一鍵輸入</button>
+							<div style="margin-top: 10px;"></div>
+							<div class="map-text" id="routeInfo" style="display: none;">
+								距離您的目的地約 <span id="distance" class="map-text"></span>，約 <span
+									id="duration" class="map-text"></span>
+							</div>
+							<!-- Google map api End -->
 							<!-- Add a space with margin -->
 							<div style="margin-top: 50px;"></div>
 							<div class="registration">
@@ -108,14 +126,13 @@
 						<span class="info-title" th:text="${activity.activityName}"
 							style="color: white;"></span>
 						<div style="color: white;">
-							<i class="far fa-calendar-alt" style="margin-left: 20px"></i> <span
-								class="info-subtitle"
+							<i class="far fa-calendar-alt"></i> <span class="info-subtitle"
 								th:text="${#dates.format(activity.activityDate, 'yyyy/MM/dd') + ' (' + #dates.format(activity.activityDate, 'EEEE') + ')'}"
-								style="display: inline; margin-right: 10px;"></span>
+								style="display: inline;"></span>
 						</div>
 						<div style="color: white;">
-							<i class="fas fa-map-marker-alt" style="margin-left: 20px" /></i> <span
-								class="info-subtitle" th:text="${activity.activityLocation}"
+							<i class="fas fa-map-marker-alt" /></i> <span class="info-subtitle"
+								th:text="${activity.activityLocation}"
 								style="display: inline; color: white;"></span>
 						</div>
 					</div>
@@ -147,12 +164,13 @@
 				</div>
 			</div>
 		</div>
-
 	</section>
 	<!-- Class Details Section End -->
 	<div th:replace="~{layout/front_footer}"></div>
-	<script th:src="@{/gym/activity/leaflet/leaflet.js}"></script>
-	<script th:inline="javascript">
+	<script
+		src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDX5ChzTjfLbFnI5wnWt_CLu2hSUhCNrnw"></script>
+	<script th:inline="javascript"> 
+	
 
     // 獲取倒計時剩餘秒數 
     var remainingSecondsEndDate = /*[[${remainingSecondsEndDate}]]*/ 0;
@@ -221,6 +239,139 @@ window.addEventListener('DOMContentLoaded', function() {
   if (infotype) {
     infotype.style.color = 'white';
   }
+});
+</script>
+	<!-- JavaScript 代碼 -->
+	<script th:inline="javascript">
+var map;
+var directionsService;
+var directionsRenderer;
+
+function initMap() {
+  // 初始化地圖
+  map = new google.maps.Map(document.getElementById('map'), {
+    center: { lat: 0, lng: 0 }, // 預設初始中心位置
+    zoom: 12
+  });
+
+  // 添加使用者位置標記
+  navigator.geolocation.getCurrentPosition(function(position) {
+    userLocation = {
+      lat: position.coords.latitude,
+      lng: position.coords.longitude
+    };
+
+    var userMarker = new google.maps.Marker({
+      position: userLocation,
+      map: map,
+      title: '您的位置'
+    });
+
+    map.setCenter(userLocation);
+  });
+
+  // 添加活動地點標記
+  var geocoder = new google.maps.Geocoder();
+  geocoder.geocode({ address: /*[[${activity.activityLocation}]]*/ '' }, function(results, status) {
+    if (status === 'OK' && results.length > 0) {
+      activityLocation = results[0].geometry.location;
+
+      var activityMarker = new google.maps.Marker({
+        position: activityLocation,
+        map: map,
+        title: '活動地點'
+      });
+
+      map.setCenter(activityLocation);
+    }
+  });
+
+  // 初始化 DirectionsService 和 DirectionsRenderer
+  directionsService = new google.maps.DirectionsService();
+  directionsRenderer = new google.maps.DirectionsRenderer();
+  directionsRenderer.setMap(map);
+}
+
+function calculateRoute() {
+  var originInput = document.getElementById('originInput');
+  var origin = originInput.value;
+
+  var geocoder = new google.maps.Geocoder();
+  geocoder.geocode({ address: origin }, function(results, status) {
+    if (status === 'OK' && results.length > 0) {
+      var originLocation = results[0].geometry.location;
+
+      // 清除舊的路線
+      directionsRenderer.setDirections({ routes: [] });
+
+      var request = {
+        origin: originLocation,
+        destination: activityLocation,
+        travelMode: 'DRIVING'
+      };
+
+      directionsService.route(request, function(result, status) {
+        if (status == 'OK') {
+          directionsRenderer.setDirections(result);
+
+          var route = result.routes[0];
+          var distance = route.legs[0].distance.text;
+          var duration = route.legs[0].duration.text;
+
+          document.getElementById('distance').textContent = distance;
+          document.getElementById('duration').textContent = duration;
+
+          // 顯示路線資訊
+          document.getElementById('routeInfo').style.display = 'block';
+        }
+      });
+    }
+  });
+}
+
+function getUserLocation() {
+  // 獲取使用者位置
+  navigator.geolocation.getCurrentPosition(function(position) {
+    var userLocation = {
+      lat: position.coords.latitude,
+      lng: position.coords.longitude
+    };
+
+    // 清除舊的路線
+    directionsRenderer.setDirections({ routes: [] });
+
+    var request = {
+      origin: userLocation,
+      destination: activityLocation,
+      travelMode: 'DRIVING'
+    };
+
+    directionsService.route(request, function(result, status) {
+      if (status == 'OK') {
+        directionsRenderer.setDirections(result);
+
+        var route = result.routes[0];
+        var distance = route.legs[0].distance.text;
+        var duration = route.legs[0].duration.text;
+
+        document.getElementById('distance').textContent = distance;
+        document.getElementById('duration').textContent = duration;
+
+        // 顯示路線資訊
+        document.getElementById('routeInfo').style.display = 'block';
+      }
+    });
+  }, function(error) {
+    // 處理獲取使用者位置失敗的情況
+    console.error(error);
+  });
+}
+
+// 一鍵輸入
+$('#button-input').click(function() {
+
+$('#originInput').val('聖德基督學院');
+	
 });
 
 </script>

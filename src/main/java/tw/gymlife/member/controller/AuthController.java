@@ -57,22 +57,50 @@ import tw.gymlife.member.service.ReCaptchaService;
 		        return "frontgymlife/member/login";  
 		    } 
 			
+			@PostMapping("/GoogleLogin")
+			@ResponseBody
+			public Map<String, Object> handleGoogleLogin(@RequestBody Map<String, String> accpwd, HttpSession httpsession) {
+			    String googleMail = accpwd.get("googleMail");
+			    
+			    Map<String, Object> response = new HashMap<>();
+
+			    
+			    if (googleMail != null) {
+			    	Member googleresult = memberService.checkUserByEmail(googleMail);
+			    	if (googleresult != null) {
+			            // 這個 Google Email 已經註冊過，可以進行登入操作
+			            if (googleresult.isVerified()) {
+			                setSessionAttributes(httpsession, googleresult);
+			                response.put("status", "success");
+			                response.put("redirectUrl", getPageByPermission(googleresult.getUserPermission()));
+			                response.put("userPermission", googleresult.getUserPermission());
+			            } else {
+			                response.put("status", "notActive");
+			                response.put("message", "請到信箱開啟驗證連結");
+			            }
+			           
+			        } else {
+			        	response.put("status", "notRegistered");
+			            response.put("message", "此 Google Email 尚未註冊，請完成註冊流程");
+			        }
+			    	 return response;
+			    }
+				return response;
+			}
+			
+			
+			
 			//登入邏輯
 			@PostMapping("/Login")
 			@ResponseBody
 			public Map<String, Object> handleLogin(@RequestBody Map<String, String> accpwd, HttpSession httpsession) {
 			    String userAccount = accpwd.get("userAccount");
 			    String userPassword = accpwd.get("userPassword");
-//			    String recaptchaToken = accpwd.get("recaptchaToken");
-			    
+			    String googleMail = accpwd.get("googleMail");
+			   
 			    Map<String, Object> response = new HashMap<>();
 			    
-//			    boolean isRecaptchaValid = reCaptchaService.verify(recaptchaToken);
-//			    if (!isRecaptchaValid) {
-//			        response.put("status", "fail");
-//			        response.put("message", "reCAPTCHA驗證失敗");
-//			        return response;
-//			    }
+			    
 
 			    
 			    Optional<Integer> failedAttemptsOpt = Optional.ofNullable((Integer) httpsession.getAttribute("failedAttempts"));
@@ -166,6 +194,10 @@ import tw.gymlife.member.service.ReCaptchaService;
 			    
 			    System.out.println("成功獲取帳號: " + result.getUserAccount());
 			}
+			
+			
+			
+			
 			
 			//由後端判斷會員的權限來進行跳轉
 			private String getPageByPermission(String permission) {

@@ -93,7 +93,7 @@ public class corderService {
 //		obj.setOrderResultURL("http://localhost:8080/gymlife/course/order/insert?userId="+userId+"&courseId="+courseId+"&corderPayment="+corderPayment+"&corderQuantity="+corderQuantity+"&corderCost="+corderCost);
 		obj.setNeedExtraPaidInfo("N");
 		String form = all.aioCheckOut(obj, null);
-		
+		          System.out.println("88888888=="+form);
 		
 		return form;
 	}
